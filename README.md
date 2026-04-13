@@ -114,3 +114,24 @@ Aplicación web progresiva (PWA) / Web App de trivia deportiva altamente gamific
 5.  `POST /api/user/share-intent` -> Incrementa el contador de compartidos (+1).
 6.  `POST /api/inventory/watch-ad` -> Otorga tickets tras validar visualización de anuncio.
 7.  `GET /api/ranking/global` -> Devuelve el Top 50/100 global.
+8.  `GET /api/prizes/current` -> Devuelve la información del premio de la semana (título, imagen, fecha de fin).
+
+---
+
+## 8. Gestión de Contenido (Preguntas y Premios)
+
+Actualmente, al ser una versión de prototipo frontend, los datos están simulados en código. Para pasar a producción, el equipo backend debe implementar lo siguiente:
+
+### 8.1. Banco de Preguntas y Múltiples Tests
+*   **Estado actual:** Hardcodeado en `src/data/mockData.ts` (`mockQuestions`) como una lista plana.
+*   **Implementación requerida (Múltiples Tests):** Para permitir que el usuario juegue varias veces al día sin repetir contenido, la base de datos debe estructurarse mediante "Tests" o "Campañas".
+    *   **Modelo de Datos:** Entidad `Quiz` o `Test` (ej. "Especial Champions", "Test Diario #45") que contiene una relación de 1 a N con la entidad `Question`.
+    *   **Lógica de Selección:** Al hacer clic en "Jugar", el sistema puede:
+        1.  *Opción A (Temáticos):* Mostrar un carrusel en el Vestuario para que el usuario elija qué test jugar.
+        2.  *Opción B (Piscina Infinita):* El backend selecciona aleatoriamente 10 preguntas activas que el usuario *no haya respondido previamente* en las últimas 24 horas.
+*   **CMS:** El panel de administración debe permitir agrupar preguntas en "Tests", asignarles un título, una fecha de publicación y un estado (Activo/Inactivo) para rotar el contenido dinámicamente.
+
+### 8.2. Sorteos y Premios
+*   **Estado actual:** El premio ("PlayStation 5") y el contador de tiempo están hardcodeados en la vista `src/views/PrizeScreen.tsx`.
+*   **Implementación requerida:** El frontend debe consumir el endpoint `GET /api/prizes/current` para pintar dinámicamente el nombre del premio, la imagen de fondo y calcular el tiempo restante (`TERMINA EN: X Días`).
+*   **CMS:** El panel de administración debe permitir configurar el "Premio de la Semana", estableciendo su fecha de inicio y fin.
