@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronLeft, Trophy, Medal, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { mockRanking, mockUser } from '../data/mockData';
+import { mockRanking } from '../data/mockData';
 import { motion } from 'motion/react';
 
 export default function RankingScreen({ onBack }: { onBack: () => void }) {
@@ -13,15 +13,16 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
       <div className="flex items-center mb-12">
         <button 
           onClick={onBack}
-          className="w-10 h-10 bg-card-dark rounded-full flex items-center justify-center border border-gray-800 hover:bg-card-light transition-colors mr-4"
+          className="premium-button-secondary w-10 h-10 rounded-full flex items-center justify-center mr-4"
         >
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-black font-montserrat flex items-center">
+          <div className="premium-topline mb-2">Clasificación premium</div>
+          <h1 className="premium-title text-2xl font-black font-montserrat flex items-center">
             <Trophy className="mr-2 text-rpp-yellow" size={24} /> Ranking Global
           </h1>
-          <p className="text-sm text-gray-400">Compite y sube de división</p>
+          <p className="text-sm text-gray-400">Compite por el mejor puntaje de la comunidad</p>
         </div>
       </div>
 
@@ -90,7 +91,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 + (index * 0.05) }}
-            className={`flex items-center p-4 rounded-2xl border ${user.isCurrentUser ? 'bg-rpp-yellow/10 border-rpp-yellow shadow-[0_0_15px_rgba(255,224,0,0.1)]' : 'bg-card-dark border-gray-800'}`}
+            className={`flex items-center p-4 rounded-2xl border ${user.isCurrentUser ? 'bg-rpp-yellow/10 border-rpp-yellow shadow-[0_0_15px_rgba(255,224,0,0.1)]' : 'premium-soft-panel border-white/5'}`}
           >
             <div className="w-12 flex-shrink-0 text-center font-bold text-gray-400 mr-2">
               #{user.id}
@@ -102,7 +103,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
               <p className={`font-bold ${user.isCurrentUser ? 'text-rpp-yellow' : 'text-white'}`}>
                 {user.username} {user.isCurrentUser && '(Tú)'}
               </p>
-              <p className="text-xs text-gray-400">{user.division}</p>
+              <p className="text-xs text-gray-400">Mejor partida registrada</p>
             </div>
             <div className="text-right flex items-center">
               <div className="mr-4">

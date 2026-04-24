@@ -2,83 +2,39 @@ import React, { useState, useEffect } from 'react';
 import VestuarioScreen from './views/VestuarioScreen';
 import MatchScreen from './views/MatchScreen';
 import RankingScreen from './views/RankingScreen';
-import BadgesScreen from './views/BadgesScreen';
-import DivisionsScreen from './views/DivisionsScreen';
-import InventoryScreen from './views/InventoryScreen';
 import PrizeScreen from './views/PrizeScreen';
 import LoginModal from './components/LoginModal';
-import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Share2, Home, RotateCcw, Ticket, X, Play, TrendingUp } from 'lucide-react';
-import { mockUser } from './data/mockData';
+import { motion } from 'motion/react';
+import { Trophy, Home, Ticket, Play, TrendingUp, MessageCircle, Instagram, Send } from 'lucide-react';
+import { mockQuestions, mockUser } from './data/mockData';
+
+interface MatchSummary {
+  score: number;
+  correctAnswers: number;
+  averageTime: number;
+}
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<'vestuario' | 'match' | 'result' | 'ranking' | 'badges' | 'divisions' | 'inventory' | 'prize'>('vestuario');
+  const [currentScreen, setCurrentScreen] = useState<'vestuario' | 'match' | 'result' | 'ranking' | 'prize' | 'welcome'>('vestuario');
   const [lastScore, setLastScore] = useState(0);
+  const [lastCorrectAnswers, setLastCorrectAnswers] = useState(0);
+  const [lastAverageTime, setLastAverageTime] = useState(0);
   const [lastEarnedTickets, setLastEarnedTickets] = useState(0);
   const [tickets, setTickets] = useState(5); // Full inventory for new users
   const [goldenTickets, setGoldenTickets] = useState(0); // Golden tickets for the weekly raffle
+  const [pendingGoldenTickets, setPendingGoldenTickets] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [pendingChallenge, setPendingChallenge] = useState<{challenger: string, score: number} | null>(null);
+  const [loginModalMode, setLoginModalMode] = useState<'default' | 'post-match'>('default');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentScreen]);
 
-  useEffect(() => {
-    // Parse URL for viral challenges
-    const params = new URLSearchParams(window.location.search);
-    const challenger = params.get('challenger');
-    const score = params.get('score');
-    
-    if (challenger && score) {
-      setPendingChallenge({ challenger, score: parseInt(score, 10) });
-      // Clean the URL so it doesn't trigger again on refresh
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
-
-  const handleShareChallenge = async () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('challenger', mockUser.username);
-    url.searchParams.set('score', lastScore.toString());
-    
-    const shareData = {
-      title: '¡Te reto en El VAR del Saber!',
-      text: `¡He sacado ${lastScore} puntos en El VAR del Saber! ¿Te atreves a superarme?`,
-      url: url.toString()
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert('¡Enlace de reto copiado al portapapeles!');
-      }
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
-        // El usuario canceló el diálogo de compartir, no hacemos nada
-        return;
-      }
-      // Si falla por otra razón (ej. iframe sin permisos), intentamos copiar al portapapeles
-      try {
-        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert('¡Enlace de reto copiado al portapapeles!');
-      } catch (clipboardErr) {
-        console.error('Error sharing:', err);
-      }
-    }
-  };
-
   const handlePlay = () => {
-    if (!isLoggedIn) {
-      setShowLoginModal(true);
-      return;
-    }
     if (tickets <= 0) {
-      setCurrentScreen('inventory');
+      setCurrentScreen('vestuario');
       return;
     }
     setTickets(prev => Math.max(0, prev - 1));
@@ -89,13 +45,18 @@ export default function App() {
     setTickets(prev => Math.min(prev + amount, 5));
   };
 
-  const handleFinishMatch = (score: number) => {
+  const handleFinishMatch = ({ score, correctAnswers, averageTime }: MatchSummary) => {
     setLastScore(score);
+    setLastCorrectAnswers(correctAnswers);
+    setLastAverageTime(averageTime);
     setHasPlayed(true);
-    // Simulate earning golden tickets: +1 for playing, +2 extra if score is high (win simulation)
     const earnedGoldenTickets = score > 1000 ? 3 : 1;
     setLastEarnedTickets(earnedGoldenTickets);
-    setGoldenTickets(prev => prev + earnedGoldenTickets);
+    if (isLoggedIn) {
+      setGoldenTickets(prev => prev + earnedGoldenTickets);
+    } else {
+      setPendingGoldenTickets(prev => prev + earnedGoldenTickets);
+    }
     setCurrentScreen('result');
   };
 
@@ -107,25 +68,20 @@ export default function App() {
     setCurrentScreen('ranking');
   };
 
-  const handleGoToBadges = () => {
-    setCurrentScreen('badges');
-  };
-
-  const handleGoToDivisions = () => {
-    setCurrentScreen('divisions');
-  };
-
-  const handleGoToInventory = () => {
-    setCurrentScreen('inventory');
-  };
-
   const handleGoToPrize = () => {
     setCurrentScreen('prize');
   };
 
   const handleLogin = () => {
+    const shouldShowWelcome = loginModalMode === 'post-match';
     setIsLoggedIn(true);
+    if (pendingGoldenTickets > 0) {
+      setGoldenTickets(prev => prev + pendingGoldenTickets);
+      setPendingGoldenTickets(0);
+    }
     setShowLoginModal(false);
+    setLoginModalMode('default');
+    setCurrentScreen(shouldShowWelcome ? 'welcome' : 'vestuario');
   };
 
   const handleLogout = () => {
@@ -133,8 +89,51 @@ export default function App() {
     setGoldenTickets(0); // Reset golden tickets on logout for demo purposes
   };
 
+  const handleOpenDefaultLogin = () => {
+    setLoginModalMode('default');
+    setShowLoginModal(true);
+  };
+
+  const handleOpenPostMatchLogin = () => {
+    setLoginModalMode('post-match');
+    setShowLoginModal(true);
+  };
+
+  const getRelativeStanding = (score: number) => {
+    if (score >= 1600) return { topPercent: 8, betterThan: 92 };
+    if (score >= 1300) return { topPercent: 15, betterThan: 85 };
+    if (score >= 1000) return { topPercent: 24, betterThan: 76 };
+    if (score >= 700) return { topPercent: 39, betterThan: 61 };
+    return { topPercent: 58, betterThan: 42 };
+  };
+
+  const handleShareResult = async (network: 'whatsapp' | 'instagram' | 'x') => {
+    const { topPercent } = getRelativeStanding(lastScore);
+    const message = `Acabo de hacer ${lastScore} puntos en El VAR del Saber y quedé en el top ${topPercent}% de hoy. ¿Puedes superarme?`;
+    const encodedMessage = encodeURIComponent(message);
+
+    if (network === 'whatsapp') {
+      window.open(`https://wa.me/?text=${encodedMessage}`, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (network === 'x') {
+      window.open(`https://twitter.com/intent/tweet?text=${encodedMessage}`, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(message);
+      alert('Texto listo para pegar en Instagram.');
+    } catch (error) {
+      console.error('No se pudo copiar el resultado', error);
+    }
+  };
+
+  const relativeStanding = getRelativeStanding(lastScore);
+
   return (
-    <div className="bg-stadium min-h-screen text-white">
+    <div className="premium-shell bg-stadium min-h-screen text-white">
       {currentScreen === 'vestuario' && (
         <VestuarioScreen 
           onPlay={handlePlay} 
@@ -142,119 +141,222 @@ export default function App() {
           goldenTickets={goldenTickets}
           onAddTickets={handleAddTickets}
           onGoToRanking={handleGoToRanking}
-          onGoToBadges={handleGoToBadges}
-          onGoToDivisions={handleGoToDivisions}
-          onGoToInventory={handleGoToInventory}
           onGoToPrize={handleGoToPrize}
           isLoggedIn={isLoggedIn}
           hasPlayed={hasPlayed}
-          onLoginClick={() => setShowLoginModal(true)}
+          onLoginClick={handleOpenDefaultLogin}
           onLogoutClick={handleLogout}
         />
       )}
       {currentScreen === 'match' && <MatchScreen onFinish={handleFinishMatch} />}
       {currentScreen === 'ranking' && <RankingScreen onBack={handleBackToDashboard} />}
-      {currentScreen === 'badges' && <BadgesScreen onBack={handleBackToDashboard} hasPlayed={hasPlayed} />}
-      {currentScreen === 'divisions' && <DivisionsScreen onBack={handleBackToDashboard} />}
-      {currentScreen === 'inventory' && (
-        <InventoryScreen 
-          onBack={handleBackToDashboard} 
-          tickets={tickets} 
-          onAddTickets={handleAddTickets} 
-        />
-      )}
       {currentScreen === 'prize' && (
         <PrizeScreen 
           onBack={handleBackToDashboard} 
           goldenTickets={goldenTickets} 
           isLoggedIn={isLoggedIn} 
-          onLoginClick={() => setShowLoginModal(true)}
+          onLoginClick={handleOpenDefaultLogin}
           onPlayClick={handlePlay}
         />
+      )}
+      {currentScreen === 'welcome' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="min-h-screen p-4 md:p-6 font-sans flex flex-col items-center justify-center max-w-2xl mx-auto"
+        >
+          <motion.div
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            transition={{ type: "spring", bounce: 0.35 }}
+            className="premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-rpp-yellow/10 rounded-full flex items-center justify-center mx-auto mb-5 border border-rpp-yellow/30">
+              <Trophy className="text-rpp-yellow" size={38} />
+            </div>
+
+            <div className="premium-chip mx-auto w-fit mb-4">Cuenta activada</div>
+            <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-white mb-3">
+              ¡Bienvenido a la cancha!
+            </h1>
+            <p className="text-sm md:text-base text-gray-300 max-w-xl mx-auto mb-6 leading-relaxed">
+              Tu cuenta ya está lista y tu partida quedó guardada. Desde ahora compites con tu PR, acumulas cupones y ya estás participando por los premios semanales.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+              <div className="premium-soft-panel rounded-xl p-4">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Puntaje guardado</p>
+                <p className="text-3xl font-black font-montserrat text-rpp-yellow">{lastScore}</p>
+              </div>
+              <div className="premium-soft-panel rounded-xl p-4">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Cupones activos</p>
+                <p className="text-3xl font-black font-montserrat text-rpp-yellow">{goldenTickets}</p>
+                <p className="text-xs text-gray-500 mt-2">Participaciones para el premio semanal</p>
+              </div>
+              <div className="premium-soft-panel rounded-xl p-4">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Estado de hoy</p>
+                <p className="text-xl font-black font-montserrat text-white">Top {relativeStanding.topPercent}%</p>
+              </div>
+            </div>
+
+            <div className="w-full bg-[#f6e8c8] border border-[#ead4a1] text-[#704400] rounded-xl px-4 py-3 text-center mb-6">
+              <p className="font-black font-montserrat text-base mb-1">Ya estás dentro del premio de esta semana</p>
+              <p className="text-xs md:text-sm">Sigue jugando para sumar más cupones y aumentar tus probabilidades.</p>
+            </div>
+
+            <div className="w-full flex flex-col gap-3">
+              <button
+                onClick={handleBackToDashboard}
+                className="premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl flex items-center justify-center hover:scale-[1.02] transition-transform"
+              >
+                <Home className="mr-2" size={20} /> IR AL VESTUARIO
+              </button>
+              <button
+                onClick={handlePlay}
+                className="premium-button-secondary w-full font-montserrat font-bold text-sm py-3.5 rounded-xl flex items-center justify-center transition-colors"
+              >
+                <Play className="mr-2" size={18} fill="currentColor" /> JUGAR OTRA PARTIDA
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
       )}
       {currentScreen === 'result' && (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="min-h-screen p-6 font-sans flex flex-col items-center justify-center max-w-3xl mx-auto"
+          className="min-h-screen p-4 md:p-6 font-sans flex flex-col items-center justify-center max-w-2xl mx-auto"
         >
           <motion.div
             initial={{ scale: 0.8, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             transition={{ type: "spring", bounce: 0.5 }}
-            className="bg-card-dark w-full rounded-3xl p-8 md:p-16 flex flex-col items-center border border-gray-800 relative overflow-hidden shadow-2xl"
+            className="premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 flex flex-col items-center relative overflow-hidden shadow-2xl"
           >
-            <div className="absolute top-0 left-0 w-full h-2 bg-rpp-yellow"></div>
-            <Trophy size={80} className="text-rpp-yellow mb-6 drop-shadow-[0_0_15px_rgba(255,224,0,0.5)]" />
+            <Trophy size={58} className="text-rpp-yellow mb-5 drop-shadow-[0_0_15px_rgba(255,224,0,0.35)]" />
             
-            <h1 className="text-3xl md:text-5xl font-montserrat font-black text-white mb-2 text-center">¡PARTIDO TERMINADO!</h1>
-            <p className="text-gray-400 mb-8 text-sm md:text-base uppercase tracking-widest font-semibold">Puntaje Final</p>
+            <div className="premium-chip mb-4">Resultado</div>
+            <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-white mb-2 text-center">¡PARTIDO TERMINADO!</h1>
+            <p className="text-gray-400 mb-6 text-[11px] md:text-sm uppercase tracking-[0.22em] font-semibold">Puntaje Final</p>
             
-            <div className="text-8xl md:text-9xl font-montserrat font-black text-rpp-yellow mb-2 drop-shadow-[0_0_30px_rgba(255,224,0,0.4)]">
+            <div className="text-6xl md:text-7xl font-montserrat font-black text-rpp-yellow mb-2 drop-shadow-[0_0_24px_rgba(255,224,0,0.32)]">
               {lastScore}
             </div>
             
-            {/* CONDITIONAL FEEDBACK (PR / RANKING) */}
-            <div className="mb-8 text-center h-8 flex items-center justify-center">
-              {lastScore > mockUser.pr ? (
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex items-center text-green-400 font-bold bg-green-400/10 px-4 py-2 rounded-full border border-green-400/30"
-                >
-                  <TrendingUp className="mr-2" size={18} /> ¡NUEVO RÉCORD! Subiste en el ranking 🚀
-                </motion.div>
-              ) : (
-                <p className="text-gray-400 font-medium">
-                  ¡Uf! A solo <span className="text-white font-bold">{Math.max(0, mockUser.pr - lastScore)} pts</span> de tu récord.
-                </p>
-              )}
-            </div>
+            {isLoggedIn ? (
+              <>
+                <div className="mb-8 text-center h-8 flex items-center justify-center">
+                  {lastScore > mockUser.pr ? (
+                    <motion.div 
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="flex items-center text-green-400 font-bold bg-green-400/10 px-4 py-2 rounded-full border border-green-400/30"
+                    >
+                      <TrendingUp className="mr-2" size={18} /> ¡NUEVO RÉCORD! Subiste en el ranking
+                    </motion.div>
+                  ) : (
+                    <p className="text-gray-400 font-medium">
+                      ¡Uf! A solo <span className="text-white font-bold">{Math.max(0, mockUser.pr - lastScore)} pts</span> de tu récord.
+                    </p>
+                  )}
+                </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center justify-center bg-gradient-to-r from-rpp-yellow/20 to-orange-500/20 border border-rpp-yellow/50 px-6 py-4 md:px-8 md:py-4 rounded-2xl mb-12 shadow-[0_0_20px_rgba(255,224,0,0.2)]"
-            >
-              <div className="w-12 h-12 bg-rpp-yellow/20 rounded-full flex items-center justify-center mr-4 shrink-0">
-                <Ticket className="text-rpp-yellow" size={28} />
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-rpp-yellow font-bold uppercase tracking-wider mb-0.5">Recompensa Semanal</p>
-                <p className="text-2xl md:text-3xl font-black font-montserrat text-white">
-                  +{lastEarnedTickets} <span className="text-lg text-gray-300 font-medium">Cupones Dorados</span>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-center justify-center bg-gradient-to-r from-rpp-yellow/20 to-orange-500/20 border border-rpp-yellow/50 px-4 py-3 md:px-6 rounded-xl mb-8 shadow-[0_0_20px_rgba(255,224,0,0.12)]"
+                >
+                  <div className="w-10 h-10 bg-rpp-yellow/20 rounded-full flex items-center justify-center mr-3 shrink-0">
+                    <Ticket className="text-rpp-yellow" size={22} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Recompensa Semanal</p>
+                    <p className="text-xl md:text-2xl font-black font-montserrat text-white">
+                      +{lastEarnedTickets} <span className="text-sm text-gray-300 font-medium">Cupones Dorados</span>
+                    </p>
+                  </div>
+                </motion.div>
+              </>
+            ) : (
+              <>
+                <div className="premium-soft-panel w-full rounded-xl px-4 py-3 text-center mb-5 border-white/8">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Rendimiento de hoy</p>
+                  <p className="text-2xl font-black font-montserrat text-white leading-none mb-1.5">Top {relativeStanding.topPercent}%</p>
+                  <p className="text-sm text-gray-300">Mejor que {relativeStanding.betterThan} de cada 100 jugadores hoy</p>
+                </div>
+
+                <div className="w-full grid grid-cols-2 gap-3 mb-6">
+                  <div className="premium-soft-panel rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black font-montserrat text-white">{lastCorrectAnswers}/{mockQuestions.length}</p>
+                    <p className="text-sm text-gray-400">correctas</p>
+                  </div>
+                  <div className="premium-soft-panel rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black font-montserrat text-white">{lastAverageTime}s</p>
+                    <p className="text-sm text-gray-400">promedio/preg.</p>
+                  </div>
+                </div>
+
+                <div className="w-full flex gap-2 mb-4">
+                  <button
+                    onClick={() => handleShareResult('whatsapp')}
+                    className="premium-button-secondary flex-1 rounded-xl font-bold py-3 text-sm flex items-center justify-center"
+                  >
+                    <MessageCircle size={18} className="mr-2" /> WhatsApp
+                  </button>
+                  <button
+                    onClick={() => handleShareResult('instagram')}
+                    className="premium-button-secondary flex-1 rounded-xl font-bold py-3 text-sm flex items-center justify-center"
+                  >
+                    <Instagram size={18} className="mr-2" /> Instagram
+                  </button>
+                  <button
+                    onClick={() => handleShareResult('x')}
+                    className="premium-button-secondary flex-1 rounded-xl font-bold py-3 text-sm flex items-center justify-center"
+                  >
+                    <Send size={18} className="mr-2" /> X
+                  </button>
+                </div>
+
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  onClick={handleOpenPostMatchLogin}
+                  className="premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
+                >
+                  Regístrate y compite por el premio
+                </motion.button>
+
+                <p className="text-xs md:text-sm text-gray-400 text-center mb-6 leading-relaxed">
+                  Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenTickets || lastEarnedTickets} cupones quedan esperando si creas tu cuenta ahora.
                 </p>
-              </div>
-            </motion.div>
+              </>
+            )}
 
             <div className="w-full flex flex-col gap-3">
               <button 
                 onClick={handlePlay}
-                className="w-full bg-rpp-yellow text-stadium font-montserrat font-black text-xl py-5 rounded-xl shadow-[0_0_20px_rgba(255,224,0,0.3)] flex items-center justify-center hover:scale-[1.02] transition-transform"
+                className={`${isLoggedIn ? 'premium-button-primary font-black text-base md:text-lg py-4' : 'premium-button-secondary font-bold text-sm py-3.5'} w-full font-montserrat rounded-xl flex items-center justify-center transition-transform`}
               >
                 {tickets > 0 ? (
-                  <><Play className="mr-2" fill="currentColor" size={24} /> JUGAR DE NUEVO (🎟️ {tickets})</>
+                  <><Play className="mr-2" fill="currentColor" size={isLoggedIn ? 24 : 18} /> JUGAR DE NUEVO {isLoggedIn ? `(🎟️ ${tickets})` : ''}</>
                 ) : (
-                  <><Ticket className="mr-2" size={24} /> CONSEGUIR TICKETS</>
+                  <><Ticket className="mr-2" size={isLoggedIn ? 24 : 18} /> VOLVER AL INICIO</>
                 )}
               </button>
               
-              <div className="flex gap-3 w-full">
-                <button 
-                  onClick={handleShareChallenge}
-                  className="w-1/2 bg-transparent border-2 border-rpp-yellow text-rpp-yellow font-montserrat font-bold text-sm md:text-base py-4 rounded-xl flex items-center justify-center hover:bg-rpp-yellow/10 transition-colors"
-                >
-                  <Share2 className="mr-2" size={18} /> RETAR AMIGO
-                </button>
-                
-                <button 
-                  onClick={handleBackToDashboard}
-                  className="w-1/2 bg-card-light text-white font-montserrat font-bold text-sm md:text-base py-4 rounded-xl border border-gray-700 flex items-center justify-center hover:bg-gray-800 transition-colors"
-                >
-                  <Home className="mr-2" size={18} /> VESTUARIO
-                </button>
-              </div>
+              <button 
+                onClick={handleBackToDashboard}
+                className="premium-button-ghost w-full font-montserrat font-bold text-sm py-3 rounded-xl flex items-center justify-center transition-colors"
+              >
+                <Home className="mr-2" size={18} /> {isLoggedIn ? 'VESTUARIO' : 'SEGUIR SIN CUENTA'}
+              </button>
+              {!isLoggedIn && (
+                <p className="text-xs text-gray-500 text-center">
+                  Sin cuenta no participas en el premio semanal.
+                </p>
+              )}
             </div>
           </motion.div>
         </motion.div>
@@ -263,62 +365,15 @@ export default function App() {
       <LoginModal 
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)} 
-        onLogin={() => {
-          setIsLoggedIn(true);
+        onLogin={handleLogin}
+        mode={loginModalMode}
+        pendingScore={lastScore}
+        onContinueWithoutAccount={() => {
           setShowLoginModal(false);
-        }} 
+          setLoginModalMode('default');
+          setCurrentScreen('vestuario');
+        }}
       />
-
-      {/* VIRAL CHALLENGE MODAL */}
-      <AnimatePresence>
-        {pendingChallenge && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-card-dark border border-gray-800 rounded-3xl p-6 md:p-8 max-w-md w-full text-center relative overflow-hidden shadow-2xl"
-            >
-              <button 
-                onClick={() => setPendingChallenge(null)} 
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-              >
-                <X size={24} />
-              </button>
-
-              <div className="w-20 h-20 bg-rpp-yellow/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-rpp-yellow/50">
-                <Trophy className="text-rpp-yellow" size={40} />
-              </div>
-              
-              <h3 className="text-2xl md:text-3xl font-black font-montserrat mb-2 text-white uppercase tracking-tight">
-                ¡Te han retado!
-              </h3>
-              
-              <p className="text-gray-300 mb-8 text-lg">
-                <span className="font-bold text-rpp-yellow">{pendingChallenge.challenger}</span> te ha retado a superar sus <span className="font-black text-white">{pendingChallenge.score} puntos</span> en El VAR del Saber. ¿Aceptas el desafío?
-              </p>
-              
-              <div className="flex flex-col gap-3">
-                <button 
-                  onClick={() => {
-                    setPendingChallenge(null);
-                    handlePlay();
-                  }}
-                  className="w-full bg-rpp-yellow text-stadium font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,224,0,0.3)]"
-                >
-                  <Play className="mr-2" size={20} fill="currentColor" /> ACEPTAR RETO
-                </button>
-                <button 
-                  onClick={() => setPendingChallenge(null)}
-                  className="w-full bg-transparent border border-gray-700 text-gray-400 font-bold py-4 rounded-xl hover:bg-gray-800 hover:text-white transition-colors"
-                >
-                  IGNORAR
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

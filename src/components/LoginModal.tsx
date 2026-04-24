@@ -1,15 +1,27 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Trophy, Save, Shield, MonitorPlay, Mail } from 'lucide-react';
+import { X, Trophy, Save, MonitorPlay, Mail } from 'lucide-react';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin: () => void;
+  mode?: 'default' | 'post-match';
+  pendingScore?: number;
+  onContinueWithoutAccount?: () => void;
 }
 
-export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
+export default function LoginModal({
+  isOpen,
+  onClose,
+  onLogin,
+  mode = 'default',
+  pendingScore = 0,
+  onContinueWithoutAccount
+}: LoginModalProps) {
   if (!isOpen) return null;
+
+  const isPostMatch = mode === 'post-match';
 
   return (
     <AnimatePresence>
@@ -18,7 +30,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="bg-card-dark border border-gray-800 rounded-3xl p-8 max-w-md w-full relative overflow-hidden shadow-2xl"
+          className="premium-panel premium-hero rounded-2xl p-6 max-w-sm w-full relative overflow-hidden shadow-2xl"
         >
           {/* Close Button */}
           <button 
@@ -30,44 +42,48 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
 
           {/* Header / Logo */}
           <div className="flex flex-col items-center mb-8 mt-4">
-            <div className="w-16 h-16 bg-rpp-yellow rounded-2xl flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(255,224,0,0.4)]">
-              <MonitorPlay className="text-stadium" size={36} />
+            <div className="w-14 h-14 bg-rpp-yellow rounded-xl flex items-center justify-center mb-4 shadow-[0_0_18px_rgba(255,224,0,0.24)]">
+              <MonitorPlay className="text-stadium" size={30} />
             </div>
-            <h2 className="text-3xl font-black font-montserrat text-center tracking-tight">
-              ÚNETE A LA <span className="text-rpp-yellow">CANCHA</span>
+            <div className="premium-topline mb-4">{isPostMatch ? 'Guardar y competir' : 'Acceso premium'}</div>
+            <h2 className="premium-title text-2xl font-black font-montserrat text-center tracking-tight">
+              {isPostMatch ? <>GUARDA TUS <span className="text-rpp-yellow">PUNTOS</span></> : <>ÚNETE A LA <span className="text-rpp-yellow">CANCHA</span></>}
             </h2>
             <p className="text-gray-400 text-center mt-2 text-sm">
-              Inicia sesión para desbloquear la experiencia completa de El VAR del Saber.
+              {isPostMatch
+                ? 'Regístrate ahora para guardar esta partida y activar tu participación en el premio semanal.'
+                : 'Inicia sesión para desbloquear la experiencia completa de El VAR del Saber.'}
             </p>
           </div>
 
+          {isPostMatch && (
+            <div className="bg-[#f6e8c8] text-[#704400] font-bold text-center py-2.5 px-4 rounded-xl mb-5 text-sm">
+              Tienes {pendingScore.toLocaleString('es-PE')} pts esperándote
+            </div>
+          )}
+
           {/* Benefits */}
-          <div className="space-y-4 mb-8">
-            <div className="flex items-center bg-stadium/50 p-3 rounded-xl border border-gray-800/50">
+          <div className="space-y-3 mb-6">
+            <div className="premium-soft-panel flex items-center p-3 rounded-xl">
               <div className="w-10 h-10 bg-rpp-yellow/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Trophy className="text-rpp-yellow" size={20} />
               </div>
               <div>
-                <p className="font-bold text-sm">Compite en el Ranking</p>
-                <p className="text-xs text-gray-400">Sube de división y demuestra quién sabe más.</p>
+                <p className="font-bold text-sm">{isPostMatch ? 'Compite con tu resultado de hoy' : 'Compite en el Ranking'}</p>
+                <p className="text-xs text-gray-400">
+                  {isPostMatch ? 'Tu partida queda guardada y puedes entrar al ranking semanal.' : 'Mejora tu puntaje y demuestra quién sabe más.'}
+                </p>
               </div>
             </div>
-            <div className="flex items-center bg-stadium/50 p-3 rounded-xl border border-gray-800/50">
+            <div className="premium-soft-panel flex items-center p-3 rounded-xl">
               <div className="w-10 h-10 bg-neon-green/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Save className="text-neon-green" size={20} />
               </div>
               <div>
-                <p className="font-bold text-sm">Guarda tu Progreso</p>
-                <p className="text-xs text-gray-400">Tus estadísticas y tickets seguros en la nube.</p>
-              </div>
-            </div>
-            <div className="flex items-center bg-stadium/50 p-3 rounded-xl border border-gray-800/50">
-              <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
-                <Shield className="text-blue-400" size={20} />
-              </div>
-              <div>
-                <p className="font-bold text-sm">Colecciona Insignias</p>
-                <p className="text-xs text-gray-400">Desbloquea logros exclusivos por tus hazañas.</p>
+                <p className="font-bold text-sm">{isPostMatch ? 'Activa tus premios' : 'Guarda tu Progreso'}</p>
+                <p className="text-xs text-gray-400">
+                  {isPostMatch ? 'Tus cupones quedan asociados a tu cuenta para entrar al sorteo semanal.' : 'Tus estadísticas y tickets seguros en la nube.'}
+                </p>
               </div>
             </div>
           </div>
@@ -76,7 +92,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
           <div className="space-y-3">
             <button 
               onClick={onLogin}
-              className="w-full bg-white text-gray-900 font-bold py-3.5 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors"
+              className="w-full bg-white text-gray-900 font-bold py-3 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors shadow-[0_14px_28px_rgba(255,255,255,0.06)]"
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -88,12 +104,27 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
             </button>
             <button 
               onClick={onLogin}
-              className="w-full bg-card-light text-white font-bold py-3.5 rounded-xl flex items-center justify-center hover:bg-gray-700 transition-colors border border-gray-700"
+              className="premium-button-secondary w-full font-bold py-3 rounded-xl flex items-center justify-center transition-colors"
             >
               <Mail className="w-5 h-5 mr-3" />
               Continuar con Email
             </button>
           </div>
+
+          {isPostMatch && (
+            <>
+              <div className="w-full h-px bg-gray-800 my-5" />
+              <button
+                onClick={onContinueWithoutAccount ?? onClose}
+                className="w-full text-gray-300 font-semibold py-2 rounded-xl hover:text-white transition-colors"
+              >
+                No, seguir sin cuenta
+              </button>
+              <p className="text-center text-xs text-gray-500 mt-2">
+                Sin cuenta no guardas tu partida ni participas en el premio semanal.
+              </p>
+            </>
+          )}
           
           <p className="text-center text-xs text-gray-500 mt-6">
             Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.

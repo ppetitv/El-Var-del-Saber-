@@ -3,12 +3,22 @@ import { Users, RefreshCw, CheckCircle2, XCircle, ChevronLeft, MonitorPlay } fro
 import { mockQuestions } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 
-export default function MatchScreen({ onFinish }: { onFinish: (score: number) => void }) {
+interface MatchSummary {
+  score: number;
+  correctAnswers: number;
+  averageTime: number;
+}
+
+const NEXT_QUESTION_DELAY_MS = 500;
+
+export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSummary) => void }) {
   const [currentQ, setCurrentQ] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [score, setScore] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [totalResponseTime, setTotalResponseTime] = useState(0);
 
   // Lifelines State
   const [lifelines, setLifelines] = useState({ var: false, hinchada: false, cambio: false });
@@ -42,26 +52,39 @@ export default function MatchScreen({ onFinish }: { onFinish: (score: number) =>
 
   const handleTimeOut = () => {
     setIsAnswerChecked(true);
+    const responseTime = 15;
+    const nextTotalResponseTime = totalResponseTime + responseTime;
+    setTotalResponseTime(nextTotalResponseTime);
     setTimeout(() => {
-      nextQuestion();
-    }, 2000);
+      nextQuestion(score, correctAnswers, nextTotalResponseTime);
+    }, NEXT_QUESTION_DELAY_MS);
   };
 
   const handleAnswerSelect = (id: string) => {
     if (isAnswerChecked) return;
     setSelectedAnswer(id);
     setIsAnswerChecked(true);
-    
+
+    const responseTime = 15 - timeLeft;
+    const nextTotalResponseTime = totalResponseTime + responseTime;
+    setTotalResponseTime(nextTotalResponseTime);
+
+    let nextScore = score;
+    let nextCorrectAnswers = correctAnswers;
+
     if (id === question.correctAnswer) {
-      setScore(prev => prev + 100 + (timeLeft * 10)); // Base + time bonus
+      nextScore = score + 100 + (timeLeft * 10);
+      nextCorrectAnswers = correctAnswers + 1;
+      setScore(nextScore);
+      setCorrectAnswers(nextCorrectAnswers);
     }
 
     setTimeout(() => {
-      nextQuestion();
-    }, 2000);
+      nextQuestion(nextScore, nextCorrectAnswers, nextTotalResponseTime);
+    }, NEXT_QUESTION_DELAY_MS);
   };
 
-  const nextQuestion = () => {
+  const nextQuestion = (finalScore = score, finalCorrectAnswers = correctAnswers, finalTotalResponseTime = totalResponseTime) => {
     if (currentQ < mockQuestions.length - 1) {
       setCurrentQ(prev => prev + 1);
       setTimeLeft(15);
@@ -72,7 +95,11 @@ export default function MatchScreen({ onFinish }: { onFinish: (score: number) =>
       setAudienceVotes(null);
       setIsSwapped(false);
     } else {
-      onFinish(score);
+      onFinish({
+        score: finalScore,
+        correctAnswers: finalCorrectAnswers,
+        averageTime: Math.max(1, Math.round(finalTotalResponseTime / mockQuestions.length))
+      });
     }
   };
 
@@ -130,7 +157,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (score: number) =>
     <div className="min-h-screen bg-stadium text-white p-6 font-sans flex flex-col max-w-6xl mx-auto">
       {/* HEADER */}
       <div className="flex justify-between items-center mb-8">
-        <button className="w-10 h-10 bg-card-dark rounded-full flex items-center justify-center border border-gray-800 hover:bg-card-light transition-colors">
+        <button className="premium-button-secondary w-10 h-10 rounded-full flex items-center justify-center">
           <ChevronLeft size={20} />
         </button>
         <div className="text-center">
@@ -179,12 +206,12 @@ export default function MatchScreen({ onFinish }: { onFinish: (score: number) =>
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.12 }}
           className="flex-grow flex flex-col md:flex-row md:items-center md:gap-16"
         >
           {/* QUESTION */}
           <div className="mb-8 md:mb-0 md:w-1/2">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black font-montserrat leading-tight md:leading-tight lg:leading-tight">
+            <h2 className="premium-title text-2xl md:text-3xl lg:text-4xl font-black font-montserrat leading-tight md:leading-tight lg:leading-tight">
               {question.text}
             </h2>
           </div>
@@ -218,7 +245,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (score: number) =>
                   key={opt.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.025, duration: 0.12 }}
                   onClick={() => handleAnswerSelect(opt.id)}
                   disabled={isAnswerChecked || isHidden}
                   className={`w-full text-left p-4 md:p-5 rounded-2xl border-2 transition-all font-medium text-lg flex items-center group relative overflow-hidden ${buttonClass}`}
