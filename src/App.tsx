@@ -297,25 +297,28 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="w-full flex gap-2 mb-4">
-                  <button
-                    onClick={() => handleShareResult('whatsapp')}
-                    className="premium-button-secondary flex-1 rounded-xl font-bold py-3 text-sm flex items-center justify-center"
-                  >
-                    <MessageCircle size={18} className="mr-2" /> WhatsApp
-                  </button>
-                  <button
-                    onClick={() => handleShareResult('instagram')}
-                    className="premium-button-secondary flex-1 rounded-xl font-bold py-3 text-sm flex items-center justify-center"
-                  >
-                    <Instagram size={18} className="mr-2" /> Instagram
-                  </button>
-                  <button
-                    onClick={() => handleShareResult('x')}
-                    className="premium-button-secondary flex-1 rounded-xl font-bold py-3 text-sm flex items-center justify-center"
-                  >
-                    <Send size={18} className="mr-2" /> X
-                  </button>
+                <div className="result-share-actions w-full mb-4">
+                  <span className="result-share-label">Compartir resultado</span>
+                  <div className="result-share-list">
+                    <button
+                      onClick={() => handleShareResult('whatsapp')}
+                      className="result-share-button"
+                    >
+                      <MessageCircle size={18} /> WhatsApp
+                    </button>
+                    <button
+                      onClick={() => handleShareResult('instagram')}
+                      className="result-share-button"
+                    >
+                      <Instagram size={18} /> Instagram
+                    </button>
+                    <button
+                      onClick={() => handleShareResult('x')}
+                      className="result-share-button"
+                    >
+                      <Send size={18} /> X
+                    </button>
+                  </div>
                 </div>
 
                 <motion.button
@@ -323,7 +326,7 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   onClick={handleOpenPostMatchLogin}
-                  className="premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
+                  className="result-primary-cta premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
                 >
                   Regístrate y compite por el premio
                 </motion.button>
@@ -334,10 +337,10 @@ export default function App() {
               </>
             )}
 
-            <div className="w-full flex flex-col gap-3">
+            <div className="result-secondary-actions w-full">
               <button 
                 onClick={handlePlay}
-                className={`${isLoggedIn ? 'premium-button-primary font-black text-base md:text-lg py-4' : 'premium-button-secondary font-bold text-sm py-3.5'} w-full font-montserrat rounded-xl flex items-center justify-center transition-transform`}
+                className={`${isLoggedIn ? 'premium-button-primary font-black text-base md:text-lg py-4 rounded-xl' : 'result-replay-button'} w-full font-montserrat flex items-center justify-center transition-transform`}
               >
                 {tickets > 0 ? (
                   <><Play className="mr-2" fill="currentColor" size={isLoggedIn ? 24 : 18} /> JUGAR DE NUEVO {isLoggedIn ? `(🎟️ ${tickets})` : ''}</>
@@ -348,7 +351,7 @@ export default function App() {
               
               <button 
                 onClick={handleBackToDashboard}
-                className="premium-button-ghost w-full font-montserrat font-bold text-sm py-3 rounded-xl flex items-center justify-center transition-colors"
+                className="result-ghost-button w-full font-montserrat flex items-center justify-center transition-colors"
               >
                 <Home className="mr-2" size={18} /> {isLoggedIn ? 'VESTUARIO' : 'SEGUIR SIN CUENTA'}
               </button>

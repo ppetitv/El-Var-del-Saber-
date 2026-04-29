@@ -78,37 +78,31 @@ export default function VestuarioScreen({
           <span className="text-[10px] text-gray-500 uppercase tracking-[0.18em]">3 claves</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="info-card tutorial-info-card rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center shrink-0">
-                <Clock className="text-blue-400" size={16} />
-              </div>
-              <div>
-                <p className="font-bold text-white text-sm mb-1">Responde rápido</p>
-                <p className="text-xs text-gray-400 leading-relaxed">Cada segundo suma más puntos.</p>
-              </div>
+          <div className="info-card tutorial-info-card flex items-start gap-3 rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+            <div className="tutorial-info-icon w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center shrink-0">
+              <Clock className="text-blue-400" size={16} />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm mb-1">Responde rápido</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Cada segundo suma más puntos.</p>
             </div>
           </div>
-          <div className="info-card tutorial-info-card rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-orange-500/15 rounded-lg flex items-center justify-center shrink-0">
-                <Zap className="text-orange-500" size={16} />
-              </div>
-              <div>
-                <p className="font-bold text-white text-sm mb-1">Usa comodines</p>
-                <p className="text-xs text-gray-400 leading-relaxed">Te ayudan a sostener el puntaje.</p>
-              </div>
+          <div className="info-card tutorial-info-card flex items-start gap-3 rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+            <div className="tutorial-info-icon w-8 h-8 bg-orange-500/15 rounded-lg flex items-center justify-center shrink-0">
+              <Zap className="text-orange-500" size={16} />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm mb-1">Usa comodines</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Te ayudan a sostener el puntaje.</p>
             </div>
           </div>
-          <div className="info-card tutorial-info-card rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-rpp-yellow/15 rounded-lg flex items-center justify-center shrink-0">
-                <Trophy className="text-rpp-yellow" size={16} />
-              </div>
-              <div>
-                <p className="font-bold text-white text-sm mb-1">Mejora tu PR</p>
-                <p className="text-xs text-gray-400 leading-relaxed">Ese es tu avance real en el ranking.</p>
-              </div>
+          <div className="info-card tutorial-info-card flex items-start gap-3 rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+            <div className="tutorial-info-icon w-8 h-8 bg-rpp-yellow/15 rounded-lg flex items-center justify-center shrink-0">
+              <Trophy className="text-rpp-yellow" size={16} />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm mb-1">Mejora tu PR</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Ese es tu avance real en el ranking.</p>
             </div>
           </div>
         </div>
