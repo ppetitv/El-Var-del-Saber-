@@ -49,9 +49,9 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
   }, [initialSection]);
 
   return (
-    <div className="prize-screen min-h-screen bg-stadium text-white p-4 md:p-5 font-sans max-w-4xl mx-auto pb-24 md:pb-12">
+    <div className="prize-screen min-h-screen bg-stadium text-white p-3 md:p-5 font-sans max-w-4xl mx-auto pb-20 md:pb-12">
       {/* HEADER */}
-      <div className="prize-header premium-panel flex items-center mb-5 md:mb-6 rounded-2xl p-4">
+      <div className="prize-header premium-panel flex items-center mb-4 md:mb-6 rounded-2xl p-3.5">
         <button 
           onClick={onBack}
           className="premium-button-secondary w-10 h-10 rounded-full flex items-center justify-center mr-4"
@@ -70,7 +70,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="prize-hero premium-panel premium-hero w-full rounded-3xl p-6 md:p-8 shadow-[0_0_40px_rgba(59,130,246,0.14)] relative overflow-hidden mb-6"
+        className="prize-hero premium-panel premium-hero w-full rounded-3xl p-5 md:p-8 shadow-[0_0_40px_rgba(59,130,246,0.14)] relative overflow-hidden mb-5"
       >
         <div className="prize-hero-glow absolute right-0 top-0 bottom-0 w-full md:w-1/2 bg-gradient-to-l from-blue-500/20 to-transparent pointer-events-none"></div>
         <Gamepad2 className="prize-hero-icon absolute -right-10 -bottom-10 text-blue-500/10 w-64 h-64 transform -rotate-12 pointer-events-none" />
@@ -82,7 +82,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
               <span className="text-blue-300 font-bold text-sm tracking-wide">TERMINA EN: 2D 14H 20M</span>
             </div>
             
-            <h2 className="premium-title text-4xl md:text-6xl font-black font-montserrat text-white tracking-tighter mb-3 drop-shadow-lg">
+            <h2 className="premium-title text-3xl md:text-6xl font-black font-montserrat text-white tracking-tighter mb-2 drop-shadow-lg">
               PlayStation 5
             </h2>
             <p className="text-base md:text-lg text-blue-200 max-w-2xl font-medium">

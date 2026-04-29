@@ -92,6 +92,13 @@ body::after {
     0 2px 8px rgba(15, 23, 42, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(18px) saturate(130%);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .premium-panel {
+    padding: 1.5rem;
+  }
 }
 
 .premium-panel::before {
@@ -893,9 +900,16 @@ body::after {
 }
 
 .prize-product-hero {
-  width: min(280px, 72vw);
-  height: 230px;
+  width: min(220px, 80vw);
+  height: 180px;
   margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .prize-product-hero {
+    width: min(280px, 72vw);
+    height: 230px;
+  }
 }
 
 .prize-product-banner {
@@ -1687,6 +1701,17 @@ button.bg-stadium {
   --tw-gradient-from: rgba(255, 255, 255, 0.96) var(--tw-gradient-from-position);
   --tw-gradient-via: rgba(255, 255, 255, 0.92) var(--tw-gradient-via-position);
   --tw-gradient-to: rgba(255, 255, 255, 0) var(--tw-gradient-to-position);
+}
+
+.onboarding-overlay-simple {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  pointer-events: none;
+}
+
+.onboarding-overlay-simple .onboarding-card {
+  pointer-events: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 @layer utilities {

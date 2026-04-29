@@ -164,7 +164,9 @@ export default function VestuarioScreen({
         return;
       }
 
-      element.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+      if (isLoggedIn) {
+        element.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+      }
       targetTimer = window.setTimeout(syncTarget, 260);
     };
 
@@ -338,7 +340,7 @@ export default function VestuarioScreen({
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="info-card premium-panel flex items-center justify-between p-4 rounded-2xl shadow-lg"
+      className="info-card premium-panel flex items-center justify-between p-3.5 md:p-4 rounded-2xl shadow-lg"
     >
       <div className="flex items-center space-x-4">
         <div className="relative">
@@ -399,7 +401,7 @@ export default function VestuarioScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="info-card premium-panel p-4 rounded-2xl shadow-lg"
+      className="info-card premium-panel p-3.5 md:p-4 rounded-2xl shadow-lg"
       data-onboarding="lives-card"
     >
       <div className="flex items-center justify-between mb-3">
@@ -427,10 +429,10 @@ export default function VestuarioScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      className="info-card ranking-preview-card premium-panel rounded-2xl overflow-hidden"
+      className="info-card ranking-preview-card premium-panel rounded-2xl overflow-hidden p-0"
       data-onboarding="ranking-preview"
     >
-      <div className="p-4 border-b border-gray-800 flex justify-between items-center">
+      <div className="p-3 md:p-4 border-b border-gray-800 flex justify-between items-center">
         <h2 className="font-bold font-montserrat text-sm flex items-center">
           <Flame className="mr-2 text-orange-500" size={18} /> Ranking Cercano
         </h2>
@@ -486,62 +488,60 @@ export default function VestuarioScreen({
   );
 
   return (
-    <div className="min-h-screen bg-stadium text-white p-4 md:p-5 font-sans max-w-6xl mx-auto pb-24 md:pb-12">
-      <header className={`premium-panel ${isLoggedIn ? 'flex-col md:flex-row gap-3 md:gap-0' : 'flex-row'} flex justify-between items-center mb-5 md:mb-6 p-3 rounded-2xl shadow-lg`}>
-        <div className={`flex items-center justify-between ${isLoggedIn ? 'w-full md:w-auto' : 'w-full'}`}>
+    <div className="min-h-screen bg-stadium text-white p-3 md:p-5 font-sans max-w-6xl mx-auto pb-20 md:pb-12">
+      <header className={`premium-panel flex flex-col md:flex-row justify-between items-center mb-4 md:mb-6 p-2.5 md:p-3 rounded-2xl shadow-lg gap-2.5 md:gap-0`}>
+        <div className="flex items-center justify-center md:justify-start w-full md:w-auto relative">
           <div className="flex items-center" data-onboarding="brand">
             <div className="w-8 h-8 bg-rpp-yellow rounded-lg flex items-center justify-center mr-3 shadow-[0_0_12px_rgba(255,224,0,0.24)]">
               <MonitorPlay className="text-stadium" size={18} />
             </div>
-            <div>
-              <span className="premium-topline">Quiz en vivo</span>
-              <span className="premium-title block font-black font-montserrat text-base md:text-lg tracking-tight text-white">
-                EL VAR <span className="text-rpp-yellow">DEL SABER</span>
-              </span>
+            <div className="flex flex-col text-left">
+              <span className="text-sm font-black tracking-tight text-white leading-none">EL VAR</span>
+              <span className="text-[10px] font-bold text-rpp-yellow tracking-tighter">DEL SABER</span>
             </div>
           </div>
-
-          <div className={isLoggedIn ? 'md:hidden' : 'block'}>
-            {isLoggedIn ? (
-              <button onClick={onLogoutClick} className="p-2 rounded-xl text-gray-500 hover:text-var-red hover:bg-var-red/10 transition-colors" title="Cerrar Sesión">
-                <LogOut size={18} />
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button onClick={replayOnboarding} className="premium-nav-btn px-3 py-2 rounded-xl text-sm font-bold">
-                  Cómo jugar
-                </button>
-                <button onClick={onGoToFaq} className="premium-nav-btn px-3 py-2 rounded-xl text-sm font-bold">
-                  FAQ
-                </button>
-                <button onClick={onLoginClick} data-onboarding="login-entry" className="premium-button-primary px-3.5 py-2 rounded-xl text-sm font-bold flex items-center">
-                  <LogIn size={16} className="mr-2" /> Entrar
-                </button>
-              </div>
-            )}
-          </div>
+          
+          {isLoggedIn && (
+            <button onClick={onLogoutClick} className="absolute right-0 md:relative md:right-auto md:hidden p-2 rounded-xl text-gray-500 hover:text-var-red hover:bg-var-red/10 transition-colors" title="Cerrar Sesión">
+              <LogOut size={18} />
+            </button>
+          )}
         </div>
 
-        {isLoggedIn && (
-          <nav className="flex space-x-1 md:space-x-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar justify-start md:justify-end items-center">
-            <button onClick={onGoToRanking} className="premium-nav-btn whitespace-nowrap">Ranking</button>
-            <button onClick={onGoToPrize} className="premium-nav-btn whitespace-nowrap">Sorteo</button>
-            <button onClick={onGoToFaq} className="premium-nav-btn whitespace-nowrap">FAQ</button>
-            <button onClick={replayOnboarding} className="premium-nav-btn whitespace-nowrap">Cómo jugar</button>
-
-            <div className="w-px h-6 bg-gray-800 mx-2 hidden md:block"></div>
-
-            <div className="hidden md:block">
-              <button onClick={onLogoutClick} className="p-2 rounded-xl text-gray-500 hover:text-var-red hover:bg-var-red/10 transition-colors ml-2" title="Cerrar Sesión">
-                <LogOut size={20} />
+        <div className={`flex items-center justify-center md:justify-end gap-1.5 md:gap-2 w-full md:w-auto ${!isLoggedIn ? 'border-t border-gray-800/30 pt-2.5 md:pt-0 md:border-0' : ''}`}>
+          {!isLoggedIn ? (
+            <>
+              <button onClick={replayOnboarding} className="premium-nav-btn px-2.5 py-1.5 rounded-xl text-[11px] font-bold">
+                Cómo jugar
               </button>
-            </div>
-          </nav>
-        )}
+              <button onClick={onGoToFaq} className="premium-nav-btn px-2.5 py-1.5 rounded-xl text-[11px] font-bold">
+                FAQ
+              </button>
+              <button onClick={onLoginClick} data-onboarding="login-entry" className="premium-button-primary px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center">
+                <LogIn size={14} className="mr-1.5" /> Entrar
+              </button>
+            </>
+          ) : (
+            <nav className="flex space-x-1 md:space-x-2 overflow-x-auto w-full md:w-auto pb-0.5 md:pb-0 hide-scrollbar justify-center md:justify-end items-center">
+              <button onClick={onGoToRanking} className="premium-nav-btn whitespace-nowrap">Ranking</button>
+              <button onClick={onGoToPrize} className="premium-nav-btn whitespace-nowrap">Sorteo</button>
+              <button onClick={onGoToFaq} className="premium-nav-btn whitespace-nowrap">FAQ</button>
+              <button onClick={replayOnboarding} className="premium-nav-btn whitespace-nowrap">Cómo jugar</button>
+
+              <div className="w-px h-6 bg-gray-800 mx-2 hidden md:block"></div>
+
+              <div className="hidden md:block">
+                <button onClick={onLogoutClick} className="p-2 rounded-xl text-gray-500 hover:text-var-red hover:bg-var-red/10 transition-colors ml-2" title="Cerrar Sesión">
+                  <LogOut size={20} />
+                </button>
+              </div>
+            </nav>
+          )}
+        </div>
       </header>
 
       {!isLoggedIn && (
-        <div className="max-w-4xl mx-auto flex flex-col items-center mt-4 md:mt-8 space-y-8">
+        <div className="max-w-4xl mx-auto flex flex-col items-center mt-2 md:mt-8 space-y-5 md:space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -550,7 +550,7 @@ export default function VestuarioScreen({
             <div className="w-20 h-20 bg-card-light rounded-full flex items-center justify-center mb-5 mx-auto shadow-[0_0_24px_rgba(255,224,0,0.14)] border border-gray-800">
               <Trophy className="text-rpp-yellow" size={40} />
             </div>
-            <h1 className="premium-title text-3xl md:text-4xl font-black font-montserrat mb-3">
+            <h1 className="premium-title text-2xl md:text-4xl font-black font-montserrat mb-2 px-2">
               Demuestra cuánto sabes de fútbol y <span className="text-blue-400">gana una PS5</span>
             </h1>
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6">
@@ -584,7 +584,7 @@ export default function VestuarioScreen({
       )}
 
       {isLoggedIn && !hasPlayed && (
-        <div className="max-w-4xl mx-auto flex flex-col items-center mt-6 md:mt-8 space-y-8">
+        <div className="max-w-4xl mx-auto flex flex-col items-center mt-4 md:mt-8 space-y-6 md:space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -635,7 +635,7 @@ export default function VestuarioScreen({
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="info-card premium-panel rounded-2xl p-4 md:p-5"
+                className="info-card premium-panel rounded-2xl p-3.5 md:p-5"
                 data-onboarding="dashboard-summary"
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -740,12 +740,12 @@ export default function VestuarioScreen({
       <AnimatePresence>
         {showOnboarding && onboardingSteps[onboardingStep] && (
           <motion.div
-            className="onboarding-overlay"
+            className={`onboarding-overlay ${!isLoggedIn ? 'onboarding-overlay-simple' : ''}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {onboardingTarget && (
+            {isLoggedIn && onboardingTarget && (
               <div
                 className="onboarding-spotlight"
                 style={{

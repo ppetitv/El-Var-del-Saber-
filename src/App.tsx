@@ -179,7 +179,7 @@ export default function App() {
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             transition={{ type: "spring", bounce: 0.35 }}
-            className="premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-2xl text-center"
+            className="premium-panel premium-hero w-full rounded-2xl p-5 md:p-8 relative overflow-hidden shadow-2xl text-center"
           >
             <div className="flex flex-col items-center mb-8 pt-4">
               <motion.div 
