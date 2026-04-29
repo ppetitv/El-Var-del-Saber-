@@ -278,10 +278,23 @@ export default function App() {
             
             <div className="premium-chip mb-4">Resultado</div>
             <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-white mb-2 text-center">¡PARTIDO TERMINADO!</h1>
-            <p className="text-gray-400 mb-6 text-[11px] md:text-sm uppercase tracking-[0.22em] font-semibold">Puntaje Final</p>
-            
-            <div className="text-6xl md:text-7xl font-montserrat font-black text-rpp-yellow mb-2 drop-shadow-[0_0_24px_rgba(255,224,0,0.32)]">
-              {lastScore}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 mb-8 w-full">
+              <div className="flex flex-col items-center">
+                <p className="text-gray-400 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mb-3">Puntaje Final</p>
+                <div className="text-6xl md:text-7xl font-montserrat font-black text-rpp-yellow drop-shadow-[0_0_24px_rgba(255,224,0,0.32)]">
+                  {lastScore}
+                </div>
+              </div>
+
+              <div className="hidden md:block w-px h-20 bg-white/10"></div>
+
+              <div className="flex flex-col items-center">
+                <p className="text-gray-400 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mb-3">Cupones Ganados</p>
+                <div className="flex items-center text-6xl md:text-7xl font-montserrat font-black text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.12)]">
+                  <Ticket className="text-rpp-yellow mr-3" size={42} />
+                  {lastEarnedCoupons}
+                </div>
+              </div>
             </div>
             
             {isLoggedIn ? (
