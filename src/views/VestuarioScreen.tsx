@@ -70,7 +70,7 @@ export default function VestuarioScreen({
       transition={{ delay: 0.3 }}
       className="w-full pb-24 md:pb-0"
     >
-      <div className="premium-soft-panel rounded-2xl p-4 md:p-5">
+      <div className="info-card premium-soft-panel rounded-2xl p-4 md:p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-white font-bold uppercase tracking-[0.2em] text-[11px] md:text-xs">
             Cómo se juega
@@ -78,7 +78,7 @@ export default function VestuarioScreen({
           <span className="text-[10px] text-gray-500 uppercase tracking-[0.18em]">3 claves</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+          <div className="info-card tutorial-info-card rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center shrink-0">
                 <Clock className="text-blue-400" size={16} />
@@ -89,7 +89,7 @@ export default function VestuarioScreen({
               </div>
             </div>
           </div>
-          <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+          <div className="info-card tutorial-info-card rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 bg-orange-500/15 rounded-lg flex items-center justify-center shrink-0">
                 <Zap className="text-orange-500" size={16} />
@@ -100,7 +100,7 @@ export default function VestuarioScreen({
               </div>
             </div>
           </div>
-          <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+          <div className="info-card tutorial-info-card rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 bg-rpp-yellow/15 rounded-lg flex items-center justify-center shrink-0">
                 <Trophy className="text-rpp-yellow" size={16} />
@@ -121,7 +121,7 @@ export default function VestuarioScreen({
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
       onClick={onGoToPrize}
-      className="premium-panel w-full rounded-2xl p-4 border border-blue-500/15 shadow-[0_0_20px_rgba(59,130,246,0.08)] cursor-pointer relative overflow-hidden group"
+      className="prize-banner-card premium-panel w-full rounded-2xl p-4 border border-blue-500/15 shadow-[0_0_20px_rgba(59,130,246,0.08)] cursor-pointer relative overflow-hidden group"
     >
       <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-500/12 to-transparent pointer-events-none"></div>
 
@@ -151,9 +151,9 @@ export default function VestuarioScreen({
               </div>
             </div>
           )}
-          <button className="premium-button-secondary text-white font-bold py-2.5 px-4 rounded-xl transition-colors whitespace-nowrap flex-grow md:flex-grow-0 text-center text-sm">
+          <span className="premium-button-secondary text-white font-bold py-2.5 px-4 rounded-xl transition-colors whitespace-nowrap flex-grow md:flex-grow-0 text-center text-sm inline-flex items-center justify-center">
             Ver Detalles
-          </button>
+          </span>
         </div>
       </div>
     </motion.div>
@@ -163,7 +163,7 @@ export default function VestuarioScreen({
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="premium-panel flex items-center justify-between p-4 rounded-2xl shadow-lg"
+      className="info-card premium-panel flex items-center justify-between p-4 rounded-2xl shadow-lg"
     >
       <div className="flex items-center space-x-4">
         <div className="relative">
@@ -196,22 +196,22 @@ export default function VestuarioScreen({
       transition={{ delay: 0.2 }}
       className="grid grid-cols-2 md:grid-cols-4 gap-2.5"
     >
-      <div className="premium-metric-card p-3 flex flex-col items-center justify-center transition-colors hover:border-rpp-yellow/50">
+      <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Gamepad2 size={16} className="text-purple-400 mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.matchesPlayed}</p>
         <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Partidos</p>
       </div>
-      <div className="premium-metric-card p-3 flex flex-col items-center justify-center transition-colors hover:border-rpp-yellow/50">
+      <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Target size={16} className="text-neon-green mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.accuracy}%</p>
         <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Precisión</p>
       </div>
-      <div className="premium-metric-card p-3 flex flex-col items-center justify-center transition-colors hover:border-rpp-yellow/50">
+      <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Trophy size={16} className="text-rpp-yellow mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.winRate}%</p>
         <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Win Rate</p>
       </div>
-      <div className="premium-metric-card p-3 flex flex-col items-center justify-center transition-colors hover:border-rpp-yellow/50">
+      <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Clock size={16} className="text-blue-400 mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.avgTime}s</p>
         <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Tiempo</p>
@@ -224,7 +224,7 @@ export default function VestuarioScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="premium-panel p-4 rounded-2xl shadow-lg"
+      className="info-card premium-panel p-4 rounded-2xl shadow-lg"
     >
       <div className="flex items-center justify-between mb-3">
         <div>
@@ -250,7 +250,7 @@ export default function VestuarioScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      className="premium-panel rounded-2xl overflow-hidden"
+      className="info-card ranking-preview-card premium-panel rounded-2xl overflow-hidden"
     >
       <div className="p-4 border-b border-gray-800 flex justify-between items-center">
         <h2 className="font-bold font-montserrat text-sm flex items-center">
@@ -262,7 +262,7 @@ export default function VestuarioScreen({
       </div>
 
       <div className="divide-y divide-gray-800">
-          <div className="p-3.5 flex items-center justify-between hover:bg-card-light/30 transition-colors">
+          <div className="ranking-preview-row p-3.5 flex items-center justify-between">
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-gray-500">#{Number(currentUser.rankingNational) - 1}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-gray-700">
@@ -276,7 +276,7 @@ export default function VestuarioScreen({
           <span className="font-bold text-xs text-gray-300">2,100 PR</span>
         </div>
 
-          <div className="p-3.5 flex items-center justify-between bg-rpp-yellow/10 border-l-4 border-rpp-yellow">
+          <div className="ranking-preview-row ranking-preview-row-current p-3.5 flex items-center justify-between bg-rpp-yellow/10 border-l-4 border-rpp-yellow">
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-rpp-yellow">#{currentUser.rankingNational}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-rpp-yellow">
@@ -290,7 +290,7 @@ export default function VestuarioScreen({
           <span className="font-bold text-xs text-rpp-yellow">{currentUser.pr} PR</span>
         </div>
 
-          <div className="p-3.5 flex items-center justify-between hover:bg-card-light/30 transition-colors">
+          <div className="ranking-preview-row p-3.5 flex items-center justify-between">
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-gray-500">#{Number(currentUser.rankingNational) + 1}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-gray-700">
@@ -442,7 +442,7 @@ export default function VestuarioScreen({
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="premium-panel rounded-2xl p-4 md:p-5"
+                className="info-card premium-panel rounded-2xl p-4 md:p-5"
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
@@ -488,7 +488,7 @@ export default function VestuarioScreen({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="premium-panel border border-orange-500/15 rounded-2xl p-3.5 flex items-center justify-between shadow-lg"
+                  className="info-card premium-panel border border-orange-500/15 rounded-2xl p-3.5 flex items-center justify-between shadow-lg"
                 >
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center mr-3">
@@ -562,7 +562,7 @@ export default function VestuarioScreen({
 
               {adState === 'idle' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <div className="w-16 h-16 bg-var-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="ad-empty-icon w-16 h-16 bg-var-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Ticket className="text-var-red" size={32} />
                   </div>
                   <h3 className="text-2xl font-black font-montserrat mb-2">¡Sin Tickets!</h3>
@@ -579,7 +579,7 @@ export default function VestuarioScreen({
               {adState === 'playing' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-4">
                   <div className="w-full aspect-video bg-stadium rounded-xl border border-gray-800 flex flex-col items-center justify-center mb-6 relative overflow-hidden">
-                    <div className="absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-[10px] font-bold text-gray-300 uppercase tracking-wider">
+                    <div className="sponsor-ad-badge absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-[10px] font-bold text-gray-300 uppercase tracking-wider">
                       Publicidad
                     </div>
                     <Star className="text-gray-600 mb-2" size={40} />
@@ -592,7 +592,7 @@ export default function VestuarioScreen({
 
               {adState === 'finished' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-4">
-                  <div className="w-20 h-20 bg-neon-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="ad-success-icon w-20 h-20 bg-neon-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Ticket className="text-neon-green" size={40} />
                   </div>
                   <h3 className="text-2xl font-black font-montserrat mb-2 text-neon-green">¡Tickets Recargados!</h3>

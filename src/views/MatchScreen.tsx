@@ -154,17 +154,19 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
   };
 
   return (
-    <div className="min-h-screen bg-stadium text-white p-6 font-sans flex flex-col max-w-6xl mx-auto">
+    <div className="match-shell min-h-screen bg-stadium text-white p-4 md:p-6 font-sans flex flex-col max-w-6xl mx-auto">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-8">
-        <button className="premium-button-secondary w-10 h-10 rounded-full flex items-center justify-center">
+      <div className="match-topbar flex justify-between items-center mb-6 md:mb-8">
+        <button className="premium-button-secondary w-11 h-11 rounded-full flex items-center justify-center shrink-0">
           <ChevronLeft size={20} />
         </button>
-        <div className="text-center">
-          <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold hidden md:block mb-1">El VAR del Saber</p>
-          <p className="font-bold font-montserrat text-rpp-yellow bg-rpp-yellow/10 px-4 py-1.5 rounded-full">Pregunta {currentQ + 1} de {mockQuestions.length}</p>
+        <div className="match-position text-center px-4 py-2 rounded-2xl">
+          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black hidden md:block mb-1">El VAR del Saber</p>
+          <p className="font-black font-montserrat text-sm md:text-base">
+            Pregunta <span>{currentQ + 1}</span> de {mockQuestions.length}
+          </p>
         </div>
-        <div className="w-12 h-12 relative flex items-center justify-center bg-card-dark rounded-full border border-gray-800 shadow-lg">
+        <div className="match-timer w-12 h-12 relative flex items-center justify-center bg-card-dark rounded-full border border-gray-800 shadow-lg shrink-0">
           <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
             <path
               className="text-gray-800"
@@ -188,7 +190,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
       </div>
 
       {/* PROGRESS DOTS */}
-      <div className="flex justify-center space-x-2 mb-8 md:mb-12">
+      <div className="match-progress flex justify-center space-x-2 mb-8 md:mb-12">
         {mockQuestions.map((_, idx) => (
           <div 
             key={idx} 
@@ -207,7 +209,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.12 }}
-          className="flex-grow flex flex-col md:flex-row md:items-center md:gap-16"
+          className="match-stage flex-grow flex flex-col md:flex-row md:items-center md:gap-16"
         >
           {/* QUESTION */}
           <div className="mb-8 md:mb-0 md:w-1/2">
@@ -220,23 +222,23 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
           <div className="space-y-3 md:space-y-4 flex-grow md:w-1/2">
             {question.options.map((opt, index) => {
               const isHidden = hiddenOptions.includes(opt.id);
-              let buttonClass = 'border-gray-800 bg-card-dark hover:border-rpp-yellow/50 hover:bg-card-light text-white';
+              let buttonClass = 'match-option-idle border-gray-800 bg-card-dark hover:border-rpp-yellow/50 hover:bg-card-light text-white';
               let letterClass = 'bg-gray-800 text-gray-400';
               
               if (isHidden) {
-                buttonClass = 'border-gray-800 bg-stadium opacity-20 pointer-events-none';
+                buttonClass = 'match-option-muted border-gray-800 bg-stadium opacity-20 pointer-events-none';
               } else if (isAnswerChecked) {
                 if (opt.id === question.correctAnswer) {
-                  buttonClass = 'border-neon-green bg-neon-green/10 text-white shadow-[0_0_15px_rgba(0,255,102,0.2)]';
+                  buttonClass = 'match-option-correct border-neon-green bg-neon-green/10 text-white shadow-[0_0_15px_rgba(0,255,102,0.2)]';
                   letterClass = 'bg-neon-green text-stadium';
                 } else if (selectedAnswer === opt.id) {
-                  buttonClass = 'border-var-red bg-var-red/10 text-white shadow-[0_0_15px_rgba(255,51,51,0.2)]';
+                  buttonClass = 'match-option-wrong border-var-red bg-var-red/10 text-white shadow-[0_0_15px_rgba(255,51,51,0.2)]';
                   letterClass = 'bg-var-red text-white';
                 } else {
-                  buttonClass = 'border-gray-800 bg-stadium text-gray-500 opacity-50';
+                  buttonClass = 'match-option-muted border-gray-800 bg-stadium text-gray-500 opacity-50';
                 }
               } else if (selectedAnswer === opt.id) {
-                buttonClass = 'border-rpp-yellow bg-rpp-yellow/10 text-white shadow-[0_0_15px_rgba(255,224,0,0.2)]';
+                buttonClass = 'match-option-selected border-rpp-yellow bg-rpp-yellow/10 text-white shadow-[0_0_15px_rgba(255,224,0,0.2)]';
                 letterClass = 'bg-rpp-yellow text-stadium';
               }
 
@@ -248,7 +250,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
                   transition={{ delay: index * 0.025, duration: 0.12 }}
                   onClick={() => handleAnswerSelect(opt.id)}
                   disabled={isAnswerChecked || isHidden}
-                  className={`w-full text-left p-4 md:p-5 rounded-2xl border-2 transition-all font-medium text-lg flex items-center group relative overflow-hidden ${buttonClass}`}
+                  className={`match-option w-full text-left p-4 md:p-5 rounded-2xl border-2 transition-all font-medium text-lg flex items-center group relative overflow-hidden ${buttonClass}`}
                 >
                   {/* Audience Vote Background Bar */}
                   {audienceVotes && !isHidden && (
@@ -287,11 +289,11 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
       </AnimatePresence>
 
       {/* LIFELINES */}
-      <div className="grid grid-cols-3 gap-3 md:gap-6 mt-8 pb-4 md:pb-8">
+      <div className="match-lifelines grid grid-cols-3 gap-3 md:gap-6 mt-8 pb-4 md:pb-8">
         <button 
           onClick={handleVar}
           disabled={lifelines.var || isAnswerChecked}
-          className={`flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border-2 transition-all group ${
+          className={`match-lifeline flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border-2 transition-all group ${
             lifelines.var 
               ? 'border-gray-800 bg-stadium opacity-40 cursor-not-allowed' 
               : 'border-gray-800 bg-card-dark hover:border-rpp-yellow hover:bg-card-light shadow-lg'
@@ -305,7 +307,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
         <button 
           onClick={handleHinchada}
           disabled={lifelines.hinchada || isAnswerChecked}
-          className={`flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border-2 transition-all group ${
+          className={`match-lifeline flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border-2 transition-all group ${
             lifelines.hinchada 
               ? 'border-gray-800 bg-stadium opacity-40 cursor-not-allowed' 
               : 'border-gray-800 bg-card-dark hover:border-rpp-yellow hover:bg-card-light shadow-lg'
@@ -319,7 +321,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
         <button 
           onClick={handleCambio}
           disabled={lifelines.cambio || isAnswerChecked}
-          className={`flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border-2 transition-all group ${
+          className={`match-lifeline flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border-2 transition-all group ${
             lifelines.cambio 
               ? 'border-gray-800 bg-stadium opacity-40 cursor-not-allowed' 
               : 'border-gray-800 bg-card-dark hover:border-rpp-yellow hover:bg-card-light shadow-lg'

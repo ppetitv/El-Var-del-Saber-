@@ -184,16 +184,16 @@ export default function App() {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-              <div className="premium-soft-panel rounded-xl p-4">
+              <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Puntaje guardado</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{lastScore}</p>
               </div>
-              <div className="premium-soft-panel rounded-xl p-4">
+              <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Cupones activos</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{goldenTickets}</p>
                 <p className="text-xs text-gray-500 mt-2">Participaciones para el premio semanal</p>
               </div>
-              <div className="premium-soft-panel rounded-xl p-4">
+              <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Estado de hoy</p>
                 <p className="text-xl font-black font-montserrat text-white">Top {relativeStanding.topPercent}%</p>
               </div>
@@ -231,7 +231,7 @@ export default function App() {
             initial={{ scale: 0.8, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             transition={{ type: "spring", bounce: 0.5 }}
-            className="premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 flex flex-col items-center relative overflow-hidden shadow-2xl"
+            className="result-hero-card premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 flex flex-col items-center relative overflow-hidden shadow-2xl"
           >
             <Trophy size={58} className="text-rpp-yellow mb-5 drop-shadow-[0_0_15px_rgba(255,224,0,0.35)]" />
             
@@ -280,18 +280,18 @@ export default function App() {
               </>
             ) : (
               <>
-                <div className="premium-soft-panel w-full rounded-xl px-4 py-3 text-center mb-5 border-white/8">
+                <div className="info-card premium-soft-panel w-full rounded-xl px-4 py-3 text-center mb-5 border-white/8">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Rendimiento de hoy</p>
                   <p className="text-2xl font-black font-montserrat text-white leading-none mb-1.5">Top {relativeStanding.topPercent}%</p>
                   <p className="text-sm text-gray-300">Mejor que {relativeStanding.betterThan} de cada 100 jugadores hoy</p>
                 </div>
 
                 <div className="w-full grid grid-cols-2 gap-3 mb-6">
-                  <div className="premium-soft-panel rounded-xl p-4 text-center">
+                  <div className="info-card premium-soft-panel rounded-xl p-4 text-center">
                     <p className="text-3xl font-black font-montserrat text-white">{lastCorrectAnswers}/{mockQuestions.length}</p>
                     <p className="text-sm text-gray-400">correctas</p>
                   </div>
-                  <div className="premium-soft-panel rounded-xl p-4 text-center">
+                  <div className="info-card premium-soft-panel rounded-xl p-4 text-center">
                     <p className="text-3xl font-black font-montserrat text-white">{lastAverageTime}s</p>
                     <p className="text-sm text-gray-400">promedio/preg.</p>
                   </div>

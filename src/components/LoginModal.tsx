@@ -64,7 +64,7 @@ export default function LoginModal({
 
           {/* Benefits */}
           <div className="space-y-3 mb-6">
-            <div className="premium-soft-panel flex items-center p-3 rounded-xl">
+            <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
               <div className="w-10 h-10 bg-rpp-yellow/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Trophy className="text-rpp-yellow" size={20} />
               </div>
@@ -75,7 +75,7 @@ export default function LoginModal({
                 </p>
               </div>
             </div>
-            <div className="premium-soft-panel flex items-center p-3 rounded-xl">
+            <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
               <div className="w-10 h-10 bg-neon-green/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Save className="text-neon-green" size={20} />
               </div>

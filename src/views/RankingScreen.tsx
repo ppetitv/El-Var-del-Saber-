@@ -8,9 +8,9 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
   const restOfRanking = mockRanking.slice(3);
 
   return (
-    <div className="min-h-screen bg-stadium text-white p-6 font-sans max-w-4xl mx-auto pb-24 md:pb-12">
+    <div className="ranking-screen min-h-screen bg-stadium text-white p-4 md:p-6 font-sans max-w-4xl mx-auto pb-24 md:pb-12">
       {/* HEADER */}
-      <div className="flex items-center mb-12">
+      <div className="ranking-header premium-panel flex items-center mb-8 md:mb-10 rounded-2xl p-4">
         <button 
           onClick={onBack}
           className="premium-button-secondary w-10 h-10 rounded-full flex items-center justify-center mr-4"
@@ -27,7 +27,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* PODIUM (Top 3) */}
-      <div className="flex justify-center items-end h-64 mb-12 gap-2 md:gap-6">
+      <div className="ranking-podium premium-panel flex justify-center items-end h-72 mb-8 md:mb-10 gap-2 md:gap-6 rounded-3xl px-3 md:px-8 pt-8 overflow-hidden">
         {/* 2nd Place */}
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
@@ -35,13 +35,13 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           transition={{ delay: 0.2 }}
           className="flex flex-col items-center w-1/3 max-w-[120px]"
         >
-          <div className="w-16 h-16 bg-card-light rounded-full flex items-center justify-center text-3xl border-4 border-gray-400 z-10 relative shadow-[0_0_15px_rgba(156,163,175,0.5)] mb-2">
+          <div className="ranking-avatar ranking-avatar-silver w-16 h-16 bg-card-light rounded-full flex items-center justify-center text-3xl border-4 border-gray-400 z-10 relative shadow-[0_0_15px_rgba(156,163,175,0.5)] mb-2">
             {top3[1].avatar}
             <div className="absolute -bottom-2 bg-gray-400 text-stadium text-xs font-black px-2 py-0.5 rounded-full">#2</div>
           </div>
           <p className="font-bold text-sm truncate w-full text-center">{top3[1].username}</p>
           <p className="text-rpp-yellow font-bold text-xs mb-2">{top3[1].pr} PR</p>
-          <div className="w-full h-24 bg-gradient-to-t from-card-dark to-gray-800 rounded-t-xl border-t-2 border-gray-400 flex items-start justify-center pt-4">
+          <div className="ranking-step ranking-step-silver w-full h-24 bg-gradient-to-t from-card-dark to-gray-800 rounded-t-xl border-t-2 border-gray-400 flex items-start justify-center pt-4">
             <Medal className="text-gray-400" size={24} />
           </div>
         </motion.div>
@@ -53,13 +53,13 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           transition={{ delay: 0.1 }}
           className="flex flex-col items-center w-1/3 max-w-[140px] z-10"
         >
-          <div className="w-20 h-20 bg-card-light rounded-full flex items-center justify-center text-4xl border-4 border-rpp-yellow z-10 relative shadow-[0_0_25px_rgba(255,224,0,0.6)] mb-2">
+          <div className="ranking-avatar ranking-avatar-gold w-20 h-20 bg-card-light rounded-full flex items-center justify-center text-4xl border-4 border-rpp-yellow z-10 relative shadow-[0_0_25px_rgba(255,224,0,0.6)] mb-2">
             {top3[0].avatar}
             <div className="absolute -bottom-2 bg-rpp-yellow text-stadium text-xs font-black px-2 py-0.5 rounded-full">#1</div>
           </div>
           <p className="font-bold text-base truncate w-full text-center">{top3[0].username}</p>
           <p className="text-rpp-yellow font-black text-sm mb-2">{top3[0].pr} PR</p>
-          <div className="w-full h-32 bg-gradient-to-t from-card-dark to-yellow-900/50 rounded-t-xl border-t-2 border-rpp-yellow flex items-start justify-center pt-4">
+          <div className="ranking-step ranking-step-gold w-full h-32 bg-gradient-to-t from-card-dark to-yellow-900/50 rounded-t-xl border-t-2 border-rpp-yellow flex items-start justify-center pt-4">
             <Trophy className="text-rpp-yellow" size={32} />
           </div>
         </motion.div>
@@ -71,27 +71,27 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           transition={{ delay: 0.3 }}
           className="flex flex-col items-center w-1/3 max-w-[120px]"
         >
-          <div className="w-16 h-16 bg-card-light rounded-full flex items-center justify-center text-3xl border-4 border-amber-700 z-10 relative shadow-[0_0_15px_rgba(180,83,9,0.5)] mb-2">
+          <div className="ranking-avatar ranking-avatar-bronze w-16 h-16 bg-card-light rounded-full flex items-center justify-center text-3xl border-4 border-amber-700 z-10 relative shadow-[0_0_15px_rgba(180,83,9,0.5)] mb-2">
             {top3[2].avatar}
             <div className="absolute -bottom-2 bg-amber-700 text-white text-xs font-black px-2 py-0.5 rounded-full">#3</div>
           </div>
           <p className="font-bold text-sm truncate w-full text-center">{top3[2].username}</p>
           <p className="text-rpp-yellow font-bold text-xs mb-2">{top3[2].pr} PR</p>
-          <div className="w-full h-20 bg-gradient-to-t from-card-dark to-amber-900/30 rounded-t-xl border-t-2 border-amber-700 flex items-start justify-center pt-4">
+          <div className="ranking-step ranking-step-bronze w-full h-20 bg-gradient-to-t from-card-dark to-amber-900/30 rounded-t-xl border-t-2 border-amber-700 flex items-start justify-center pt-4">
             <Medal className="text-amber-700" size={24} />
           </div>
         </motion.div>
       </div>
 
       {/* LIST */}
-      <div className="space-y-3">
+      <div className="ranking-list space-y-3">
         {restOfRanking.map((user, index) => (
           <motion.div 
             key={user.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 + (index * 0.05) }}
-            className={`flex items-center p-4 rounded-2xl border ${user.isCurrentUser ? 'bg-rpp-yellow/10 border-rpp-yellow shadow-[0_0_15px_rgba(255,224,0,0.1)]' : 'premium-soft-panel border-white/5'}`}
+            className={`ranking-row flex items-center p-4 rounded-2xl border ${user.isCurrentUser ? 'ranking-row-current bg-rpp-yellow/10 border-rpp-yellow shadow-[0_0_15px_rgba(255,224,0,0.1)]' : 'premium-soft-panel border-white/5'}`}
           >
             <div className="w-12 flex-shrink-0 text-center font-bold text-gray-400 mr-2">
               #{user.id}
