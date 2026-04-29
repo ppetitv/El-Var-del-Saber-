@@ -182,9 +182,7 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
               animate={{ scale: 1, y: 0 }}
               className="premium-panel max-w-md w-full rounded-3xl p-6 md:p-8 text-center border-rpp-yellow/30 shadow-[0_0_50px_rgba(255,224,0,0.15)]"
             >
-              <div className="w-20 h-20 bg-rpp-yellow/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-rpp-yellow/30">
-                <MonitorPlay className="text-rpp-yellow" size={40} />
-              </div>
+
               
               <h2 className="premium-title text-2xl md:text-3xl font-black font-montserrat mb-4">Instrucciones de Juego</h2>
               

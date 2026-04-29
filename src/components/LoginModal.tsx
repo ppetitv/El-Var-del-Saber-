@@ -59,7 +59,14 @@ export default function LoginModal({
               <PrizeProduct variant="modal" />
               <div>
                 <p>Juegas por una PlayStation 5</p>
-                <span>{pendingScore > 0 ? `Tienes ${pendingScore.toLocaleString('es-PE')} pts esperando ser guardados.` : "Regístrate para participar en el sorteo en tu siguiente partida."}</span>
+                <span>
+                  {pendingScore > 1000 
+                    ? "Tienes 3 cupones dorados esperando ser guardados." 
+                    : (pendingScore > 0 
+                      ? "Tienes un cupón dorado esperando ser guardado." 
+                      : "Regístrate para participar en el sorteo en tu siguiente partida.")
+                  }
+                </span>
               </div>
             </div>
           )}
