@@ -24,7 +24,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
     },
     {
       question: '¿Para qué sirven los Cupones Dorados?',
-      answer: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más cupones acumules, más oportunidades tienes de ganar.'
+      answer: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más cupones acumules, más oportunidades tienes de ganar. Ten en cuenta que los cupones acumulados se resetean al entregarse el premio semanal.'
     },
     {
       question: '¿Tengo que registrarme para ganar?',
