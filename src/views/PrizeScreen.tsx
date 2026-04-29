@@ -248,6 +248,12 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
           ))}
         </div>
       </motion.section>
+
+      <div className="mt-8 text-center pb-4">
+        <button className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors font-medium underline underline-offset-4">
+          Ver términos y condiciones
+        </button>
+      </div>
     </div>
   );
 }
