@@ -288,46 +288,46 @@ export default function VestuarioScreen({
     >
       <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-500/12 to-transparent pointer-events-none"></div>
 
-      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="premium-icon-wrap shrink-0 bg-blue-500/10 border-blue-400/20 w-10 h-10 rounded-xl">
+      <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="premium-icon-wrap shrink-0 bg-blue-500/10 border-blue-400/20 w-10 h-10 rounded-xl mt-1">
             <Trophy className="text-blue-400" size={20} />
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <span className="bg-blue-500 text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-0.5 rounded-full">Sorteo semanal</span>
-              <span className="text-blue-300 text-xs font-semibold flex items-center">
+              <span className="text-blue-300 text-[10px] font-semibold flex items-center">
                 <Clock size={12} className="mr-1" /> Termina en 2d 14h
               </span>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h3 className="premium-title text-lg md:text-xl font-black font-montserrat text-white tracking-tight">PlayStation 5</h3>
-              {isLoggedIn && (
-                <div className="bg-rpp-yellow/10 px-2 py-1 rounded-lg border border-rpp-yellow/20 flex items-center gap-2 shadow-sm">
-                  <Ticket className="text-rpp-yellow" size={14} />
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: '#d09b00' }}>Mis Cupones:</span>
-                    <span className="text-xs font-black text-rpp-yellow leading-none">{goldenCoupons}</span>
-                  </div>
+            <h3 className="premium-title text-lg md:text-xl font-black font-montserrat text-white tracking-tight mb-2">PlayStation 5</h3>
+            
+            {isLoggedIn && (
+              <div className="inline-flex bg-rpp-yellow/10 px-2.5 py-1 rounded-lg border border-rpp-yellow/20 items-center gap-2 shadow-sm">
+                <Ticket className="text-rpp-yellow" size={14} />
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: '#d09b00' }}>Mis Cupones:</span>
+                  <span className="text-xs font-black text-rpp-yellow leading-none">{goldenCoupons}</span>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-col items-center md:items-end gap-2 w-full md:w-auto">
-          <div className="flex items-center gap-3 w-full md:w-auto justify-center md:justify-end mt-2 md:mt-0">
-            <PrizeProduct variant="banner" />
-            <button className="premium-button-secondary text-white font-bold py-2.5 px-6 rounded-xl transition-colors whitespace-nowrap min-w-[120px] text-sm">
+        <div className="flex flex-col sm:flex-row items-center md:items-end gap-3 w-full md:w-auto pt-2 md:pt-0 border-t border-blue-500/10 md:border-0">
+          <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
+            <div className="flex-shrink-0">
+              <PrizeProduct variant="banner" />
+            </div>
+            <button className="premium-button-secondary flex-1 md:flex-none text-white font-bold py-3 px-6 rounded-xl transition-colors whitespace-nowrap min-w-[120px] text-sm">
               Ver Detalles
             </button>
           </div>
           <button 
             onClick={(e) => {
               e.stopPropagation();
-              // Acción para T&C
             }}
-            className="text-[10px] text-gray-500 hover:text-blue-400 transition-colors font-medium underline underline-offset-4"
+            className="text-[10px] text-gray-500 hover:text-blue-400 transition-colors font-medium underline underline-offset-4 self-center md:self-end"
           >
             Ver términos y condiciones
           </button>

@@ -338,7 +338,7 @@ body::after {
 .onboarding-card {
   position: fixed;
   right: clamp(16px, 4vw, 42px);
-  bottom: clamp(18px, 5vw, 44px);
+  bottom: clamp(16px, 3vw, 24px);
   z-index: 92;
   width: min(380px, calc(100vw - 32px));
   padding: 22px 20px 20px;
@@ -440,7 +440,7 @@ body::after {
 @media (max-width: 768px) {
   .onboarding-card {
     right: 16px;
-    bottom: 112px;
+    bottom: 20px;
     padding: 18px;
     max-height: calc(100vh - 150px);
     overflow-y: auto;
