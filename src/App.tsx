@@ -322,10 +322,18 @@ export default function App() {
               </>
             ) : (
               <>
-                <div className="info-card premium-soft-panel w-full rounded-xl px-4 py-3 text-center mb-5 border-white/8">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Rendimiento de hoy</p>
-                  <p className="text-2xl font-black font-montserrat text-white leading-none mb-1.5">Top {relativeStanding.topPercent}%</p>
-                  <p className="text-sm text-gray-300">Mejor que {relativeStanding.betterThan} de cada 100 jugadores hoy</p>
+                <div className="info-card premium-soft-panel w-full rounded-xl px-4 py-4 text-center mb-5 border-white/8">
+                  {lastScore > 0 ? (
+                    <>
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Rendimiento de hoy</p>
+                      <p className="text-2xl font-black font-montserrat text-white leading-none mb-1.5">Top {relativeStanding.topPercent}%</p>
+                      <p className="text-sm text-gray-300">Mejor que {relativeStanding.betterThan} de cada 100 jugadores hoy</p>
+                    </>
+                  ) : (
+                    <p className="text-sm md:text-base font-bold text-white leading-relaxed">
+                      ¡Cero puntos esta vez! Calienta un poco más y vuelve a la cancha. Marca tu primer récord y regístrate para que tus cupones no se pierdan.
+                    </p>
+                  )}
                 </div>
 
                 <div className="w-full grid grid-cols-2 gap-3 mb-6">
@@ -381,9 +389,11 @@ export default function App() {
                   </div>
                 </div>
 
-                <p className="text-xs md:text-sm text-gray-400 text-center mb-6 leading-relaxed">
-                  Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenCoupons || lastEarnedCoupons} cupones quedan esperando si creas tu cuenta ahora.
-                </p>
+                {lastScore > 0 && (
+                  <p className="text-xs md:text-sm text-gray-400 text-center mb-6 leading-relaxed">
+                    Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenCoupons || lastEarnedCoupons} cupones quedan esperando si creas tu cuenta ahora.
+                  </p>
+                )}
               </>
             )}
 
