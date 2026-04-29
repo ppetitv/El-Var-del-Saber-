@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Trophy, Save, MonitorPlay } from 'lucide-react';
 import PrizeProduct from './PrizeProduct';
+import { ACTIVE_PRIZE, getEarnedGoldenCoupons } from '../data/gameConfig';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export default function LoginModal({
   if (!isOpen) return null;
 
   const isPostMatch = mode === 'post-match';
+  const pendingCoupons = getEarnedGoldenCoupons(pendingScore);
 
   return (
     <AnimatePresence>
@@ -58,11 +60,11 @@ export default function LoginModal({
             <div className="auth-prize-reminder">
               <PrizeProduct variant="modal" />
               <div>
-                <p>Juegas por una PlayStation 5</p>
+                <p>Juegas por una {ACTIVE_PRIZE.title}</p>
                 <span>
-                  {pendingScore > 1000 
-                    ? "Tienes 3 cupones dorados esperando ser guardados." 
-                    : (pendingScore > 0 
+                  {pendingCoupons >= 3
+                    ? "Tienes 3 cupones dorados esperando ser guardados."
+                    : (pendingCoupons > 0 
                       ? "Tienes un cupón dorado esperando ser guardado." 
                       : "Regístrate para participar en el sorteo en tu siguiente partida.")
                   }

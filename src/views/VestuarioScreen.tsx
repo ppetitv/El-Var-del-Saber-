@@ -3,6 +3,7 @@ import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, Moni
 import { mockUser, mockNewUser, mockGuestUser } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 import PrizeProduct from '../components/PrizeProduct';
+import { ACTIVE_PRIZE, formatCountdownParts, getWeeklyClosingDate } from '../data/gameConfig';
 
 interface VestuarioProps {
   onPlay: () => void;
@@ -16,6 +17,7 @@ interface VestuarioProps {
   hasPlayed: boolean;
   onLoginClick: () => void;
   onLogoutClick: () => void;
+  onOpenLegal: () => void;
 }
 
 export default function VestuarioScreen({
@@ -29,7 +31,8 @@ export default function VestuarioScreen({
   isLoggedIn,
   hasPlayed,
   onLoginClick,
-  onLogoutClick
+  onLogoutClick,
+  onOpenLegal
 }: VestuarioProps) {
   const [showAdModal, setShowAdModal] = useState(false);
   const [adState, setAdState] = useState<'idle' | 'playing' | 'finished'>('idle');
@@ -39,6 +42,8 @@ export default function VestuarioScreen({
   const [onboardingTarget, setOnboardingTarget] = useState<DOMRect | null>(null);
 
   const currentUser = isLoggedIn ? (hasPlayed ? mockUser : mockNewUser) : mockGuestUser;
+  const closingDate = useMemo(() => getWeeklyClosingDate(), []);
+  const [prizeCountdown, setPrizeCountdown] = useState(() => formatCountdownParts(closingDate));
   const onboardingSteps = useMemo(() => {
     const introStep = {
       target: 'brand',
@@ -119,6 +124,14 @@ export default function VestuarioScreen({
     }
     return () => clearTimeout(timer);
   }, [adState, adTimer, onAddLives]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setPrizeCountdown(formatCountdownParts(closingDate));
+    }, 60000);
+
+    return () => window.clearInterval(intervalId);
+  }, [closingDate]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -231,10 +244,10 @@ export default function VestuarioScreen({
     >
       <div className="info-card premium-soft-panel rounded-2xl p-4 md:p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-white font-bold uppercase tracking-[0.2em] text-[11px] md:text-xs">
+          <h3 className="text-slate-900 font-bold uppercase tracking-[0.2em] text-xs">
             Cómo se juega
           </h3>
-          <span className="text-[10px] text-gray-500 uppercase tracking-[0.18em]">Mecánica base</span>
+          <span className="text-xs text-slate-500 uppercase tracking-[0.18em]">Mecánica base</span>
         </div>
         <div className="tutorial-info-list">
           <div className="info-card tutorial-info-card">
@@ -242,8 +255,8 @@ export default function VestuarioScreen({
               <Heart className="text-blue-400" size={16} fill="currentColor" />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Usa vidas</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Cada partida consume 1 vida.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Usa vidas</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Cada partida consume 1 vida.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -251,8 +264,8 @@ export default function VestuarioScreen({
               <Clock className="text-orange-500" size={16} />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Juega trivias cortas</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Responde rápido para mejorar tu PR.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Juega trivias cortas</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Responde rápido para mejorar tu PR.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -260,8 +273,8 @@ export default function VestuarioScreen({
               <Trophy className="text-rpp-yellow" size={16} />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Gana cupones</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Son oportunidades para el sorteo.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Gana cupones</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Son oportunidades para el sorteo.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -269,8 +282,8 @@ export default function VestuarioScreen({
               <LogIn className="text-neon-green" size={16} />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Registra tu avance</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Necesitas cuenta para participar.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Registra tu avance</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Necesitas cuenta para participar.</p>
             </div>
           </div>
         </div>
@@ -295,18 +308,18 @@ export default function VestuarioScreen({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              <span className="bg-blue-500 text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-0.5 rounded-full">Sorteo semanal</span>
-              <span className="text-blue-300 text-[10px] font-semibold flex items-center">
-                <Clock size={12} className="mr-1" /> Termina en 2d 14h
+              <span className="bg-blue-500 text-white text-[11px] font-bold uppercase tracking-[0.16em] px-2 py-0.5 rounded-full">Sorteo semanal</span>
+              <span className="text-blue-600 text-xs font-semibold flex items-center">
+                <Clock size={12} className="mr-1" /> Cierra en {prizeCountdown}
               </span>
             </div>
-            <h3 className="premium-title text-lg md:text-xl font-black font-montserrat text-white tracking-tight mb-2">PlayStation 5</h3>
+            <h3 className="premium-title text-lg md:text-xl font-black font-montserrat text-slate-950 tracking-tight mb-2">{ACTIVE_PRIZE.title}</h3>
             
             {isLoggedIn && (
               <div className="inline-flex bg-rpp-yellow/10 px-2.5 py-1 rounded-lg border border-rpp-yellow/20 items-center gap-2 shadow-sm">
                 <Ticket className="text-rpp-yellow" size={14} />
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: '#d09b00' }}>Mis Cupones:</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#d09b00' }}>Mis Cupones:</span>
                   <span className="text-xs font-black text-rpp-yellow leading-none">{goldenCoupons}</span>
                 </div>
               </div>
@@ -319,15 +332,16 @@ export default function VestuarioScreen({
             <div className="flex-shrink-0">
               <PrizeProduct variant="banner" />
             </div>
-            <button className="premium-button-secondary flex-1 md:flex-none text-white font-bold py-3 px-6 rounded-xl transition-colors whitespace-nowrap min-w-[120px] text-sm">
+            <button className="premium-button-secondary flex-1 md:flex-none font-bold py-3 px-6 rounded-xl transition-colors whitespace-nowrap min-w-[120px] text-sm">
               Ver Detalles
             </button>
           </div>
           <button 
             onClick={(e) => {
               e.stopPropagation();
+              onOpenLegal();
             }}
-            className="text-[10px] text-gray-500 hover:text-blue-400 transition-colors font-medium underline underline-offset-4 self-center md:self-end"
+            className="text-xs text-slate-500 hover:text-blue-600 transition-colors font-medium underline underline-offset-4 self-center md:self-end"
           >
             Ver términos y condiciones
           </button>
@@ -376,22 +390,22 @@ export default function VestuarioScreen({
       <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Gamepad2 size={16} className="text-purple-400 mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.matchesPlayed}</p>
-        <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Partidos</p>
+        <p className="text-xs text-gray-400 uppercase tracking-wider mt-1">Partidos</p>
       </div>
       <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Target size={16} className="text-neon-green mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.accuracy}%</p>
-        <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Precisión</p>
+        <p className="text-xs text-gray-400 uppercase tracking-wider mt-1">Precisión</p>
       </div>
       <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Trophy size={16} className="text-rpp-yellow mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.winRate}%</p>
-        <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Win Rate</p>
+        <p className="text-xs text-gray-400 uppercase tracking-wider mt-1">Win rate</p>
       </div>
       <div className="info-card premium-metric-card p-3 flex flex-col items-center justify-center">
         <Clock size={16} className="text-blue-400 mb-1.5" />
         <p className="text-lg font-black font-montserrat">{currentUser.avgTime}s</p>
-        <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Tiempo</p>
+        <p className="text-xs text-gray-400 uppercase tracking-wider mt-1">Tiempo</p>
       </div>
     </motion.div>
   );
@@ -407,7 +421,7 @@ export default function VestuarioScreen({
       <div className="flex items-center justify-between mb-3">
         <div>
           <p className="text-xs text-gray-400 mb-1 uppercase tracking-[0.16em]">Vidas</p>
-          <p className="font-bold font-montserrat text-base text-white">Listo para seguir jugando</p>
+          <p className="font-bold font-montserrat text-base text-slate-950">Listo para seguir jugando</p>
         </div>
         <div className="text-right">
           <p className="text-xl font-black font-montserrat text-rpp-yellow inline-flex items-center justify-end gap-1">
@@ -420,7 +434,52 @@ export default function VestuarioScreen({
       <div className="w-full bg-stadium rounded-full h-3 border border-gray-800">
         <div className="h-3 rounded-full bg-rpp-yellow" style={{ width: `${(lives / 5) * 100}%` }} />
       </div>
-      <p className="text-[11px] text-gray-500 mt-2.5">Si te quedas sin vidas, puedes recargarlas viendo un video sponsor.</p>
+      <p className="text-xs text-slate-500 mt-2.5">Si te quedas sin vidas, puedes recargarlas viendo un video sponsor.</p>
+    </motion.div>
+  );
+
+  const renderProgressSnapshot = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+      className="info-card premium-panel rounded-2xl p-4 space-y-4 md:hidden"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center min-w-0">
+          <div className="w-12 h-12 bg-card-light rounded-full flex items-center justify-center text-xl border border-rpp-yellow mr-3 shrink-0">
+            {currentUser.avatar}
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Tu progreso hoy</p>
+            <h3 className="text-base font-black font-montserrat text-slate-950 truncate">{currentUser.username}</h3>
+            <p className="text-sm text-slate-500">PR actual: {currentUser.pr}</p>
+          </div>
+        </div>
+        <div className="premium-badge shrink-0">Top play</div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <div className="premium-metric-card rounded-xl p-3 text-center">
+          <p className="text-lg font-black font-montserrat text-rpp-yellow">{lives}/5</p>
+          <p className="text-xs text-slate-500 uppercase tracking-[0.12em]">Vidas</p>
+        </div>
+        <div className="premium-metric-card rounded-xl p-3 text-center">
+          <p className="text-lg font-black font-montserrat text-slate-950">{currentUser.accuracy}%</p>
+          <p className="text-xs text-slate-500 uppercase tracking-[0.12em]">Precisión</p>
+        </div>
+        <div className="premium-metric-card rounded-xl p-3 text-center">
+          <p className="text-lg font-black font-montserrat text-slate-950">{currentUser.streak}</p>
+          <p className="text-xs text-slate-500 uppercase tracking-[0.12em]">Racha</p>
+        </div>
+      </div>
+
+      <div>
+        <div className="w-full bg-stadium rounded-full h-3 border border-gray-800">
+          <div className="h-3 rounded-full bg-rpp-yellow" style={{ width: `${(lives / 5) * 100}%` }} />
+        </div>
+        <p className="text-xs text-slate-500 mt-2">Si te quedas sin vidas, puedes recargarlas viendo un video sponsor.</p>
+      </div>
     </motion.div>
   );
 
@@ -442,46 +501,46 @@ export default function VestuarioScreen({
       </div>
 
       <div className="divide-y divide-gray-800">
-          <div className="ranking-preview-row p-3.5 flex items-center justify-between">
+          <div className="ranking-preview-row p-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-gray-500">#{Number(currentUser.rankingNational) - 1}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-gray-700">
               😎
             </div>
-            <div>
-              <p className="font-bold text-white text-sm">MartinG</p>
-              <p className="text-[11px] text-var-red">A 250 pts de distancia</p>
+            <div className="min-w-0">
+              <p className="font-bold text-slate-900 text-sm truncate">MartinG</p>
+              <p className="text-xs text-var-red">A 250 pts de distancia</p>
             </div>
           </div>
-          <span className="font-bold text-xs text-gray-300">2,100 PR</span>
+          <span className="font-bold text-xs text-slate-500 whitespace-nowrap">2,100 PR</span>
         </div>
 
-          <div className="ranking-preview-row ranking-preview-row-current p-3.5 flex items-center justify-between bg-rpp-yellow/10 border-l-4 border-rpp-yellow">
+          <div className="ranking-preview-row ranking-preview-row-current p-3.5 flex items-center justify-between gap-3 bg-rpp-yellow/10 border-l-4 border-rpp-yellow">
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-rpp-yellow">#{currentUser.rankingNational}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-rpp-yellow">
               {currentUser.avatar}
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="font-bold text-rpp-yellow text-sm">{currentUser.username} <span className="text-[11px] opacity-70">(Tú)</span></p>
-              <p className="text-[11px] text-gray-400">Tu mejor marca actual</p>
+              <p className="text-xs text-slate-500">Tu mejor marca actual</p>
             </div>
           </div>
-          <span className="font-bold text-xs text-rpp-yellow">{currentUser.pr} PR</span>
+          <span className="font-bold text-xs text-rpp-yellow whitespace-nowrap">{currentUser.pr} PR</span>
         </div>
 
-          <div className="ranking-preview-row p-3.5 flex items-center justify-between">
+          <div className="ranking-preview-row p-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-gray-500">#{Number(currentUser.rankingNational) + 1}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-gray-700">
               🧱
             </div>
-            <div>
-              <p className="font-bold text-white text-sm">MuroDefensivo</p>
-              <p className="text-[11px] text-neon-green">Ya lo superaste por 400 pts</p>
+            <div className="min-w-0">
+              <p className="font-bold text-slate-900 text-sm truncate">MuroDefensivo</p>
+              <p className="text-xs text-neon-green">Ya lo superaste por 400 pts</p>
             </div>
           </div>
-          <span className="font-bold text-xs text-gray-300">1,450 PR</span>
+          <span className="font-bold text-xs text-slate-500 whitespace-nowrap">1,450 PR</span>
         </div>
       </div>
     </motion.div>
@@ -496,8 +555,8 @@ export default function VestuarioScreen({
               <MonitorPlay className="text-stadium" size={18} />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-sm font-black tracking-tight text-white leading-none">EL VAR</span>
-              <span className="text-[10px] font-bold text-rpp-yellow tracking-tighter">DEL SABER</span>
+              <span className="text-sm font-black tracking-tight text-slate-950 leading-none">EL VAR</span>
+              <span className="text-xs font-bold text-rpp-yellow tracking-tighter">DEL SABER</span>
             </div>
           </div>
           
@@ -639,11 +698,11 @@ export default function VestuarioScreen({
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
                     <div className="premium-topline mb-2">Tu vestuario</div>
-                    <h2 className="premium-title text-2xl md:text-3xl font-black font-montserrat text-white mb-2">
+                    <h2 className="premium-title text-2xl md:text-3xl font-black font-montserrat text-slate-950 mb-2">
                       Sigue jugando para mejorar tu PR
                     </h2>
                     <p className="text-sm text-gray-400 max-w-xl">
-                      Tu progreso hoy depende de tres cosas: jugar otra ronda, cuidar tus vidas y sumar cupones para el premio semanal.
+                      Juega otra ronda, protege tus vidas y sigue acumulando cupones para mantenerte competitivo.
                     </p>
                   </div>
                   <button
@@ -657,6 +716,7 @@ export default function VestuarioScreen({
               </motion.div>
 
               {renderPrizeBanner()}
+              {renderProgressSnapshot()}
 
               <div className="hidden xl:block">
                 {renderRankingPreview()}
@@ -664,7 +724,7 @@ export default function VestuarioScreen({
             </div>
 
             <div className="space-y-4">
-              <div className="xl:hidden">
+              <div className="hidden md:block xl:hidden">
                 <div className="flex items-center justify-between px-1 mb-2">
                   <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
                     Tu progreso
@@ -673,23 +733,27 @@ export default function VestuarioScreen({
                 </div>
               </div>
 
-              {renderProfileCard()}
-              {renderLivesCard()}
+              <div className="hidden md:block">
+                {renderProfileCard()}
+              </div>
+              <div className="hidden md:block">
+                {renderLivesCard()}
+              </div>
 
               {currentUser.streak > 0 && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="info-card premium-panel border border-orange-500/15 rounded-2xl p-3.5 flex items-center justify-between shadow-lg"
+                  className="info-card premium-panel border border-orange-500/15 rounded-2xl p-3.5 flex items-center justify-between shadow-lg hidden md:flex"
                 >
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center mr-3">
                       <Flame className="text-orange-500" size={20} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Racha activa</p>
-                      <p className="text-lg md:text-xl font-black font-montserrat text-white">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">Racha activa</p>
+                      <p className="text-lg md:text-xl font-black font-montserrat text-slate-950">
                         {currentUser.streak} días seguidos
                       </p>
                     </div>
@@ -697,11 +761,13 @@ export default function VestuarioScreen({
                 </motion.div>
               )}
 
-              {renderStatsGrid()}
+              <div className="hidden md:block">
+                {renderStatsGrid()}
+              </div>
 
               <div className="xl:hidden pt-1">
                 <div className="flex items-center justify-between px-1 mb-2">
-                  <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
                     Tu posición
                   </h3>
                 </div>

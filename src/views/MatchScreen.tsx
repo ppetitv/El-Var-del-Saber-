@@ -14,9 +14,10 @@ const NEXT_QUESTION_DELAY_MS = 500;
 interface MatchScreenProps {
   lives: number;
   onFinish: (summary: MatchSummary) => void;
+  onBack: () => void;
 }
 
-export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
+export default function MatchScreen({ lives, onFinish, onBack }: MatchScreenProps) {
   const [currentQ, setCurrentQ] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -221,12 +222,16 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
 
       {/* HEADER */}
       <div className="match-topbar match-topbar-grid mb-6 md:mb-8">
-        <button className="premium-button-secondary w-11 h-11 rounded-full flex items-center justify-center shrink-0">
+        <button
+          onClick={onBack}
+          className="premium-button-secondary w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+          aria-label="Volver al vestuario"
+        >
           <ChevronLeft size={20} />
         </button>
         <div className="match-position text-center px-4 py-2 rounded-2xl">
-          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black hidden md:block mb-1">El VAR del Saber</p>
-          <p className="font-black font-montserrat text-sm md:text-base">
+          <p className="text-xs text-slate-500 uppercase tracking-widest font-black hidden md:block mb-1">El VAR del Saber</p>
+          <p className="font-black font-montserrat text-sm md:text-base text-slate-900">
             Pregunta <span>{currentQ + 1}</span> de {mockQuestions.length}
           </p>
         </div>
@@ -293,23 +298,23 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
           <div className="space-y-3 md:space-y-4 flex-grow md:w-1/2">
             {question.options.map((opt, index) => {
               const isHidden = hiddenOptions.includes(opt.id);
-              let buttonClass = 'match-option-idle border-gray-800 bg-card-dark hover:border-rpp-yellow/50 hover:bg-card-light text-white';
-              let letterClass = 'bg-gray-800 text-gray-400';
+              let buttonClass = 'match-option-idle border-gray-800 bg-card-dark hover:border-rpp-yellow/50 hover:bg-card-light text-slate-900';
+              let letterClass = 'bg-gray-800 text-slate-500';
               
               if (isHidden) {
                 buttonClass = 'match-option-muted border-gray-800 bg-stadium opacity-20 pointer-events-none';
               } else if (isAnswerChecked) {
                 if (opt.id === question.correctAnswer) {
-                  buttonClass = 'match-option-correct border-neon-green bg-neon-green/10 text-white shadow-[0_0_15px_rgba(0,255,102,0.2)]';
+                  buttonClass = 'match-option-correct border-neon-green bg-neon-green/10 text-slate-900 shadow-[0_0_15px_rgba(0,255,102,0.2)]';
                   letterClass = 'bg-neon-green text-stadium';
                 } else if (selectedAnswer === opt.id) {
-                  buttonClass = 'match-option-wrong border-var-red bg-var-red/10 text-white shadow-[0_0_15px_rgba(255,51,51,0.2)]';
+                  buttonClass = 'match-option-wrong border-var-red bg-var-red/10 text-slate-900 shadow-[0_0_15px_rgba(255,51,51,0.2)]';
                   letterClass = 'bg-var-red text-white';
                 } else {
                   buttonClass = 'match-option-muted border-gray-800 bg-stadium text-gray-500 opacity-50';
                 }
               } else if (selectedAnswer === opt.id) {
-                buttonClass = 'match-option-selected border-rpp-yellow bg-rpp-yellow/10 text-white shadow-[0_0_15px_rgba(255,224,0,0.2)]';
+                buttonClass = 'match-option-selected border-rpp-yellow bg-rpp-yellow/10 text-slate-900 shadow-[0_0_15px_rgba(255,224,0,0.2)]';
                 letterClass = 'bg-rpp-yellow text-stadium';
               }
 
@@ -337,7 +342,7 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
                   <span className="flex-grow md:text-xl z-10">{opt.label}</span>
                   
                   {audienceVotes && !isHidden && (
-                    <span className="z-10 ml-4 font-bold font-montserrat text-rpp-yellow">
+                    <span className="z-10 ml-4 font-bold font-montserrat text-amber-600">
                       {audienceVotes[opt.id]}%
                     </span>
                   )}
@@ -370,9 +375,9 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
               : 'border-gray-800 bg-card-dark hover:border-rpp-yellow hover:bg-card-light shadow-lg'
           }`}
         >
-          <MonitorPlay size={28} className={`mb-2 transition-colors ${lifelines.var ? 'text-gray-600' : 'text-gray-400 group-hover:text-rpp-yellow'}`} />
-          <span className={`text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors ${lifelines.var ? 'text-gray-600' : 'text-gray-300 group-hover:text-white'}`}>El VAR</span>
-          <span className="text-[9px] md:text-[10px] text-gray-500 mt-0.5">Elimina 2 opciones</span>
+          <MonitorPlay size={28} className={`mb-2 transition-colors ${lifelines.var ? 'text-slate-400' : 'text-slate-500 group-hover:text-rpp-yellow'}`} />
+          <span className={`text-xs font-bold uppercase tracking-wider transition-colors ${lifelines.var ? 'text-slate-400' : 'text-slate-700 group-hover:text-slate-900'}`}>El VAR</span>
+          <span className="text-[11px] md:text-xs text-slate-500 mt-0.5">Elimina 2 opciones</span>
         </button>
 
         <button 
@@ -384,9 +389,9 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
               : 'border-gray-800 bg-card-dark hover:border-rpp-yellow hover:bg-card-light shadow-lg'
           }`}
         >
-          <Users size={28} className={`mb-2 transition-colors ${lifelines.hinchada ? 'text-gray-600' : 'text-gray-400 group-hover:text-rpp-yellow'}`} />
-          <span className={`text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors ${lifelines.hinchada ? 'text-gray-600' : 'text-gray-300 group-hover:text-white'}`}>Hinchada</span>
-          <span className="text-[9px] md:text-[10px] text-gray-500 mt-0.5">Ver porcentajes</span>
+          <Users size={28} className={`mb-2 transition-colors ${lifelines.hinchada ? 'text-slate-400' : 'text-slate-500 group-hover:text-rpp-yellow'}`} />
+          <span className={`text-xs font-bold uppercase tracking-wider transition-colors ${lifelines.hinchada ? 'text-slate-400' : 'text-slate-700 group-hover:text-slate-900'}`}>Hinchada</span>
+          <span className="text-[11px] md:text-xs text-slate-500 mt-0.5">Ver porcentajes</span>
         </button>
 
         <button 
@@ -398,9 +403,9 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
               : 'border-gray-800 bg-card-dark hover:border-rpp-yellow hover:bg-card-light shadow-lg'
           }`}
         >
-          <RefreshCw size={28} className={`mb-2 transition-colors ${lifelines.cambio ? 'text-gray-600' : 'text-gray-400 group-hover:text-rpp-yellow'}`} />
-          <span className={`text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors ${lifelines.cambio ? 'text-gray-600' : 'text-gray-300 group-hover:text-white'}`}>Cambio</span>
-          <span className="text-[9px] md:text-[10px] text-gray-500 mt-0.5">Nueva pregunta</span>
+          <RefreshCw size={28} className={`mb-2 transition-colors ${lifelines.cambio ? 'text-slate-400' : 'text-slate-500 group-hover:text-rpp-yellow'}`} />
+          <span className={`text-xs font-bold uppercase tracking-wider transition-colors ${lifelines.cambio ? 'text-slate-400' : 'text-slate-700 group-hover:text-slate-900'}`}>Cambio</span>
+          <span className="text-[11px] md:text-xs text-slate-500 mt-0.5">Nueva pregunta</span>
         </button>
       </div>
     </div>

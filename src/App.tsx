@@ -5,9 +5,11 @@ import RankingScreen from './views/RankingScreen';
 import PrizeScreen from './views/PrizeScreen';
 import LoginModal from './components/LoginModal';
 import PrizeProduct from './components/PrizeProduct';
+import InfoModal from './components/InfoModal';
 import { motion } from 'motion/react';
 import { Trophy, Home, Ticket, Heart, Play, TrendingUp, MessageCircle, Instagram, Send, ArrowRight } from 'lucide-react';
 import { mockQuestions, mockUser } from './data/mockData';
+import { ACTIVE_PRIZE, getEarnedGoldenCoupons } from './data/gameConfig';
 
 interface MatchSummary {
   score: number;
@@ -27,6 +29,8 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLegalModal, setShowLegalModal] = useState(false);
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null);
   const [loginModalMode, setLoginModalMode] = useState<'default' | 'post-match'>('default');
   const [prizeInitialSection, setPrizeInitialSection] = useState<'overview' | 'faq'>('overview');
 
@@ -52,7 +56,7 @@ export default function App() {
     setLastCorrectAnswers(correctAnswers);
     setLastAverageTime(averageTime);
     setHasPlayed(true);
-    const earnedGoldenCoupons = score > 1000 ? 3 : (score > 0 ? 1 : 0);
+    const earnedGoldenCoupons = getEarnedGoldenCoupons(score);
     setLastEarnedCoupons(earnedGoldenCoupons);
     if (isLoggedIn) {
       setGoldenCoupons(prev => prev + earnedGoldenCoupons);
@@ -97,6 +101,13 @@ export default function App() {
     setGoldenCoupons(0);
   };
 
+  const handleBackFromMatch = () => {
+    const confirmed = window.confirm('Si sales ahora, la partida actual se perdera y la vida ya consumida no se recupera. ¿Quieres volver al vestuario?');
+    if (confirmed) {
+      setCurrentScreen('vestuario');
+    }
+  };
+
   const handleOpenDefaultLogin = () => {
     setLoginModalMode('default');
     setShowLoginModal(true);
@@ -132,9 +143,12 @@ export default function App() {
 
     try {
       await navigator.clipboard.writeText(message);
-      alert('Texto listo para pegar en Instagram.');
+      setShareFeedback('Texto copiado. Ya puedes pegarlo en Instagram.');
+      window.setTimeout(() => setShareFeedback(null), 2200);
     } catch (error) {
       console.error('No se pudo copiar el resultado', error);
+      setShareFeedback('No pudimos copiar el texto. Intenta de nuevo.');
+      window.setTimeout(() => setShareFeedback(null), 2200);
     }
   };
 
@@ -155,9 +169,10 @@ export default function App() {
           hasPlayed={hasPlayed}
           onLoginClick={handleOpenDefaultLogin}
           onLogoutClick={handleLogout}
+          onOpenLegal={() => setShowLegalModal(true)}
         />
       )}
-      {currentScreen === 'match' && <MatchScreen lives={lives} onFinish={handleFinishMatch} />}
+      {currentScreen === 'match' && <MatchScreen lives={lives} onFinish={handleFinishMatch} onBack={handleBackFromMatch} />}
       {currentScreen === 'ranking' && <RankingScreen onBack={handleBackToDashboard} />}
       {currentScreen === 'prize' && (
         <PrizeScreen 
@@ -166,6 +181,7 @@ export default function App() {
           isLoggedIn={isLoggedIn} 
           onLoginClick={handleOpenDefaultLogin}
           onPlayClick={handlePlay}
+          onOpenLegal={() => setShowLegalModal(true)}
           initialSection={prizeInitialSection}
         />
       )}
@@ -209,24 +225,24 @@ export default function App() {
                 </motion.div>
               </motion.div>
               <div className="premium-chip mx-auto w-fit mb-2">¡Todo listo!</div>
-              <h1 className="premium-title text-2xl md:text-3xl font-montserrat font-black text-white">
+              <h1 className="premium-title text-2xl md:text-3xl font-montserrat font-black text-slate-950">
                 Cuenta activada
               </h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 mb-4 md:mb-8">
               <div className="info-card premium-soft-panel rounded-xl p-4">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Puntaje guardado</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Puntaje guardado</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{lastScore}</p>
               </div>
               <div className="info-card premium-soft-panel rounded-xl p-4">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Cupones activos</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Cupones activos</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{goldenCoupons}</p>
-                <p className="text-xs text-gray-500 mt-2">Participaciones para el premio semanal</p>
+                <p className="text-sm text-slate-500 mt-2">Participaciones para el premio semanal</p>
               </div>
               <div className="info-card premium-soft-panel rounded-xl p-4">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Estado de hoy</p>
-                <p className="text-xl font-black font-montserrat text-white">Top {relativeStanding.topPercent}%</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Estado de hoy</p>
+                <p className="text-xl font-black font-montserrat text-slate-950">Top {relativeStanding.topPercent}%</p>
               </div>
             </div>
 
@@ -240,7 +256,7 @@ export default function App() {
               <div className="relative z-10">
                 <p className="font-black font-montserrat text-base md:text-lg mb-1">Ya estás dentro del premio de esta semana</p>
                 <p className="text-xs md:text-sm text-amber-900/80 font-medium leading-relaxed">
-                  Sigue jugando para sumar más cupones y aumentar tus probabilidades de ganar la <span className="font-bold">PlayStation 5</span>.
+                  Sigue jugando para sumar más cupones y aumentar tus probabilidades de ganar la <span className="font-bold">{ACTIVE_PRIZE.title}</span>.
                 </p>
               </div>
             </div>
@@ -277,10 +293,10 @@ export default function App() {
             <Trophy size={58} className="text-rpp-yellow mb-5 drop-shadow-[0_0_15px_rgba(255,224,0,0.35)]" />
             
             <div className="premium-chip mb-4">Resultado</div>
-            <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-white mb-2 text-center">¡PARTIDO TERMINADO!</h1>
+            <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-slate-950 mb-2 text-center">¡PARTIDO TERMINADO!</h1>
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 mb-8 w-full">
               <div className="flex flex-col items-center">
-                <p className="text-gray-400 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mb-3">Puntaje Final</p>
+                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-3">Puntaje final</p>
                 <div className="text-6xl md:text-7xl font-montserrat font-black text-rpp-yellow drop-shadow-[0_0_24px_rgba(255,224,0,0.32)]">
                   {lastScore}
                 </div>
@@ -289,8 +305,8 @@ export default function App() {
               <div className="hidden md:block w-px h-20 bg-white/10"></div>
 
               <div className="flex flex-col items-center">
-                <p className="text-gray-400 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mb-3">Cupones Ganados</p>
-                <div className="flex items-center text-6xl md:text-7xl font-montserrat font-black text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.12)]">
+                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-3">Cupones ganados</p>
+                <div className="flex items-center text-6xl md:text-7xl font-montserrat font-black text-slate-950 drop-shadow-[0_0_24px_rgba(255,255,255,0.12)]">
                   <Ticket className="text-rpp-yellow mr-3" size={42} />
                   {lastEarnedCoupons}
                 </div>
@@ -309,8 +325,8 @@ export default function App() {
                       <TrendingUp className="mr-2" size={18} /> ¡NUEVO RÉCORD! Subiste en el ranking
                     </motion.div>
                   ) : (
-                    <p className="text-gray-400 font-medium">
-                      ¡Uf! A solo <span className="text-white font-bold">{Math.max(0, mockUser.pr - lastScore)} pts</span> de tu récord.
+                    <p className="text-slate-500 font-medium">
+                      ¡Uf! A solo <span className="text-slate-950 font-bold">{Math.max(0, mockUser.pr - lastScore)} pts</span> de tu récord.
                     </p>
                   )}
                 </div>
@@ -326,41 +342,69 @@ export default function App() {
                     <Ticket className="text-rpp-yellow" size={22} />
                   </div>
                   <div className="text-left">
-                    <p className="text-[10px] text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Acumulas por el premio</p>
-                    <p className="text-xl md:text-2xl font-black font-montserrat text-white">
-                      {goldenCoupons} <span className="text-sm text-gray-300 font-medium">Cupones Dorados</span>
+                    <p className="text-xs text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Acumulas por el premio</p>
+                    <p className="text-xl md:text-2xl font-black font-montserrat text-slate-950">
+                      {goldenCoupons} <span className="text-sm text-slate-500 font-medium">Cupones Dorados</span>
                     </p>
                   </div>
                 </motion.div>
               </>
             ) : (
               <>
-                <div className="info-card premium-soft-panel w-full rounded-xl px-4 py-4 text-center mb-5 border-white/8">
+                <div className="info-card premium-soft-panel w-full rounded-2xl px-4 py-4 text-center mb-4 border-white/8">
                   {lastScore > 0 ? (
                     <>
-                      <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Rendimiento de hoy</p>
-                      <p className="text-2xl font-black font-montserrat text-white leading-none mb-1.5">Top {relativeStanding.topPercent}%</p>
-                      <p className="text-sm text-gray-300">Mejor que {relativeStanding.betterThan} de cada 100 jugadores hoy</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Rendimiento de hoy</p>
+                      <p className="text-2xl font-black font-montserrat text-slate-950 leading-none mb-1.5">Top {relativeStanding.topPercent}%</p>
+                      <p className="text-sm text-slate-600">Mejor que {relativeStanding.betterThan} de cada 100 jugadores hoy</p>
                     </>
                   ) : (
-                    <p className="text-sm md:text-base font-bold text-white leading-relaxed">
+                    <p className="text-sm md:text-base font-bold text-slate-900 leading-relaxed">
                       ¡Cero puntos esta vez! Calienta un poco más y vuelve a la cancha. Marca tu primer récord y regístrate para que tus cupones no se pierdan.
                     </p>
                   )}
                 </div>
 
-                <div className="w-full grid grid-cols-2 gap-3 mb-6">
+                <div className="w-full grid grid-cols-2 gap-3 mb-4">
                   <div className="info-card premium-soft-panel rounded-xl p-4 text-center">
-                    <p className="text-3xl font-black font-montserrat text-white">{lastCorrectAnswers}/{mockQuestions.length}</p>
-                    <p className="text-sm text-gray-400">correctas</p>
+                    <p className="text-3xl font-black font-montserrat text-slate-950">{lastCorrectAnswers}/{mockQuestions.length}</p>
+                    <p className="text-sm text-slate-500">correctas</p>
                   </div>
                   <div className="info-card premium-soft-panel rounded-xl p-4 text-center">
-                    <p className="text-3xl font-black font-montserrat text-white">{lastAverageTime}s</p>
-                    <p className="text-sm text-gray-400">promedio/preg.</p>
+                    <p className="text-3xl font-black font-montserrat text-slate-950">{lastAverageTime}s</p>
+                    <p className="text-sm text-slate-500">promedio/preg.</p>
                   </div>
                 </div>
 
-                <div className="result-share-actions w-full mb-4">
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  onClick={handleOpenPostMatchLogin}
+                  className="result-primary-cta premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
+                >
+                  Guarda tu resultado y entra al sorteo
+                </motion.button>
+
+                <p className="text-sm text-slate-600 text-center mb-4 leading-relaxed">
+                  Crea tu cuenta para conservar esta partida, activar tus cupones y seguir compitiendo desde tu PR real.
+                </p>
+
+                <div className="result-guest-prize mb-4">
+                  <PrizeProduct variant="result" />
+                  <div>
+                    <p>Participa por la {ACTIVE_PRIZE.title}</p>
+                    <span>Tus cupones se activan al crear tu cuenta.</span>
+                  </div>
+                </div>
+
+                {lastScore > 0 && (
+                  <p className="text-sm text-slate-500 text-center mb-4 leading-relaxed">
+                    Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenCoupons || lastEarnedCoupons} cupones quedan esperando si creas tu cuenta ahora.
+                  </p>
+                )}
+
+                <div className="result-share-actions w-full mb-2">
                   <span className="result-share-label">Compartir resultado</span>
                   <div className="result-share-list">
                     <button
@@ -383,30 +427,7 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  onClick={handleOpenPostMatchLogin}
-                  className="result-primary-cta premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
-                >
-                  Regístrate y compite por el premio
-                </motion.button>
-
-                <div className="result-guest-prize">
-                  <PrizeProduct variant="result" />
-                  <div>
-                    <p>Participa por la PlayStation 5</p>
-                    <span>Tus cupones se activan al crear tu cuenta.</span>
-                  </div>
-                </div>
-
-                {lastScore > 0 && (
-                  <p className="text-xs md:text-sm text-gray-400 text-center mb-6 leading-relaxed">
-                    Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenCoupons || lastEarnedCoupons} cupones quedan esperando si creas tu cuenta ahora.
-                  </p>
-                )}
+                {shareFeedback && <p className="result-share-feedback">{shareFeedback}</p>}
               </>
             )}
 
@@ -430,7 +451,7 @@ export default function App() {
                 {isLoggedIn ? 'VESTUARIO' : 'SEGUIR SIN CUENTA'}
               </button>
               {!isLoggedIn && (
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-xs text-slate-500 text-center">
                   Sin cuenta no participas en el premio semanal.
                 </p>
               )}
@@ -450,6 +471,17 @@ export default function App() {
           setLoginModalMode('default');
           setCurrentScreen('vestuario');
         }}
+      />
+      <InfoModal
+        isOpen={showLegalModal}
+        onClose={() => setShowLegalModal(false)}
+        title="Terminos del sorteo semanal"
+        body={[
+          'Necesitas una cuenta para guardar tu puntaje, conservar tus Cupones Dorados y participar formalmente en el sorteo semanal.',
+          'En esta version, una partida con puntaje te da 1 Cupon Dorado y una partida de mas de 1000 puntos te da 3. Cada cupon cuenta como una participacion.',
+          `El premio activo es una ${ACTIVE_PRIZE.title} y el ciclo se cierra de forma semanal. Mientras mas cupones acumules durante la semana activa, mas oportunidades tienes de ganar.`,
+          'En esta version del interactivo el detalle legal completo aun no esta conectado a una fuente dinamica, asi que mostramos este resumen operativo para que la accion no quede rota.'
+        ]}
       />
     </div>
   );

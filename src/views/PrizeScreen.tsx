@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { ChevronLeft, Gamepad2, Ticket, Clock, Info, Zap, Trophy, Calendar, LogIn, Play, LockKeyhole, HelpCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, Gamepad2, Ticket, Clock, Info, Zap, Trophy, LogIn, Play, LockKeyhole, HelpCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import PrizeProduct from '../components/PrizeProduct';
+import { ACTIVE_PRIZE, formatCountdownParts, getWeeklyClosingDate } from '../data/gameConfig';
 
 interface PrizeScreenProps {
   onBack: () => void;
@@ -9,14 +10,18 @@ interface PrizeScreenProps {
   isLoggedIn: boolean;
   onLoginClick: () => void;
   onPlayClick: () => void;
+  onOpenLegal: () => void;
   initialSection?: 'overview' | 'faq';
 }
 
-export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLoginClick, onPlayClick, initialSection = 'overview' }: PrizeScreenProps) {
+export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLoginClick, onPlayClick, onOpenLegal, initialSection = 'overview' }: PrizeScreenProps) {
+  const closingDate = useMemo(() => getWeeklyClosingDate(), []);
+  const [countdown, setCountdown] = useState(() => formatCountdownParts(closingDate));
+
   const faqs = [
     {
       question: '¿Cómo participo por el premio?',
-      answer: 'Juega partidas, acumula Cupones Dorados y regístrate para que tus participaciones queden asociadas a tu cuenta.'
+      answer: 'Juega partidas, suma puntaje y regístrate para que tus Cupones Dorados queden asociados a tu cuenta.'
     },
     {
       question: '¿Puedo jugar infinitamente?',
@@ -24,7 +29,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
     },
     {
       question: '¿Para qué sirven los Cupones Dorados?',
-      answer: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más cupones acumules, más oportunidades tienes de ganar. Ten en cuenta que los cupones acumulados se resetean al entregarse el premio semanal.'
+      answer: 'Cada cupón cuenta como una participación para el sorteo semanal. En esta versión, una partida con puntaje otorga 1 cupón y una partida de más de 1000 puntos otorga 3.'
     },
     {
       question: '¿Tengo que registrarme para ganar?',
@@ -32,7 +37,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
     },
     {
       question: '¿Puedo participar en más premios?',
-      answer: 'La mecánica actual se centra en el sorteo semanal activo. Si hay nuevos premios disponibles, aparecerán en esta sección.'
+      answer: 'La mecánica actual se centra en un premio semanal activo. Si hay nuevos premios disponibles, aparecerán en esta sección.'
     },
     {
       question: '¿El ranking influye en el sorteo?',
@@ -47,6 +52,14 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
       document.getElementById('faq-premios')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }, 120);
   }, [initialSection]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCountdown(formatCountdownParts(closingDate));
+    }, 60000);
+
+    return () => window.clearInterval(intervalId);
+  }, [closingDate]);
 
   return (
     <div className="prize-screen min-h-screen bg-stadium text-white p-3 md:p-5 font-sans max-w-4xl mx-auto pb-20 md:pb-12">
@@ -79,14 +92,14 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <div className="prize-countdown inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 px-3 py-1.5 rounded-full mb-5">
               <Clock size={16} className="text-blue-400" />
-              <span className="text-blue-300 font-bold text-sm tracking-wide">TERMINA EN: 2D 14H 20M</span>
+              <span className="text-blue-300 font-bold text-sm tracking-wide">CIERRA EN: {countdown}</span>
             </div>
             
             <h2 className="premium-title text-3xl md:text-6xl font-black font-montserrat text-white tracking-tighter mb-2 drop-shadow-lg">
-              PlayStation 5
+              {ACTIVE_PRIZE.title}
             </h2>
             <p className="text-base md:text-lg text-blue-200 max-w-2xl font-medium">
-              Acumula Cupones Dorados jugando partidas. ¡Mientras más cupones tengas, más probabilidades tienes de ganar en el sorteo de este domingo!
+              Suma Cupones Dorados con tus partidas y conviértelos en participaciones reales para el cierre semanal del sorteo.
             </p>
           </div>
           <PrizeProduct variant="hero" />
@@ -160,8 +173,8 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
                     <Play className="text-gray-300" size={18} fill="currentColor" />
                   </div>
                   <div>
-                    <p className="font-bold text-white">Jugar un partido</p>
-                    <p className="text-xs text-gray-400">Ganes o pierdas, tu participación cuenta.</p>
+                    <p className="font-bold text-slate-900">Terminar con puntaje</p>
+                    <p className="text-sm text-slate-600">Si tu partida suma puntos, activas una participación base.</p>
                   </div>
                 </div>
                 <div className="prize-reward-chip flex items-center text-rpp-yellow font-black text-lg bg-rpp-yellow/10 px-3 py-1 rounded-lg">
@@ -175,8 +188,8 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
                     <Trophy className="text-neon-green" size={18} />
                   </div>
                   <div>
-                    <p className="font-bold text-white">Ganar un partido</p>
-                    <p className="text-xs text-gray-400">Demuestra que sabes más que tu rival.</p>
+                    <p className="font-bold text-slate-900">Superar 1000 puntos</p>
+                    <p className="text-sm text-slate-600">Las mejores partidas reciben una recompensa premium.</p>
                   </div>
                 </div>
                 <div className="prize-reward-chip flex items-center text-rpp-yellow font-black text-lg bg-rpp-yellow/10 px-3 py-1 rounded-lg">
@@ -190,27 +203,12 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
                     <Zap className="text-orange-500" size={18} />
                   </div>
                   <div>
-                    <p className="font-bold text-white">Racha de 3 victorias</p>
-                    <p className="text-xs text-gray-400">Mantén el invicto y multiplica tus chances.</p>
+                    <p className="font-bold text-slate-900">Guardar tu cuenta</p>
+                    <p className="text-sm text-slate-600">Necesitas registro para conservar el puntaje y dejar activos tus cupones.</p>
                   </div>
                 </div>
-                <div className="prize-reward-chip flex items-center text-rpp-yellow font-black text-lg bg-rpp-yellow/10 px-3 py-1 rounded-lg">
-                  +10 <Ticket size={16} className="ml-1" />
-                </div>
-              </div>
-
-              <div className="info-card prize-rule-row flex items-center justify-between p-3.5 bg-card-light/30 rounded-xl border border-gray-800/50">
-                <div className="flex items-center">
-                  <div className="prize-rule-icon prize-rule-icon-blue w-10 h-10 bg-purple-900/30 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <Calendar className="text-purple-400" size={18} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-white">Jugar 5 días seguidos</p>
-                    <p className="text-xs text-gray-400">Premio a la lealtad semanal.</p>
-                  </div>
-                </div>
-                <div className="prize-reward-chip flex items-center text-rpp-yellow font-black text-lg bg-rpp-yellow/10 px-3 py-1 rounded-lg">
-                  +50 <Ticket size={16} className="ml-1" />
+                <div className="prize-reward-chip flex items-center text-slate-700 font-black text-sm bg-slate-100 px-3 py-1 rounded-lg">
+                  Requisito
                 </div>
               </div>
             </div>
@@ -250,7 +248,10 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
       </motion.section>
 
       <div className="mt-8 text-center pb-4">
-        <button className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors font-medium underline underline-offset-4">
+        <button
+          onClick={onOpenLegal}
+          className="text-xs text-slate-500 hover:text-blue-600 transition-colors font-medium underline underline-offset-4"
+        >
           Ver términos y condiciones
         </button>
       </div>
