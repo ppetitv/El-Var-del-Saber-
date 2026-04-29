@@ -706,9 +706,6 @@ export default function VestuarioScreen({
                   <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
                     Tu posición
                   </h3>
-                  <button onClick={onGoToRanking} className="text-[11px] text-rpp-yellow font-bold">
-                    Ver ranking
-                  </button>
                 </div>
                 {renderRankingPreview()}
               </div>
@@ -716,7 +713,6 @@ export default function VestuarioScreen({
           </div>
         </div>
       )}
-
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-stadium via-stadium to-stadium/90 backdrop-blur-sm z-50 pb-6">
         <div className="max-w-md mx-auto">
           <motion.button
