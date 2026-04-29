@@ -181,8 +181,11 @@ export default function App() {
             transition={{ type: "spring", bounce: 0.35 }}
             className="premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-2xl text-center"
           >
-            <div className="w-20 h-20 bg-rpp-yellow/10 rounded-full flex items-center justify-center mx-auto mb-5 border border-rpp-yellow/30">
-              <Trophy className="text-rpp-yellow" size={38} />
+            <div className="flex flex-col items-center mb-5">
+              <div className="w-20 h-20 bg-rpp-yellow/10 rounded-full flex items-center justify-center mb-4 border border-rpp-yellow/30">
+                <Trophy className="text-rpp-yellow" size={38} />
+              </div>
+              <PrizeProduct variant="modal" />
             </div>
 
             <div className="premium-chip mx-auto w-fit mb-4">Cuenta activada</div>
