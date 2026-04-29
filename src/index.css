@@ -595,12 +595,17 @@ body::after {
 }
 
 .match-progress .bg-card-dark {
-  background: rgba(13, 116, 200, 0.16);
-  border: 1px solid rgba(13, 116, 200, 0.08);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.match-progress .bg-gray-600 {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .match-progress .bg-rpp-yellow {
-  background: linear-gradient(90deg, #12c86f, #0d74c8);
+  background: #f7c600;
+  box-shadow: 0 0 15px rgba(247, 198, 0, 0.6);
 }
 
 .match-stage {
