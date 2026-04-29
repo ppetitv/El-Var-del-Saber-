@@ -648,7 +648,16 @@ body::after {
 }
 
 .match-option-muted {
-  background: rgba(244, 250, 247, 0.72);
+  background: rgba(244, 250, 247, 0.1) !important;
+  border-color: rgba(16, 24, 40, 0.05) !important;
+  border-style: dashed !important;
+  opacity: 0.15 !important;
+  filter: grayscale(1);
+  pointer-events: none;
+}
+
+.match-option-muted * {
+  opacity: 0.4;
 }
 
 .match-lifeline {
