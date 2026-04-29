@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, RefreshCw, CheckCircle2, XCircle, ChevronLeft, MonitorPlay, Heart } from 'lucide-react';
+import { Users, RefreshCw, CheckCircle2, XCircle, ChevronLeft, MonitorPlay, Heart, Clock, Zap } from 'lucide-react';
 import { mockQuestions } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -30,6 +30,9 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
   const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
   const [audienceVotes, setAudienceVotes] = useState<Record<string, number> | null>(null);
   const [isSwapped, setIsSwapped] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(() => {
+    return !localStorage.getItem('varSaberMatchInstructionsSeen');
+  });
 
   // Reserve question for "Cambio" lifeline
   const reserveQuestion = {
@@ -47,13 +50,14 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
   const question = isSwapped ? reserveQuestion : mockQuestions[currentQ];
 
   useEffect(() => {
+    if (showInstructions) return;
     if (timeLeft > 0 && !isAnswerChecked) {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timerId);
     } else if (timeLeft === 0 && !isAnswerChecked) {
       handleTimeOut();
     }
-  }, [timeLeft, isAnswerChecked]);
+  }, [timeLeft, isAnswerChecked, showInstructions]);
 
   const handleTimeOut = () => {
     setIsAnswerChecked(true);
@@ -158,8 +162,65 @@ export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
     setAudienceVotes(null);
   };
 
+  const handleDismissInstructions = () => {
+    localStorage.setItem('varSaberMatchInstructionsSeen', 'true');
+    setShowInstructions(false);
+  };
+
   return (
     <div className="match-shell min-h-screen bg-stadium text-white p-4 md:p-6 font-sans flex flex-col max-w-6xl mx-auto">
+      <AnimatePresence>
+        {showInstructions && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stadium/95 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="premium-panel max-w-md w-full rounded-3xl p-6 md:p-8 text-center border-rpp-yellow/30 shadow-[0_0_50px_rgba(255,224,0,0.15)]"
+            >
+              <div className="w-20 h-20 bg-rpp-yellow/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-rpp-yellow/30">
+                <MonitorPlay className="text-rpp-yellow" size={40} />
+              </div>
+              
+              <h2 className="premium-title text-2xl md:text-3xl font-black font-montserrat mb-4">Instrucciones de Juego</h2>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 text-left">
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                    <Clock className="text-blue-400" size={24} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">15 Segundos</p>
+                    <p className="text-xs text-gray-400">Tienes tiempo limitado para responder cada pregunta.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 text-left">
+                  <div className="w-10 h-10 bg-neon-green/20 rounded-xl flex items-center justify-center shrink-0">
+                    <Zap className="text-neon-green" size={24} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">Velocidad = Bonus</p>
+                    <p className="text-xs text-gray-400">Responder rápido te otorga una bonificación especial de puntaje.</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={handleDismissInstructions}
+                className="premium-button-primary w-full font-montserrat font-black py-4 rounded-2xl text-lg shadow-[0_10px_30px_rgba(18,200,111,0.2)]"
+              >
+                ¡ENTENDIDO, JUGAR!
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* HEADER */}
       <div className="match-topbar match-topbar-grid mb-6 md:mb-8">
         <button className="premium-button-secondary w-11 h-11 rounded-full flex items-center justify-center shrink-0">
