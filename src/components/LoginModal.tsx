@@ -31,7 +31,7 @@ export default function LoginModal({
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="auth-modal-card premium-panel premium-hero rounded-2xl p-6 max-w-sm w-full relative overflow-hidden shadow-2xl"
+          className="auth-modal-card premium-panel premium-hero rounded-2xl p-5 md:p-6 max-w-sm w-full relative overflow-hidden shadow-2xl"
         >
           {/* Close Button */}
           <button 
@@ -42,7 +42,7 @@ export default function LoginModal({
           </button>
 
           {/* Header / Logo */}
-          <div className="flex flex-col items-center mb-8 mt-4">
+          <div className="flex flex-col items-center mb-6 md:mb-8 mt-2 md:mt-4">
             <div className="auth-modal-icon w-14 h-14 bg-rpp-yellow rounded-xl flex items-center justify-center mb-4 shadow-[0_0_18px_rgba(255,224,0,0.24)]">
               <MonitorPlay className="text-stadium" size={30} />
             </div>
@@ -67,7 +67,7 @@ export default function LoginModal({
           )}
 
           {/* Benefits */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
             <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
               <div className="auth-benefit-icon auth-benefit-icon-gold w-10 h-10 bg-rpp-yellow/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Trophy className="text-rpp-yellow" size={20} />
@@ -130,7 +130,7 @@ export default function LoginModal({
             </>
           )}
           
-          <p className="text-center text-xs text-gray-500 mt-6">
+          <p className="text-center text-xs text-gray-500 mt-4 md:mt-6">
             Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.
           </p>
         </motion.div>

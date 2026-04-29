@@ -493,6 +493,9 @@ body::after {
   gap: 10px;
   border-radius: 22px;
   padding: 10px;
+  position: sticky;
+  top: 0.5rem;
+  z-index: 50;
 }
 
 .match-topbar > button {

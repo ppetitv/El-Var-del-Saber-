@@ -547,9 +547,7 @@ export default function VestuarioScreen({
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <div className="w-20 h-20 bg-card-light rounded-full flex items-center justify-center mb-5 mx-auto shadow-[0_0_24px_rgba(255,224,0,0.14)] border border-gray-800">
-              <Trophy className="text-rpp-yellow" size={40} />
-            </div>
+
             <h1 className="premium-title text-2xl md:text-4xl font-black font-montserrat mb-2 px-2">
               Demuestra cuánto sabes de fútbol y <span className="text-blue-400">gana una PS5</span>
             </h1>

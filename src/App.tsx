@@ -179,9 +179,9 @@ export default function App() {
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             transition={{ type: "spring", bounce: 0.35 }}
-            className="premium-panel premium-hero w-full rounded-2xl p-5 md:p-8 relative overflow-hidden shadow-2xl text-center"
+            className="premium-panel premium-hero w-full rounded-2xl p-4 md:p-8 relative overflow-hidden shadow-2xl text-center"
           >
-            <div className="flex flex-col items-center mb-8 pt-4">
+            <div className="flex flex-col items-center mb-4 md:mb-8 pt-2 md:pt-4">
               <motion.div 
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -214,7 +214,7 @@ export default function App() {
               </h1>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 mb-4 md:mb-8">
               <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Puntaje guardado</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{lastScore}</p>
@@ -230,7 +230,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="w-full bg-[#f6e8c8] border border-[#ead4a1] text-[#704400] rounded-xl p-4 md:p-5 flex flex-col md:flex-row items-center gap-4 mb-8 text-center md:text-left relative overflow-hidden shadow-lg">
+            <div className="w-full bg-[#f6e8c8] border border-[#ead4a1] text-[#704400] rounded-xl p-3 md:p-5 flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-4 md:mb-8 text-center md:text-left relative overflow-hidden shadow-lg">
               <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white/40 to-transparent pointer-events-none hidden md:block"></div>
               
               <div className="w-24 h-20 md:w-28 md:h-24 shrink-0 flex items-center justify-center bg-white/50 rounded-lg p-2 border border-white/80 shadow-sm relative z-10">
