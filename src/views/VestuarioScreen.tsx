@@ -122,11 +122,14 @@ export default function VestuarioScreen({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    // No sale automáticamente si no está logueado
+    if (!isLoggedIn) return;
+    // Solo sale automáticamente una vez
     if (window.localStorage.getItem('varSaberOnboardingSeen') === 'true') return;
 
     const timer = window.setTimeout(() => setShowOnboarding(true), 700);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!showOnboarding) return;
@@ -177,7 +180,10 @@ export default function VestuarioScreen({
   }, [onboardingStep, onboardingSteps, showOnboarding]);
 
   const completeOnboarding = () => {
-    window.localStorage.setItem('varSaberOnboardingSeen', 'true');
+    // Solo guardamos que ya lo vio si está logueado, para que el del vestuario salga auto
+    if (isLoggedIn) {
+      window.localStorage.setItem('varSaberOnboardingSeen', 'true');
+    }
     setShowOnboarding(false);
   };
 
