@@ -43,9 +43,7 @@ export default function LoginModal({
 
           {/* Header / Logo */}
           <div className="flex flex-col items-center mb-6 md:mb-8 mt-2 md:mt-4">
-            <div className="auth-modal-icon w-14 h-14 bg-rpp-yellow rounded-xl flex items-center justify-center mb-4 shadow-[0_0_18px_rgba(255,224,0,0.24)]">
-              <MonitorPlay className="text-stadium" size={30} />
-            </div>
+
             <h2 className="premium-title text-2xl font-black font-montserrat text-center tracking-tight">
               {isPostMatch ? <>GUARDA TUS <span className="text-rpp-yellow">PUNTOS</span></> : <>ÚNETE A LA <span className="text-rpp-yellow">CANCHA</span></>}
             </h2>
@@ -96,7 +94,7 @@ export default function LoginModal({
           <div className="auth-actions">
             <button 
               onClick={onLogin}
-              className="auth-primary-button w-full bg-white text-gray-900 font-bold py-3 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors shadow-[0_14px_28px_rgba(255,255,255,0.06)]"
+              className="auth-primary-button w-full bg-white text-gray-900 font-black py-3.5 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors shadow-[0_14px_28px_rgba(255,255,255,0.06)]"
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -108,7 +106,7 @@ export default function LoginModal({
             </button>
             <button 
               onClick={onLogin}
-              className="auth-secondary-button premium-button-secondary w-full font-bold py-3 rounded-xl flex items-center justify-center transition-colors"
+              className="auth-secondary-button premium-button-secondary w-full font-black py-3.5 rounded-xl flex items-center justify-center transition-colors border-2 border-blue-500/30"
             >
               <span className="auth-facebook-icon">f</span>
               Continuar con Facebook
