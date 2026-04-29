@@ -326,9 +326,9 @@ export default function App() {
                     <Ticket className="text-rpp-yellow" size={22} />
                   </div>
                   <div className="text-left">
-                    <p className="text-[10px] text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Recompensa Semanal</p>
+                    <p className="text-[10px] text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Acumulas por el premio</p>
                     <p className="text-xl md:text-2xl font-black font-montserrat text-white">
-                      +{lastEarnedCoupons} <span className="text-sm text-gray-300 font-medium">Cupones Dorados</span>
+                      {goldenCoupons} <span className="text-sm text-gray-300 font-medium">Cupones Dorados</span>
                     </p>
                   </div>
                 </motion.div>
