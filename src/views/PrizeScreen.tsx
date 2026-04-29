@@ -1,16 +1,53 @@
-import React from 'react';
-import { ChevronLeft, Gamepad2, Ticket, Clock, Info, Zap, Trophy, Calendar, LogIn, Play, LockKeyhole } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { ChevronLeft, Gamepad2, Ticket, Clock, Info, Zap, Trophy, Calendar, LogIn, Play, LockKeyhole, HelpCircle } from 'lucide-react';
 import { motion } from 'motion/react';
+import PrizeProduct from '../components/PrizeProduct';
 
 interface PrizeScreenProps {
   onBack: () => void;
-  goldenTickets: number;
+  goldenCoupons: number;
   isLoggedIn: boolean;
   onLoginClick: () => void;
   onPlayClick: () => void;
+  initialSection?: 'overview' | 'faq';
 }
 
-export default function PrizeScreen({ onBack, goldenTickets, isLoggedIn, onLoginClick, onPlayClick }: PrizeScreenProps) {
+export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLoginClick, onPlayClick, initialSection = 'overview' }: PrizeScreenProps) {
+  const faqs = [
+    {
+      question: '¿Cómo participo por el premio?',
+      answer: 'Juega partidas, acumula Cupones Dorados y regístrate para que tus participaciones queden asociadas a tu cuenta.'
+    },
+    {
+      question: '¿Puedo jugar infinitamente?',
+      answer: 'No de forma libre. Cada partida consume vidas. Si te quedas sin vidas, puedes ver un video sponsor para recargar y seguir jugando.'
+    },
+    {
+      question: '¿Para qué sirven los Cupones Dorados?',
+      answer: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más cupones acumules, más oportunidades tienes de ganar.'
+    },
+    {
+      question: '¿Tengo que registrarme para ganar?',
+      answer: 'Sí. Puedes probar el juego sin cuenta, pero necesitas registrarte para guardar tu avance, tus cupones y participar por premios.'
+    },
+    {
+      question: '¿Puedo participar en más premios?',
+      answer: 'La mecánica actual se centra en el sorteo semanal activo. Si hay nuevos premios disponibles, aparecerán en esta sección.'
+    },
+    {
+      question: '¿El ranking influye en el sorteo?',
+      answer: 'El ranking mide tu rendimiento y progreso. Los premios se impulsan principalmente con tus Cupones Dorados acumulados.'
+    }
+  ];
+
+  useEffect(() => {
+    if (initialSection !== 'faq') return;
+
+    window.setTimeout(() => {
+      document.getElementById('faq-premios')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }, 120);
+  }, [initialSection]);
+
   return (
     <div className="prize-screen min-h-screen bg-stadium text-white p-4 md:p-5 font-sans max-w-4xl mx-auto pb-24 md:pb-12">
       {/* HEADER */}
@@ -38,34 +75,37 @@ export default function PrizeScreen({ onBack, goldenTickets, isLoggedIn, onLogin
         <div className="prize-hero-glow absolute right-0 top-0 bottom-0 w-full md:w-1/2 bg-gradient-to-l from-blue-500/20 to-transparent pointer-events-none"></div>
         <Gamepad2 className="prize-hero-icon absolute -right-10 -bottom-10 text-blue-500/10 w-64 h-64 transform -rotate-12 pointer-events-none" />
         
-        <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="prize-countdown inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 px-3 py-1.5 rounded-full mb-5">
-            <Clock size={16} className="text-blue-400" />
-            <span className="text-blue-300 font-bold text-sm tracking-wide">TERMINA EN: 2D 14H 20M</span>
+        <div className="relative z-10 grid gap-6 md:grid-cols-[1fr_0.82fr] md:items-center">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
+            <div className="prize-countdown inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 px-3 py-1.5 rounded-full mb-5">
+              <Clock size={16} className="text-blue-400" />
+              <span className="text-blue-300 font-bold text-sm tracking-wide">TERMINA EN: 2D 14H 20M</span>
+            </div>
+            
+            <h2 className="premium-title text-4xl md:text-6xl font-black font-montserrat text-white tracking-tighter mb-3 drop-shadow-lg">
+              PlayStation 5
+            </h2>
+            <p className="text-base md:text-lg text-blue-200 max-w-2xl font-medium">
+              Acumula Cupones Dorados jugando partidas. ¡Mientras más cupones tengas, más probabilidades tienes de ganar en el sorteo de este domingo!
+            </p>
           </div>
-          
-          <h2 className="premium-title text-4xl md:text-6xl font-black font-montserrat text-white tracking-tighter mb-3 drop-shadow-lg">
-            PlayStation 5
-          </h2>
-          <p className="text-base md:text-lg text-blue-200 max-w-2xl font-medium mb-6">
-            Acumula Cupones Dorados jugando partidas. ¡Mientras más cupones tengas, más probabilidades tienes de ganar en el sorteo de este domingo!
-          </p>
+          <PrizeProduct variant="hero" />
         </div>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-        {/* LEFT COL: USER TICKETS */}
+        {/* LEFT COL: USER COUPONS */}
         <div className="md:col-span-5">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="info-card prize-ticket-card premium-panel rounded-2xl p-6 shadow-[0_0_24px_rgba(255,224,0,0.08)] relative overflow-hidden h-full flex flex-col justify-center"
+            className="info-card prize-coupon-card premium-panel rounded-2xl p-6 shadow-[0_0_24px_rgba(255,224,0,0.08)] relative overflow-hidden h-full flex flex-col justify-center"
           >
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rpp-yellow to-orange-500"></div>
             
             <div className="text-center mb-6">
-            <div className="premium-icon-wrap prize-ticket-icon w-14 h-14 rounded-full mx-auto mb-4 border-rpp-yellow/20 bg-rpp-yellow/10">
+            <div className="premium-icon-wrap prize-coupon-icon w-14 h-14 rounded-full mx-auto mb-4 border-rpp-yellow/20 bg-rpp-yellow/10">
               <Ticket className="text-rpp-yellow" size={40} />
             </div>
               <h3 className="text-xl font-bold font-montserrat mb-1">Tus Cupones Dorados</h3>
@@ -75,7 +115,7 @@ export default function PrizeScreen({ onBack, goldenTickets, isLoggedIn, onLogin
             {isLoggedIn ? (
               <div className="text-center">
                 <div className="text-6xl font-black font-montserrat text-rpp-yellow mb-5 drop-shadow-[0_0_15px_rgba(255,224,0,0.2)]">
-                  {goldenTickets}
+                  {goldenCoupons}
                 </div>
                 <button 
                   onClick={onPlayClick}
@@ -177,6 +217,37 @@ export default function PrizeScreen({ onBack, goldenTickets, isLoggedIn, onLogin
           </motion.div>
         </div>
       </div>
+
+      <motion.section
+        id="faq-premios"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="faq-section premium-panel rounded-2xl p-5 md:p-6 mt-5"
+      >
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-5">
+          <div>
+            <div className="premium-topline mb-2">Preguntas frecuentes</div>
+            <h3 className="premium-title text-xl md:text-2xl font-black font-montserrat flex items-center">
+              <HelpCircle className="mr-2 text-blue-400" size={24} />
+              Mecánica de premios
+            </h3>
+          </div>
+          <p className="text-sm text-gray-400 max-w-md">
+            Todo lo importante sobre vidas, cupones, registro y sorteos.
+          </p>
+        </div>
+
+        <div className="faq-grid">
+          {faqs.map((faq, index) => (
+            <article key={faq.question} className="info-card faq-card">
+              <span className="faq-number">{String(index + 1).padStart(2, '0')}</span>
+              <h4>{faq.question}</h4>
+              <p>{faq.answer}</p>
+            </article>
+          ))}
+        </div>
+      </motion.section>
     </div>
   );
 }

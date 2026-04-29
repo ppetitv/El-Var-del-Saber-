@@ -4,8 +4,9 @@ import MatchScreen from './views/MatchScreen';
 import RankingScreen from './views/RankingScreen';
 import PrizeScreen from './views/PrizeScreen';
 import LoginModal from './components/LoginModal';
+import PrizeProduct from './components/PrizeProduct';
 import { motion } from 'motion/react';
-import { Trophy, Home, Ticket, Play, TrendingUp, MessageCircle, Instagram, Send } from 'lucide-react';
+import { Trophy, Home, Ticket, Heart, Play, TrendingUp, MessageCircle, Instagram, Send, ArrowRight } from 'lucide-react';
 import { mockQuestions, mockUser } from './data/mockData';
 
 interface MatchSummary {
@@ -19,30 +20,31 @@ export default function App() {
   const [lastScore, setLastScore] = useState(0);
   const [lastCorrectAnswers, setLastCorrectAnswers] = useState(0);
   const [lastAverageTime, setLastAverageTime] = useState(0);
-  const [lastEarnedTickets, setLastEarnedTickets] = useState(0);
-  const [tickets, setTickets] = useState(5); // Full inventory for new users
-  const [goldenTickets, setGoldenTickets] = useState(0); // Golden tickets for the weekly raffle
-  const [pendingGoldenTickets, setPendingGoldenTickets] = useState(0);
+  const [lastEarnedCoupons, setLastEarnedCoupons] = useState(0);
+  const [lives, setLives] = useState(5);
+  const [goldenCoupons, setGoldenCoupons] = useState(0);
+  const [pendingGoldenCoupons, setPendingGoldenCoupons] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginModalMode, setLoginModalMode] = useState<'default' | 'post-match'>('default');
+  const [prizeInitialSection, setPrizeInitialSection] = useState<'overview' | 'faq'>('overview');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentScreen]);
 
   const handlePlay = () => {
-    if (tickets <= 0) {
+    if (lives <= 0) {
       setCurrentScreen('vestuario');
       return;
     }
-    setTickets(prev => Math.max(0, prev - 1));
+    setLives(prev => Math.max(0, prev - 1));
     setCurrentScreen('match');
   };
 
-  const handleAddTickets = (amount: number) => {
-    setTickets(prev => Math.min(prev + amount, 5));
+  const handleAddLives = (amount: number) => {
+    setLives(prev => Math.min(prev + amount, 5));
   };
 
   const handleFinishMatch = ({ score, correctAnswers, averageTime }: MatchSummary) => {
@@ -50,12 +52,12 @@ export default function App() {
     setLastCorrectAnswers(correctAnswers);
     setLastAverageTime(averageTime);
     setHasPlayed(true);
-    const earnedGoldenTickets = score > 1000 ? 3 : 1;
-    setLastEarnedTickets(earnedGoldenTickets);
+    const earnedGoldenCoupons = score > 1000 ? 3 : 1;
+    setLastEarnedCoupons(earnedGoldenCoupons);
     if (isLoggedIn) {
-      setGoldenTickets(prev => prev + earnedGoldenTickets);
+      setGoldenCoupons(prev => prev + earnedGoldenCoupons);
     } else {
-      setPendingGoldenTickets(prev => prev + earnedGoldenTickets);
+      setPendingGoldenCoupons(prev => prev + earnedGoldenCoupons);
     }
     setCurrentScreen('result');
   };
@@ -69,15 +71,21 @@ export default function App() {
   };
 
   const handleGoToPrize = () => {
+    setPrizeInitialSection('overview');
+    setCurrentScreen('prize');
+  };
+
+  const handleGoToFaq = () => {
+    setPrizeInitialSection('faq');
     setCurrentScreen('prize');
   };
 
   const handleLogin = () => {
     const shouldShowWelcome = loginModalMode === 'post-match';
     setIsLoggedIn(true);
-    if (pendingGoldenTickets > 0) {
-      setGoldenTickets(prev => prev + pendingGoldenTickets);
-      setPendingGoldenTickets(0);
+    if (pendingGoldenCoupons > 0) {
+      setGoldenCoupons(prev => prev + pendingGoldenCoupons);
+      setPendingGoldenCoupons(0);
     }
     setShowLoginModal(false);
     setLoginModalMode('default');
@@ -86,7 +94,7 @@ export default function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setGoldenTickets(0); // Reset golden tickets on logout for demo purposes
+    setGoldenCoupons(0);
   };
 
   const handleOpenDefaultLogin = () => {
@@ -137,26 +145,28 @@ export default function App() {
       {currentScreen === 'vestuario' && (
         <VestuarioScreen 
           onPlay={handlePlay} 
-          tickets={tickets} 
-          goldenTickets={goldenTickets}
-          onAddTickets={handleAddTickets}
+          lives={lives}
+          goldenCoupons={goldenCoupons}
+          onAddLives={handleAddLives}
           onGoToRanking={handleGoToRanking}
           onGoToPrize={handleGoToPrize}
+          onGoToFaq={handleGoToFaq}
           isLoggedIn={isLoggedIn}
           hasPlayed={hasPlayed}
           onLoginClick={handleOpenDefaultLogin}
           onLogoutClick={handleLogout}
         />
       )}
-      {currentScreen === 'match' && <MatchScreen onFinish={handleFinishMatch} />}
+      {currentScreen === 'match' && <MatchScreen lives={lives} onFinish={handleFinishMatch} />}
       {currentScreen === 'ranking' && <RankingScreen onBack={handleBackToDashboard} />}
       {currentScreen === 'prize' && (
         <PrizeScreen 
           onBack={handleBackToDashboard} 
-          goldenTickets={goldenTickets} 
+          goldenCoupons={goldenCoupons}
           isLoggedIn={isLoggedIn} 
           onLoginClick={handleOpenDefaultLogin}
           onPlayClick={handlePlay}
+          initialSection={prizeInitialSection}
         />
       )}
       {currentScreen === 'welcome' && (
@@ -190,7 +200,7 @@ export default function App() {
               </div>
               <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Cupones activos</p>
-                <p className="text-3xl font-black font-montserrat text-rpp-yellow">{goldenTickets}</p>
+                <p className="text-3xl font-black font-montserrat text-rpp-yellow">{goldenCoupons}</p>
                 <p className="text-xs text-gray-500 mt-2">Participaciones para el premio semanal</p>
               </div>
               <div className="info-card premium-soft-panel rounded-xl p-4">
@@ -265,15 +275,16 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="flex items-center justify-center bg-gradient-to-r from-rpp-yellow/20 to-orange-500/20 border border-rpp-yellow/50 px-4 py-3 md:px-6 rounded-xl mb-8 shadow-[0_0_20px_rgba(255,224,0,0.12)]"
+                  className="result-prize-card flex items-center justify-center bg-gradient-to-r from-rpp-yellow/20 to-orange-500/20 border border-rpp-yellow/50 px-4 py-3 md:px-6 rounded-xl mb-8 shadow-[0_0_20px_rgba(255,224,0,0.12)]"
                 >
+                  <PrizeProduct variant="result" />
                   <div className="w-10 h-10 bg-rpp-yellow/20 rounded-full flex items-center justify-center mr-3 shrink-0">
                     <Ticket className="text-rpp-yellow" size={22} />
                   </div>
                   <div className="text-left">
                     <p className="text-[10px] text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Recompensa Semanal</p>
                     <p className="text-xl md:text-2xl font-black font-montserrat text-white">
-                      +{lastEarnedTickets} <span className="text-sm text-gray-300 font-medium">Cupones Dorados</span>
+                      +{lastEarnedCoupons} <span className="text-sm text-gray-300 font-medium">Cupones Dorados</span>
                     </p>
                   </div>
                 </motion.div>
@@ -331,8 +342,16 @@ export default function App() {
                   Regístrate y compite por el premio
                 </motion.button>
 
+                <div className="result-guest-prize">
+                  <PrizeProduct variant="result" />
+                  <div>
+                    <p>Participa por la PlayStation 5</p>
+                    <span>Tus cupones se activan al crear tu cuenta.</span>
+                  </div>
+                </div>
+
                 <p className="text-xs md:text-sm text-gray-400 text-center mb-6 leading-relaxed">
-                  Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenTickets || lastEarnedTickets} cupones quedan esperando si creas tu cuenta ahora.
+                  Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenCoupons || lastEarnedCoupons} cupones quedan esperando si creas tu cuenta ahora.
                 </p>
               </>
             )}
@@ -342,10 +361,10 @@ export default function App() {
                 onClick={handlePlay}
                 className={`${isLoggedIn ? 'premium-button-primary font-black text-base md:text-lg py-4 rounded-xl' : 'result-replay-button'} w-full font-montserrat flex items-center justify-center transition-transform`}
               >
-                {tickets > 0 ? (
-                  <><Play className="mr-2" fill="currentColor" size={isLoggedIn ? 24 : 18} /> JUGAR DE NUEVO {isLoggedIn ? `(🎟️ ${tickets})` : ''}</>
+                {lives > 0 ? (
+                  <><Play className="mr-2" fill="currentColor" size={isLoggedIn ? 24 : 18} /> JUGAR DE NUEVO {isLoggedIn ? <span className="inline-flex items-center ml-2">(<Heart className="mx-1" size={16} fill="currentColor" /> {lives})</span> : ''}</>
                 ) : (
-                  <><Ticket className="mr-2" size={isLoggedIn ? 24 : 18} /> VOLVER AL INICIO</>
+                  <><Home className="mr-2" size={isLoggedIn ? 24 : 18} /> VOLVER AL INICIO</>
                 )}
               </button>
               
@@ -353,7 +372,8 @@ export default function App() {
                 onClick={handleBackToDashboard}
                 className="result-ghost-button w-full font-montserrat flex items-center justify-center transition-colors"
               >
-                <Home className="mr-2" size={18} /> {isLoggedIn ? 'VESTUARIO' : 'SEGUIR SIN CUENTA'}
+                {isLoggedIn ? <Home className="mr-2" size={18} /> : <ArrowRight className="mr-2" size={18} />}
+                {isLoggedIn ? 'VESTUARIO' : 'SEGUIR SIN CUENTA'}
               </button>
               {!isLoggedIn && (
                 <p className="text-xs text-gray-500 text-center">

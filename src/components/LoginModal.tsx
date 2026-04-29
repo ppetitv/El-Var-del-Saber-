@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Trophy, Save, MonitorPlay, Mail } from 'lucide-react';
+import { X, Trophy, Save, MonitorPlay } from 'lucide-react';
+import PrizeProduct from './PrizeProduct';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -30,22 +31,21 @@ export default function LoginModal({
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="premium-panel premium-hero rounded-2xl p-6 max-w-sm w-full relative overflow-hidden shadow-2xl"
+          className="auth-modal-card premium-panel premium-hero rounded-2xl p-6 max-w-sm w-full relative overflow-hidden shadow-2xl"
         >
           {/* Close Button */}
           <button 
             onClick={onClose} 
-            className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors bg-card-light/50 p-2 rounded-full"
+            className="modal-close-button absolute top-4 right-4 text-gray-500 hover:text-white transition-colors bg-card-light/50 p-2 rounded-full"
           >
             <X size={20} />
           </button>
 
           {/* Header / Logo */}
           <div className="flex flex-col items-center mb-8 mt-4">
-            <div className="w-14 h-14 bg-rpp-yellow rounded-xl flex items-center justify-center mb-4 shadow-[0_0_18px_rgba(255,224,0,0.24)]">
+            <div className="auth-modal-icon w-14 h-14 bg-rpp-yellow rounded-xl flex items-center justify-center mb-4 shadow-[0_0_18px_rgba(255,224,0,0.24)]">
               <MonitorPlay className="text-stadium" size={30} />
             </div>
-            <div className="premium-topline mb-4">{isPostMatch ? 'Guardar y competir' : 'Acceso premium'}</div>
             <h2 className="premium-title text-2xl font-black font-montserrat text-center tracking-tight">
               {isPostMatch ? <>GUARDA TUS <span className="text-rpp-yellow">PUNTOS</span></> : <>ÚNETE A LA <span className="text-rpp-yellow">CANCHA</span></>}
             </h2>
@@ -57,15 +57,19 @@ export default function LoginModal({
           </div>
 
           {isPostMatch && (
-            <div className="bg-[#f6e8c8] text-[#704400] font-bold text-center py-2.5 px-4 rounded-xl mb-5 text-sm">
-              Tienes {pendingScore.toLocaleString('es-PE')} pts esperándote
+            <div className="auth-prize-reminder">
+              <PrizeProduct variant="modal" />
+              <div>
+                <p>Juegas por una PlayStation 5</p>
+                <span>Tienes {pendingScore.toLocaleString('es-PE')} pts esperando ser guardados.</span>
+              </div>
             </div>
           )}
 
           {/* Benefits */}
           <div className="space-y-3 mb-6">
             <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
-              <div className="w-10 h-10 bg-rpp-yellow/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
+              <div className="auth-benefit-icon auth-benefit-icon-gold w-10 h-10 bg-rpp-yellow/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Trophy className="text-rpp-yellow" size={20} />
               </div>
               <div>
@@ -76,23 +80,23 @@ export default function LoginModal({
               </div>
             </div>
             <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
-              <div className="w-10 h-10 bg-neon-green/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
+              <div className="auth-benefit-icon auth-benefit-icon-green w-10 h-10 bg-neon-green/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
                 <Save className="text-neon-green" size={20} />
               </div>
               <div>
                 <p className="font-bold text-sm">{isPostMatch ? 'Activa tus premios' : 'Guarda tu Progreso'}</p>
                 <p className="text-xs text-gray-400">
-                  {isPostMatch ? 'Tus cupones quedan asociados a tu cuenta para entrar al sorteo semanal.' : 'Tus estadísticas y tickets seguros en la nube.'}
+                  {isPostMatch ? 'Tus cupones quedan asociados a tu cuenta para entrar al sorteo semanal.' : 'Tus estadísticas y vidas seguras en la nube.'}
                 </p>
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3">
+          <div className="auth-actions">
             <button 
               onClick={onLogin}
-              className="w-full bg-white text-gray-900 font-bold py-3 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors shadow-[0_14px_28px_rgba(255,255,255,0.06)]"
+              className="auth-primary-button w-full bg-white text-gray-900 font-bold py-3 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors shadow-[0_14px_28px_rgba(255,255,255,0.06)]"
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -100,23 +104,23 @@ export default function LoginModal({
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Continuar con Google
+              <span>Continuar con Google</span>
             </button>
             <button 
               onClick={onLogin}
-              className="premium-button-secondary w-full font-bold py-3 rounded-xl flex items-center justify-center transition-colors"
+              className="auth-secondary-button premium-button-secondary w-full font-bold py-3 rounded-xl flex items-center justify-center transition-colors"
             >
-              <Mail className="w-5 h-5 mr-3" />
-              Continuar con Email
+              <span className="auth-facebook-icon">f</span>
+              Continuar con Facebook
             </button>
           </div>
 
           {isPostMatch && (
             <>
-              <div className="w-full h-px bg-gray-800 my-5" />
+              <div className="auth-action-divider w-full h-px bg-gray-800 my-5" />
               <button
                 onClick={onContinueWithoutAccount ?? onClose}
-                className="w-full text-gray-300 font-semibold py-2 rounded-xl hover:text-white transition-colors"
+                className="auth-tertiary-button w-full text-gray-300 font-semibold py-2 rounded-xl hover:text-white transition-colors"
               >
                 No, seguir sin cuenta
               </button>

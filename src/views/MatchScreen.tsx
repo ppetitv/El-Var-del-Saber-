@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, RefreshCw, CheckCircle2, XCircle, ChevronLeft, MonitorPlay } from 'lucide-react';
+import { Users, RefreshCw, CheckCircle2, XCircle, ChevronLeft, MonitorPlay, Heart } from 'lucide-react';
 import { mockQuestions } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -11,7 +11,12 @@ interface MatchSummary {
 
 const NEXT_QUESTION_DELAY_MS = 500;
 
-export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSummary) => void }) {
+interface MatchScreenProps {
+  lives: number;
+  onFinish: (summary: MatchSummary) => void;
+}
+
+export default function MatchScreen({ lives, onFinish }: MatchScreenProps) {
   const [currentQ, setCurrentQ] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -156,7 +161,7 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
   return (
     <div className="match-shell min-h-screen bg-stadium text-white p-4 md:p-6 font-sans flex flex-col max-w-6xl mx-auto">
       {/* HEADER */}
-      <div className="match-topbar flex justify-between items-center mb-6 md:mb-8">
+      <div className="match-topbar match-topbar-grid mb-6 md:mb-8">
         <button className="premium-button-secondary w-11 h-11 rounded-full flex items-center justify-center shrink-0">
           <ChevronLeft size={20} />
         </button>
@@ -166,26 +171,33 @@ export default function MatchScreen({ onFinish }: { onFinish: (summary: MatchSum
             Pregunta <span>{currentQ + 1}</span> de {mockQuestions.length}
           </p>
         </div>
-        <div className="match-timer w-12 h-12 relative flex items-center justify-center bg-card-dark rounded-full border border-gray-800 shadow-lg shrink-0">
-          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-            <path
-              className="text-gray-800"
-              strokeWidth="3"
-              stroke="currentColor"
-              fill="none"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path
-              className={`${timeLeft > 5 ? 'text-neon-green' : 'text-var-red'} transition-all duration-1000 ease-linear`}
-              strokeDasharray={`${(timeLeft / 15) * 100}, 100`}
-              strokeWidth="3"
-              strokeLinecap="round"
-              stroke="currentColor"
-              fill="none"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
-          <span className="absolute font-bold font-montserrat text-lg">{timeLeft}</span>
+        <div className="match-status-cluster">
+          <div className="match-lives-badge" aria-label={`${lives} vidas disponibles`}>
+            <Heart size={15} fill="currentColor" />
+            <span className="hidden sm:inline">Vidas</span>
+            <strong>{lives}/5</strong>
+          </div>
+          <div className="match-timer w-12 h-12 relative flex items-center justify-center bg-card-dark rounded-full border border-gray-800 shadow-lg shrink-0">
+            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+              <path
+                className="text-gray-800"
+                strokeWidth="3"
+                stroke="currentColor"
+                fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                className={`${timeLeft > 5 ? 'text-neon-green' : 'text-var-red'} transition-all duration-1000 ease-linear`}
+                strokeDasharray={`${(timeLeft / 15) * 100}, 100`}
+                strokeWidth="3"
+                strokeLinecap="round"
+                stroke="currentColor"
+                fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+            <span className="absolute font-bold font-montserrat text-lg">{timeLeft}</span>
+          </div>
         </div>
       </div>
 

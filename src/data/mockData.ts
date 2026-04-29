@@ -48,7 +48,7 @@ export const mockUser = {
   accuracy: 82,
   avgTime: 4.2,
   streak: 7,
-  tickets: 5,
+  lives: 5,
   matchesPlayed: 142
 };
 
@@ -63,7 +63,7 @@ export const mockNewUser = {
   accuracy: 0,
   avgTime: 0,
   streak: 0,
-  tickets: 5,
+  lives: 5,
   matchesPlayed: 0
 };
 
@@ -78,7 +78,7 @@ export const mockGuestUser = {
   accuracy: 0,
   avgTime: 0,
   streak: 0,
-  tickets: 5,
+  lives: 5,
   matchesPlayed: 0
 };
 

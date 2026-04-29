@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Trophy, Star, Zap, Clock, Target, Flame, Ticket, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight } from 'lucide-react';
 import { mockUser, mockNewUser, mockGuestUser } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
+import PrizeProduct from '../components/PrizeProduct';
 
 interface VestuarioProps {
   onPlay: () => void;
-  tickets: number;
-  goldenTickets: number;
-  onAddTickets: (amount: number) => void;
+  lives: number;
+  goldenCoupons: number;
+  onAddLives: (amount: number) => void;
   onGoToRanking: () => void;
   onGoToPrize: () => void;
+  onGoToFaq: () => void;
   isLoggedIn: boolean;
   hasPlayed: boolean;
   onLoginClick: () => void;
@@ -18,11 +20,12 @@ interface VestuarioProps {
 
 export default function VestuarioScreen({
   onPlay,
-  tickets,
-  goldenTickets,
-  onAddTickets,
+  lives,
+  goldenCoupons,
+  onAddLives,
   onGoToRanking,
   onGoToPrize,
+  onGoToFaq,
   isLoggedIn,
   hasPlayed,
   onLoginClick,
@@ -31,8 +34,80 @@ export default function VestuarioScreen({
   const [showAdModal, setShowAdModal] = useState(false);
   const [adState, setAdState] = useState<'idle' | 'playing' | 'finished'>('idle');
   const [adTimer, setAdTimer] = useState(5);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [onboardingTarget, setOnboardingTarget] = useState<DOMRect | null>(null);
 
   const currentUser = isLoggedIn ? (hasPlayed ? mockUser : mockNewUser) : mockGuestUser;
+  const onboardingSteps = useMemo(() => {
+    const introStep = {
+      target: 'brand',
+      title: 'Así funciona el juego',
+      body: 'Juegas trivias cortas de fútbol, sumas puntaje y avanzas en una dinámica de vidas, PR, cupones y premios.'
+    };
+    const playStep = {
+      target: 'primary-play',
+      title: 'Cada partida consume 1 vida',
+      body: 'Presiona jugar para iniciar una ronda. Si tienes vidas disponibles, entras al cuestionario y compites por mejorar tu puntaje.'
+    };
+    const tipsStep = {
+      target: 'tutorial',
+      title: 'Responde mejor para subir tu PR',
+      body: 'Tu PR refleja tu mejor rendimiento. Responder rápido, acertar más y usar comodines te ayuda a mejorar tu posición.'
+    };
+    const registrationStep = {
+      target: 'login-entry',
+      title: 'Regístrate para participar por premios',
+      body: 'Puedes probar sin cuenta, pero necesitas registrarte para guardar tu avance, conservar cupones y entrar a sorteos.'
+    };
+    const prizeStep = {
+      target: 'prize-banner',
+      title: 'Los Cupones Dorados son tus oportunidades',
+      body: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más acumules, más oportunidades tienes.'
+    };
+
+    if (!isLoggedIn) {
+      return [
+        introStep,
+        playStep,
+        tipsStep,
+        registrationStep
+      ];
+    }
+
+    if (!hasPlayed) {
+      return [
+        introStep,
+        prizeStep,
+        playStep,
+        tipsStep
+      ];
+    }
+
+    return [
+      {
+        target: 'dashboard-summary',
+        title: 'Tu vestuario resume qué hacer ahora',
+        body: 'Desde aquí decides si juegas otra ronda, revisas tus vidas, miras el ranking o sigues acumulando cupones.'
+      },
+      {
+        target: 'lives-card',
+        title: 'Tus vidas controlan las partidas',
+        body: 'Cada partida consume 1 vida. Si te quedas sin vidas, puedes recargar viendo un video sponsor.'
+      },
+      prizeStep,
+      {
+        target: 'ranking-preview',
+        title: 'Ranking y PR',
+        body: 'El ranking compara tu rendimiento con otros jugadores. Tu PR es la referencia de tu mejor marca.'
+      },
+      {
+        target: 'primary-play',
+        title: 'Sigue jugando para aumentar tus opciones',
+        body: 'Más partidas significan más oportunidades de mejorar tu PR y sumar cupones para el premio semanal.'
+      }
+    ];
+  }, [hasPlayed, isLoggedIn]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -40,13 +115,88 @@ export default function VestuarioScreen({
       timer = setTimeout(() => setAdTimer(adTimer - 1), 1000);
     } else if (adState === 'playing' && adTimer === 0) {
       setAdState('finished');
-      onAddTickets(2);
+      onAddLives(2);
     }
     return () => clearTimeout(timer);
-  }, [adState, adTimer, onAddTickets]);
+  }, [adState, adTimer, onAddLives]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.localStorage.getItem('varSaberOnboardingSeen') === 'true') return;
+
+    const timer = window.setTimeout(() => setShowOnboarding(true), 700);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!showOnboarding) return;
+    let targetTimer: number | undefined;
+
+    const findVisibleTarget = (target: string) => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>(`[data-onboarding="${target}"]`));
+      return elements.find((element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      });
+    };
+
+    const syncTarget = () => {
+      const current = onboardingSteps[onboardingStep];
+      const element = current ? findVisibleTarget(current.target) : null;
+
+      if (!element) {
+        setOnboardingTarget(null);
+        return;
+      }
+
+      setOnboardingTarget(element.getBoundingClientRect());
+    };
+
+    const moveToTarget = () => {
+      const current = onboardingSteps[onboardingStep];
+      const element = current ? findVisibleTarget(current.target) : null;
+
+      if (!element) {
+        setOnboardingTarget(null);
+        return;
+      }
+
+      element.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+      targetTimer = window.setTimeout(syncTarget, 260);
+    };
+
+    moveToTarget();
+    window.addEventListener('resize', syncTarget);
+    window.addEventListener('scroll', syncTarget, true);
+
+    return () => {
+      if (targetTimer) window.clearTimeout(targetTimer);
+      window.removeEventListener('resize', syncTarget);
+      window.removeEventListener('scroll', syncTarget, true);
+    };
+  }, [onboardingStep, onboardingSteps, showOnboarding]);
+
+  const completeOnboarding = () => {
+    window.localStorage.setItem('varSaberOnboardingSeen', 'true');
+    setShowOnboarding(false);
+  };
+
+  const replayOnboarding = () => {
+    setOnboardingStep(0);
+    setShowOnboarding(true);
+  };
+
+  const goToNextOnboardingStep = () => {
+    if (onboardingStep >= onboardingSteps.length - 1) {
+      completeOnboarding();
+      return;
+    }
+
+    setOnboardingStep(prev => prev + 1);
+  };
 
   const handlePlayClick = () => {
-    if (tickets > 0) {
+    if (lives > 0) {
       onPlay();
       return;
     }
@@ -69,40 +219,50 @@ export default function VestuarioScreen({
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 }}
       className="w-full pb-24 md:pb-0"
+      data-onboarding="tutorial"
     >
       <div className="info-card premium-soft-panel rounded-2xl p-4 md:p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-white font-bold uppercase tracking-[0.2em] text-[11px] md:text-xs">
             Cómo se juega
           </h3>
-          <span className="text-[10px] text-gray-500 uppercase tracking-[0.18em]">3 claves</span>
+          <span className="text-[10px] text-gray-500 uppercase tracking-[0.18em]">Mecánica base</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="info-card tutorial-info-card flex items-start gap-3 rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+        <div className="tutorial-info-list">
+          <div className="info-card tutorial-info-card">
             <div className="tutorial-info-icon w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center shrink-0">
-              <Clock className="text-blue-400" size={16} />
+              <Heart className="text-blue-400" size={16} fill="currentColor" />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Responde rápido</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Cada segundo suma más puntos.</p>
+              <p className="font-bold text-white text-sm mb-1">Usa vidas</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Cada partida consume 1 vida.</p>
             </div>
           </div>
-          <div className="info-card tutorial-info-card flex items-start gap-3 rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+          <div className="info-card tutorial-info-card">
             <div className="tutorial-info-icon w-8 h-8 bg-orange-500/15 rounded-lg flex items-center justify-center shrink-0">
-              <Zap className="text-orange-500" size={16} />
+              <Clock className="text-orange-500" size={16} />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Usa comodines</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Te ayudan a sostener el puntaje.</p>
+              <p className="font-bold text-white text-sm mb-1">Juega trivias cortas</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Responde rápido para mejorar tu PR.</p>
             </div>
           </div>
-          <div className="info-card tutorial-info-card flex items-start gap-3 rounded-xl border border-white/6 bg-white/[0.02] p-3.5">
+          <div className="info-card tutorial-info-card">
             <div className="tutorial-info-icon w-8 h-8 bg-rpp-yellow/15 rounded-lg flex items-center justify-center shrink-0">
               <Trophy className="text-rpp-yellow" size={16} />
             </div>
             <div>
-              <p className="font-bold text-white text-sm mb-1">Mejora tu PR</p>
-              <p className="text-xs text-gray-400 leading-relaxed">Ese es tu avance real en el ranking.</p>
+              <p className="font-bold text-white text-sm mb-1">Gana cupones</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Son oportunidades para el sorteo.</p>
+            </div>
+          </div>
+          <div className="info-card tutorial-info-card">
+            <div className="tutorial-info-icon w-8 h-8 bg-green-500/15 rounded-lg flex items-center justify-center shrink-0">
+              <LogIn className="text-neon-green" size={16} />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm mb-1">Registra tu avance</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Necesitas cuenta para participar.</p>
             </div>
           </div>
         </div>
@@ -116,6 +276,7 @@ export default function VestuarioScreen({
       whileTap={{ scale: 0.99 }}
       onClick={onGoToPrize}
       className="prize-banner-card premium-panel w-full rounded-2xl p-4 border border-blue-500/15 shadow-[0_0_20px_rgba(59,130,246,0.08)] cursor-pointer relative overflow-hidden group"
+      data-onboarding="prize-banner"
     >
       <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-500/12 to-transparent pointer-events-none"></div>
 
@@ -136,12 +297,13 @@ export default function VestuarioScreen({
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto">
+          <PrizeProduct variant="banner" />
           {isLoggedIn && (
             <div className="bg-black/30 px-3 py-2 rounded-xl border border-gray-800 flex items-center">
               <Ticket className="text-rpp-yellow mr-2" size={18} />
               <div className="flex flex-col">
                 <span className="text-[10px] text-gray-400 font-bold uppercase">Mis Cupones</span>
-                <span className="text-base font-black text-rpp-yellow leading-none">{goldenTickets}</span>
+                <span className="text-base font-black text-rpp-yellow leading-none">{goldenCoupons}</span>
               </div>
             </div>
           )}
@@ -213,29 +375,31 @@ export default function VestuarioScreen({
     </motion.div>
   );
 
-  const renderTicketsCard = () => (
+  const renderLivesCard = () => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
       className="info-card premium-panel p-4 rounded-2xl shadow-lg"
+      data-onboarding="lives-card"
     >
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-xs text-gray-400 mb-1 uppercase tracking-[0.16em]">Tickets</p>
+          <p className="text-xs text-gray-400 mb-1 uppercase tracking-[0.16em]">Vidas</p>
           <p className="font-bold font-montserrat text-base text-white">Listo para seguir jugando</p>
         </div>
         <div className="text-right">
-          <p className="text-xl font-black font-montserrat text-rpp-yellow">
-            {tickets}<span className="text-base text-gray-500">/5</span>
+          <p className="text-xl font-black font-montserrat text-rpp-yellow inline-flex items-center justify-end gap-1">
+            <Heart size={18} fill="currentColor" />
+            {lives}<span className="text-base text-gray-500">/5</span>
           </p>
           <p className="text-[11px] text-gray-400">Recarga por tiempo</p>
         </div>
       </div>
       <div className="w-full bg-stadium rounded-full h-3 border border-gray-800">
-        <div className="h-3 rounded-full bg-rpp-yellow" style={{ width: `${(tickets / 5) * 100}%` }} />
+        <div className="h-3 rounded-full bg-rpp-yellow" style={{ width: `${(lives / 5) * 100}%` }} />
       </div>
-      <p className="text-[11px] text-gray-500 mt-2.5">Si te quedas sin tickets, puedes recargarlos viendo un video sponsor.</p>
+      <p className="text-[11px] text-gray-500 mt-2.5">Si te quedas sin vidas, puedes recargarlas viendo un video sponsor.</p>
     </motion.div>
   );
 
@@ -245,6 +409,7 @@ export default function VestuarioScreen({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
       className="info-card ranking-preview-card premium-panel rounded-2xl overflow-hidden"
+      data-onboarding="ranking-preview"
     >
       <div className="p-4 border-b border-gray-800 flex justify-between items-center">
         <h2 className="font-bold font-montserrat text-sm flex items-center">
@@ -305,7 +470,7 @@ export default function VestuarioScreen({
     <div className="min-h-screen bg-stadium text-white p-4 md:p-5 font-sans max-w-6xl mx-auto pb-24 md:pb-12">
       <header className={`premium-panel ${isLoggedIn ? 'flex-col md:flex-row gap-3 md:gap-0' : 'flex-row'} flex justify-between items-center mb-5 md:mb-6 p-3 rounded-2xl shadow-lg`}>
         <div className={`flex items-center justify-between ${isLoggedIn ? 'w-full md:w-auto' : 'w-full'}`}>
-          <div className="flex items-center">
+          <div className="flex items-center" data-onboarding="brand">
             <div className="w-8 h-8 bg-rpp-yellow rounded-lg flex items-center justify-center mr-3 shadow-[0_0_12px_rgba(255,224,0,0.24)]">
               <MonitorPlay className="text-stadium" size={18} />
             </div>
@@ -323,9 +488,17 @@ export default function VestuarioScreen({
                 <LogOut size={18} />
               </button>
             ) : (
-                <button onClick={onLoginClick} className="premium-button-primary px-3.5 py-2 rounded-xl text-sm font-bold flex items-center">
+              <div className="flex items-center gap-2">
+                <button onClick={replayOnboarding} className="premium-nav-btn px-3 py-2 rounded-xl text-sm font-bold">
+                  Cómo jugar
+                </button>
+                <button onClick={onGoToFaq} className="premium-nav-btn px-3 py-2 rounded-xl text-sm font-bold">
+                  FAQ
+                </button>
+                <button onClick={onLoginClick} data-onboarding="login-entry" className="premium-button-primary px-3.5 py-2 rounded-xl text-sm font-bold flex items-center">
                   <LogIn size={16} className="mr-2" /> Entrar
                 </button>
+              </div>
             )}
           </div>
         </div>
@@ -334,6 +507,8 @@ export default function VestuarioScreen({
           <nav className="flex space-x-1 md:space-x-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar justify-start md:justify-end items-center">
             <button onClick={onGoToRanking} className="premium-nav-btn whitespace-nowrap">Ranking</button>
             <button onClick={onGoToPrize} className="premium-nav-btn whitespace-nowrap">Sorteo</button>
+            <button onClick={onGoToFaq} className="premium-nav-btn whitespace-nowrap">FAQ</button>
+            <button onClick={replayOnboarding} className="premium-nav-btn whitespace-nowrap">Cómo jugar</button>
 
             <div className="w-px h-6 bg-gray-800 mx-2 hidden md:block"></div>
 
@@ -371,6 +546,7 @@ export default function VestuarioScreen({
           >
             <button
               onClick={handlePlayClick}
+              data-onboarding="primary-play"
               className="premium-button-primary w-full font-montserrat font-black text-xl md:text-2xl py-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-[0_0_40px_rgba(255,224,0,0.35)] transition-shadow relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
@@ -413,6 +589,7 @@ export default function VestuarioScreen({
           >
             <button
               onClick={handlePlayClick}
+              data-onboarding="primary-play"
               className="premium-button-primary w-full font-montserrat font-black text-xl md:text-2xl py-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-[0_0_40px_rgba(255,224,0,0.35)] transition-shadow relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
@@ -437,6 +614,7 @@ export default function VestuarioScreen({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="info-card premium-panel rounded-2xl p-4 md:p-5"
+                data-onboarding="dashboard-summary"
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
@@ -445,11 +623,12 @@ export default function VestuarioScreen({
                       Sigue jugando para mejorar tu PR
                     </h2>
                     <p className="text-sm text-gray-400 max-w-xl">
-                      Tu progreso hoy depende de tres cosas: jugar otra ronda, cuidar tus tickets y sumar cupones para el premio semanal.
+                      Tu progreso hoy depende de tres cosas: jugar otra ronda, cuidar tus vidas y sumar cupones para el premio semanal.
                     </p>
                   </div>
                   <button
                     onClick={handlePlayClick}
+                    data-onboarding="primary-play"
                     className="premium-button-primary w-full md:w-auto font-montserrat font-black text-sm md:text-base py-3.5 px-5 rounded-xl flex items-center justify-center whitespace-nowrap"
                   >
                     <Play className="mr-2" fill="currentColor" size={20} /> JUGAR PARTIDO
@@ -475,7 +654,7 @@ export default function VestuarioScreen({
               </div>
 
               {renderProfileCard()}
-              {renderTicketsCard()}
+              {renderLivesCard()}
 
               {currentUser.streak > 0 && (
                 <motion.div
@@ -524,6 +703,7 @@ export default function VestuarioScreen({
             animate={(!isLoggedIn || !hasPlayed) ? { scale: [1, 1.02, 1] } : {}}
             transition={(!isLoggedIn || !hasPlayed) ? { repeat: Infinity, duration: 2 } : {}}
             onClick={handlePlayClick}
+            data-onboarding="primary-play"
             className="premium-button-primary w-full font-montserrat font-black py-4 rounded-2xl flex flex-col items-center justify-center"
           >
             <div className="flex items-center text-lg">
@@ -540,16 +720,61 @@ export default function VestuarioScreen({
       </div>
 
       <AnimatePresence>
+        {showOnboarding && onboardingSteps[onboardingStep] && (
+          <motion.div
+            className="onboarding-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {onboardingTarget && (
+              <div
+                className="onboarding-spotlight"
+                style={{
+                  width: onboardingTarget.width + 18,
+                  height: onboardingTarget.height + 18,
+                  transform: `translate(${onboardingTarget.left - 9}px, ${onboardingTarget.top - 9}px)`
+                }}
+              />
+            )}
+            <motion.div
+              className="onboarding-card"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              key={onboardingStep}
+            >
+              <span className="onboarding-guide-label">Tutorial rápido</span>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <span className="onboarding-kicker">Paso {onboardingStep + 1} de {onboardingSteps.length}</span>
+                <button onClick={completeOnboarding} className="onboarding-skip">
+                  Omitir
+                </button>
+              </div>
+              <h3>{onboardingSteps[onboardingStep].title}</h3>
+              <p>{onboardingSteps[onboardingStep].body}</p>
+              <div className="onboarding-progress" aria-hidden="true">
+                {onboardingSteps.map((step, index) => (
+                  <span key={step.target + index} className={index <= onboardingStep ? 'is-active' : ''} />
+                ))}
+              </div>
+              <button onClick={goToNextOnboardingStep} className="onboarding-next">
+                {onboardingStep === onboardingSteps.length - 1 ? 'Entendido' : 'Siguiente'}
+                <ChevronRight size={18} />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+
         {showAdModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="premium-panel rounded-2xl p-5 max-w-sm w-full text-center relative overflow-hidden shadow-2xl"
+              className="confirmation-modal-card premium-panel rounded-2xl p-5 max-w-sm w-full text-center relative overflow-hidden shadow-2xl"
             >
               {adState === 'idle' && (
-                <button onClick={closeAdModal} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <button onClick={closeAdModal} className="modal-close-button absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               )}
@@ -557,13 +782,13 @@ export default function VestuarioScreen({
               {adState === 'idle' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <div className="ad-empty-icon w-16 h-16 bg-var-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Ticket className="text-var-red" size={32} />
+                    <Heart className="text-var-red" size={32} fill="currentColor" />
                   </div>
-                  <h3 className="text-2xl font-black font-montserrat mb-2">¡Sin Tickets!</h3>
-                  <p className="text-gray-400 mb-6">Te has quedado sin tickets para jugar. Mira un video corto de nuestro sponsor y obtén 2 tickets extra al instante.</p>
+                  <h3 className="text-2xl font-black font-montserrat mb-2">¡Sin vidas!</h3>
+                  <p className="text-gray-400 mb-6">Te has quedado sin vidas para jugar. Mira un video corto de nuestro sponsor y obtén 2 vidas extra al instante.</p>
                   <button
                     onClick={handleWatchAd}
-                    className="w-full bg-rpp-yellow text-stadium font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
+                    className="confirmation-primary-button confirmation-primary-button-gold w-full bg-rpp-yellow text-white font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
                   >
                     <Video className="mr-2" size={20} /> VER VIDEO SPONSOR
                   </button>
@@ -587,16 +812,16 @@ export default function VestuarioScreen({
               {adState === 'finished' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-4">
                   <div className="ad-success-icon w-20 h-20 bg-neon-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Ticket className="text-neon-green" size={40} />
+                    <Heart className="text-neon-green" size={40} fill="currentColor" />
                   </div>
-                  <h3 className="text-2xl font-black font-montserrat mb-2 text-neon-green">¡Tickets Recargados!</h3>
-                  <p className="text-gray-400 mb-6">Has recibido 2 tickets extra. ¡Vuelve a la cancha!</p>
+                  <h3 className="text-2xl font-black font-montserrat mb-2 text-neon-green">¡Vidas recargadas!</h3>
+                  <p className="text-gray-400 mb-6">Has recibido 2 vidas extra. ¡Vuelve a la cancha!</p>
                   <button
                     onClick={() => {
                       closeAdModal();
                       onPlay();
                     }}
-                    className="w-full bg-neon-green text-stadium font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
+                    className="confirmation-primary-button confirmation-primary-button-green w-full bg-neon-green text-white font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
                   >
                     <Play className="mr-2" size={20} fill="currentColor" /> JUGAR AHORA
                   </button>
