@@ -181,22 +181,40 @@ export default function App() {
             transition={{ type: "spring", bounce: 0.35 }}
             className="premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-2xl text-center"
           >
-            <div className="flex flex-col items-center mb-5">
-              <div className="w-20 h-20 bg-rpp-yellow/10 rounded-full flex items-center justify-center mb-4 border border-rpp-yellow/30">
-                <Trophy className="text-rpp-yellow" size={38} />
-              </div>
-              <PrizeProduct variant="modal" />
+            <div className="flex flex-col items-center mb-8 pt-4">
+              <motion.div 
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+                className="w-20 h-20 bg-neon-green/10 rounded-full flex items-center justify-center mb-4 border border-neon-green/30"
+              >
+                <motion.div
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <svg 
+                    width="40" 
+                    height="40" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="4" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    className="text-neon-green"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </motion.div>
+              </motion.div>
+              <div className="premium-chip mx-auto w-fit mb-2">¡Todo listo!</div>
+              <h1 className="premium-title text-2xl md:text-3xl font-montserrat font-black text-white">
+                Cuenta activada
+              </h1>
             </div>
 
-            <div className="premium-chip mx-auto w-fit mb-4">Cuenta activada</div>
-            <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-white mb-3">
-              ¡Bienvenido a la cancha!
-            </h1>
-            <p className="text-sm md:text-base text-gray-300 max-w-xl mx-auto mb-6 leading-relaxed">
-              Tu cuenta ya está lista y tu partida quedó guardada. Desde ahora compites con tu PR, acumulas cupones y ya estás participando por los premios semanales.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
               <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-gray-400 mb-2">Puntaje guardado</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{lastScore}</p>
@@ -212,9 +230,19 @@ export default function App() {
               </div>
             </div>
 
-            <div className="w-full bg-[#f6e8c8] border border-[#ead4a1] text-[#704400] rounded-xl px-4 py-3 text-center mb-6">
-              <p className="font-black font-montserrat text-base mb-1">Ya estás dentro del premio de esta semana</p>
-              <p className="text-xs md:text-sm">Sigue jugando para sumar más cupones y aumentar tus probabilidades.</p>
+            <div className="w-full bg-[#f6e8c8] border border-[#ead4a1] text-[#704400] rounded-xl p-4 md:p-5 flex flex-col md:flex-row items-center gap-4 mb-8 text-center md:text-left relative overflow-hidden shadow-lg">
+              <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white/40 to-transparent pointer-events-none hidden md:block"></div>
+              
+              <div className="w-24 h-20 md:w-28 md:h-24 shrink-0 flex items-center justify-center bg-white/50 rounded-lg p-2 border border-white/80 shadow-sm relative z-10">
+                <PrizeProduct variant="modal" hideLabel={true} />
+              </div>
+              
+              <div className="relative z-10">
+                <p className="font-black font-montserrat text-base md:text-lg mb-1">Ya estás dentro del premio de esta semana</p>
+                <p className="text-xs md:text-sm text-amber-900/80 font-medium leading-relaxed">
+                  Sigue jugando para sumar más cupones y aumentar tus probabilidades de ganar la <span className="font-bold">PlayStation 5</span>.
+                </p>
+              </div>
             </div>
 
             <div className="w-full flex flex-col gap-3">
