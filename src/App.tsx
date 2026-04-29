@@ -52,7 +52,7 @@ export default function App() {
     setLastCorrectAnswers(correctAnswers);
     setLastAverageTime(averageTime);
     setHasPlayed(true);
-    const earnedGoldenCoupons = score > 1000 ? 3 : 1;
+    const earnedGoldenCoupons = score > 1000 ? 3 : (score > 0 ? 1 : 0);
     setLastEarnedCoupons(earnedGoldenCoupons);
     if (isLoggedIn) {
       setGoldenCoupons(prev => prev + earnedGoldenCoupons);
