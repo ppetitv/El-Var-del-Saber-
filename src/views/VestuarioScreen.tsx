@@ -702,7 +702,7 @@ export default function VestuarioScreen({
               Demuestra cuánto sabes de fútbol y <span className="text-blue-400">gana una PS5</span>
             </h1>
             <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-6">
-              Juega partidas cortas, suma Cupones Dorados y aumenta tus oportunidades de llevarte el premio semanal.
+              Responde trivias cortas de fútbol, acierta más que el resto y suma Cupones Dorados para el premio semanal.
             </p>
             <div className="flex justify-center mb-4">
               <PrizeProduct variant="hero" />
@@ -723,7 +723,7 @@ export default function VestuarioScreen({
               <div className="flex items-center relative z-10">
                 <Play className="mr-3" fill="currentColor" size={28} /> COMENZAR A JUGAR
               </div>
-              <p className="text-xs font-bold text-stadium/70 mt-2 relative z-10">Juega primero, regístrate después si quieres guardar tu avance</p>
+              <p className="text-xs font-bold text-stadium/70 mt-2 relative z-10">Entra a la cancha y suma tus primeros Cupones Dorados.</p>
             </button>
           </motion.div>
 
