@@ -383,24 +383,24 @@ export default function App() {
                   onClick={handleOpenPostMatchLogin}
                   className="result-primary-cta premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
                 >
-                  Guarda tu resultado y entra al sorteo
+                  Guarda esta partida y entra al sorteo
                 </motion.button>
 
                 <p className="text-sm text-slate-600 text-center mb-4 leading-relaxed">
-                  Crea tu cuenta para conservar esta partida, activar tus cupones y seguir compitiendo desde tu PR real.
+                  Crea tu cuenta para conservar tu resultado, tus cupones y tu progreso.
                 </p>
 
                 <div className="result-guest-prize mb-4">
                   <PrizeProduct variant="result" />
                   <div>
                     <p>Participa por la {ACTIVE_PRIZE.title}</p>
-                    <span>Tus cupones se activan al crear tu cuenta.</span>
+                    <span>Tus cupones cuentan al crear tu cuenta.</span>
                   </div>
                 </div>
 
                 {lastScore > 0 && (
                   <p className="text-sm text-slate-500 text-center mb-4 leading-relaxed">
-                    Tus {lastScore.toLocaleString('es-PE')} puntos y +{pendingGoldenCoupons || lastEarnedCoupons} cupones quedan esperando si creas tu cuenta ahora.
+                    Hoy hiciste {lastScore.toLocaleString('es-PE')} puntos y ganaste +{pendingGoldenCoupons || lastEarnedCoupons} cupones.
                   </p>
                 )}
 
@@ -452,7 +452,7 @@ export default function App() {
               </button>
               {!isLoggedIn && (
                 <p className="text-xs text-slate-500 text-center">
-                  Sin cuenta no participas en el premio semanal.
+                  Sin cuenta esta partida no se guarda ni entra al sorteo.
                 </p>
               )}
             </div>

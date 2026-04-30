@@ -701,8 +701,8 @@ export default function VestuarioScreen({
             <h1 className="premium-title text-2xl md:text-4xl font-black font-montserrat mb-2 px-2">
               Demuestra cuánto sabes de fútbol y <span className="text-blue-400">gana una PS5</span>
             </h1>
-            <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6">
-              Trivia deportiva de partidas cortas. Juega gratis, mejora tu mejor puntaje y compite en el ranking global.
+            <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-6">
+              Juega partidas cortas, suma Cupones Dorados y aumenta tus oportunidades de llevarte el premio semanal.
             </p>
             <div className="flex justify-center mb-4">
               <PrizeProduct variant="hero" />
