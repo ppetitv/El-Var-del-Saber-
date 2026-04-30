@@ -327,7 +327,7 @@ export default function VestuarioScreen({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center md:items-end gap-3 w-full md:w-auto pt-2 md:pt-0 border-t border-blue-500/10 md:border-0">
+        <div className="flex flex-col sm:flex-row md:flex-row items-center md:items-center gap-3 w-full md:w-auto pt-2 md:pt-0 border-t border-blue-500/10 md:border-0">
           <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
             <div className="flex-shrink-0">
               <PrizeProduct variant="banner" />
@@ -341,7 +341,7 @@ export default function VestuarioScreen({
               e.stopPropagation();
               onOpenLegal();
             }}
-            className="text-xs text-slate-500 hover:text-blue-600 transition-colors font-medium underline underline-offset-4 self-center md:self-end"
+            className="text-xs text-slate-500 hover:text-blue-600 transition-colors font-medium underline underline-offset-4 self-center md:self-center whitespace-nowrap"
           >
             Ver términos y condiciones
           </button>

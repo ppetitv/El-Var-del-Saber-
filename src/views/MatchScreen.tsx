@@ -236,9 +236,13 @@ export default function MatchScreen({ lives, onFinish, onBack }: MatchScreenProp
           </p>
         </div>
         <div className="match-status-cluster">
-          <div className="match-lives-badge" aria-label={`${lives} vidas disponibles`}>
+          <div
+            className="match-lives-badge"
+            aria-label={lives === 0 ? 'No quedan vidas para la siguiente partida' : `${lives} vidas restantes para las siguientes partidas`}
+            title={lives === 0 ? 'Esta es tu ultima partida disponible por ahora' : `${lives} vidas restantes`}
+          >
             <Heart size={15} fill="currentColor" />
-            <span className="hidden sm:inline">Vidas</span>
+            <span className="hidden sm:inline">Restantes</span>
             <strong>{lives}/5</strong>
           </div>
           <div className="match-timer w-12 h-12 relative flex items-center justify-center bg-card-dark rounded-full border border-gray-800 shadow-lg shrink-0">
