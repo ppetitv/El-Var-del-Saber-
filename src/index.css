@@ -1415,8 +1415,8 @@ body::after {
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 252, 250, 0.95));
   border-color: rgba(13, 116, 200, 0.16);
   box-shadow:
-    0 24px 60px rgba(13, 116, 200, 0.13),
-    0 10px 28px rgba(18, 200, 111, 0.08),
+    0 20px 48px rgba(13, 116, 200, 0.12),
+    0 8px 24px rgba(18, 200, 111, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -1430,9 +1430,9 @@ body::after {
 }
 
 .result-hero-card > svg:first-child {
-  padding: 12px;
-  width: 82px;
-  height: 82px;
+  padding: 9px;
+  width: 62px;
+  height: 62px;
   border-radius: 999px;
   background:
     radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.96), transparent 30%),
@@ -1446,7 +1446,7 @@ body::after {
 .result-primary-cta {
   position: relative;
   z-index: 1;
-  min-height: 54px;
+  min-height: 46px;
   box-shadow:
     0 18px 36px rgba(18, 200, 111, 0.2),
     0 10px 28px rgba(13, 116, 200, 0.13),
@@ -1463,9 +1463,9 @@ body::after {
   width: 100%;
   grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding: 12px 14px;
+  gap: 9px;
+  margin-bottom: 12px;
+  padding: 9px 11px;
   border-radius: 16px;
   background:
     linear-gradient(110deg, rgba(255, 249, 220, 0.88), rgba(255, 255, 255, 0.86) 58%, rgba(13, 116, 200, 0.08));
@@ -1490,8 +1490,8 @@ body::after {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 14px;
-  padding: 10px 0;
+  gap: 10px;
+  padding: 7px 0;
   border-radius: 0;
   background: transparent;
   border-top: 1px solid rgba(16, 24, 40, 0.08);
@@ -1618,7 +1618,7 @@ body::after {
 }
 
 .result-replay-button {
-  min-height: 46px;
+  min-height: 42px;
   background: rgba(13, 116, 200, 0.07);
   color: #12304a;
   border: 1px solid rgba(13, 116, 200, 0.16);
@@ -1635,7 +1635,7 @@ body::after {
 }
 
 .result-ghost-button {
-  min-height: 42px;
+  min-height: 38px;
   background: transparent;
   color: #667085;
   border: 0;
@@ -1666,8 +1666,8 @@ body::after {
 .result-secondary-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 12px;
+  gap: 5px;
+  padding-top: 8px;
 }
 
 .ranking-current-user {
@@ -1790,10 +1790,11 @@ body::after {
   min-height: 44px;
   background: transparent;
   color: #0d74c8;
-  border: 1px solid rgba(13, 116, 200, 0.18);
+  border: 2px solid rgba(13, 116, 200, 0.24);
   box-shadow: none;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 900;
+  line-height: 1.2;
 }
 
 .auth-secondary-button:hover {

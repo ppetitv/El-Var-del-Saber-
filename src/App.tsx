@@ -282,32 +282,32 @@ export default function App() {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="min-h-screen p-4 md:p-6 font-sans flex flex-col items-center justify-center max-w-2xl mx-auto"
+          className="min-h-screen p-2.5 md:p-5 font-sans flex flex-col items-center justify-center max-w-2xl mx-auto"
         >
           <motion.div
             initial={{ scale: 0.8, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             transition={{ type: "spring", bounce: 0.5 }}
-            className="result-hero-card premium-panel premium-hero w-full rounded-2xl p-6 md:p-8 flex flex-col items-center relative overflow-hidden shadow-2xl"
+            className="result-hero-card premium-panel premium-hero w-full rounded-2xl p-3.5 md:p-6 flex flex-col items-center relative overflow-hidden shadow-2xl"
           >
-            <Trophy size={58} className="text-rpp-yellow mb-5 drop-shadow-[0_0_15px_rgba(255,224,0,0.35)]" />
+            <Trophy size={42} className="text-rpp-yellow mb-3 drop-shadow-[0_0_15px_rgba(255,224,0,0.35)]" />
             
-            <div className="premium-chip mb-4">Resultado</div>
-            <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-slate-950 mb-2 text-center">¡PARTIDO TERMINADO!</h1>
-            <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:items-center md:justify-center md:gap-16 mb-6 md:mb-8 w-full">
-              <div className="premium-soft-panel rounded-2xl p-4 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
-                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-2 md:mb-3">Puntaje final</p>
-                <div className="text-4xl sm:text-5xl md:text-7xl font-montserrat font-black text-rpp-yellow drop-shadow-[0_0_24px_rgba(255,224,0,0.32)] leading-none">
+            <div className="premium-chip mb-2.5">Resultado</div>
+            <h1 className="premium-title text-lg md:text-3xl font-montserrat font-black text-slate-950 mb-2 text-center">¡PARTIDO TERMINADO!</h1>
+            <div className="grid grid-cols-2 gap-2 md:flex md:flex-row md:items-center md:justify-center md:gap-10 mb-4 md:mb-6 w-full">
+              <div className="premium-soft-panel rounded-2xl p-2.5 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
+                <p className="text-slate-500 text-[10px] uppercase tracking-[0.16em] font-bold mb-1.5">Puntaje final</p>
+                <div className="text-[1.9rem] sm:text-4xl md:text-6xl font-montserrat font-black text-rpp-yellow drop-shadow-[0_0_24px_rgba(255,224,0,0.32)] leading-none">
                   {lastScore}
                 </div>
               </div>
 
-              <div className="hidden md:block w-px h-20 bg-white/10"></div>
+              <div className="hidden md:block w-px h-16 bg-white/10"></div>
 
-              <div className="premium-soft-panel rounded-2xl p-4 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
-                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-2 md:mb-3">Cupones ganados</p>
-                <div className="flex items-center text-4xl sm:text-5xl md:text-7xl font-montserrat font-black text-slate-950 drop-shadow-[0_0_24px_rgba(255,255,255,0.12)] leading-none">
-                  <Ticket className="text-rpp-yellow mr-2 md:mr-3" size={28} />
+              <div className="premium-soft-panel rounded-2xl p-2.5 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
+                <p className="text-slate-500 text-[10px] uppercase tracking-[0.16em] font-bold mb-1.5">Cupones ganados</p>
+                <div className="flex items-center text-[1.9rem] sm:text-4xl md:text-6xl font-montserrat font-black text-slate-950 drop-shadow-[0_0_24px_rgba(255,255,255,0.12)] leading-none">
+                  <Ticket className="text-rpp-yellow mr-1.5 md:mr-3" size={20} />
                   {lastEarnedCoupons}
                 </div>
               </div>
@@ -315,7 +315,7 @@ export default function App() {
             
             {isLoggedIn ? (
               <>
-                <div className="mb-8 text-center h-8 flex items-center justify-center">
+                <div className="mb-4 text-center min-h-6 flex items-center justify-center">
                   {lastScore > mockUser.pr ? (
                     <motion.div 
                       initial={{ scale: 0.8, opacity: 0 }}
@@ -335,7 +335,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="result-prize-card flex items-center justify-center bg-gradient-to-r from-rpp-yellow/20 to-orange-500/20 border border-rpp-yellow/50 px-4 py-3 md:px-6 rounded-xl mb-8 shadow-[0_0_20px_rgba(255,224,0,0.12)]"
+                  className="result-prize-card flex items-center justify-center bg-gradient-to-r from-rpp-yellow/20 to-orange-500/20 border border-rpp-yellow/50 px-3 py-2 md:px-5 rounded-xl mb-4 shadow-[0_0_20px_rgba(255,224,0,0.12)]"
                 >
                   <PrizeProduct variant="result" />
                   <div className="w-10 h-10 bg-rpp-yellow/20 rounded-full flex items-center justify-center mr-3 shrink-0">
@@ -351,7 +351,7 @@ export default function App() {
               </>
             ) : (
               <>
-                <div className="info-card premium-soft-panel w-full rounded-2xl px-4 py-4 text-center mb-4 border-white/8">
+                  <div className="info-card premium-soft-panel w-full rounded-2xl px-3.5 py-2.5 text-center mb-3 border-white/8">
                   {lastScore > 0 ? (
                     <>
                       <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Rendimiento de hoy</p>
@@ -365,14 +365,14 @@ export default function App() {
                   )}
                 </div>
 
-                <div className="w-full grid grid-cols-2 gap-3 mb-4">
-                  <div className="info-card premium-soft-panel rounded-xl p-4 text-center">
-                    <p className="text-3xl font-black font-montserrat text-slate-950">{lastCorrectAnswers}/{mockQuestions.length}</p>
-                    <p className="text-sm text-slate-500">correctas</p>
+                <div className="w-full grid grid-cols-2 gap-2.5 mb-3">
+                  <div className="info-card premium-soft-panel rounded-xl p-2.5 text-center">
+                    <p className="text-[1.7rem] font-black font-montserrat text-slate-950">{lastCorrectAnswers}/{mockQuestions.length}</p>
+                    <p className="text-xs text-slate-500">correctas</p>
                   </div>
-                  <div className="info-card premium-soft-panel rounded-xl p-4 text-center">
-                    <p className="text-3xl font-black font-montserrat text-slate-950">{lastAverageTime}s</p>
-                    <p className="text-sm text-slate-500">promedio/preg.</p>
+                  <div className="info-card premium-soft-panel rounded-xl p-2.5 text-center">
+                    <p className="text-[1.7rem] font-black font-montserrat text-slate-950">{lastAverageTime}s</p>
+                    <p className="text-xs text-slate-500">promedio/preg.</p>
                   </div>
                 </div>
 
@@ -381,16 +381,16 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   onClick={handleOpenPostMatchLogin}
-                  className="result-primary-cta premium-button-primary w-full font-montserrat font-black text-base py-4 rounded-xl mb-3"
+                  className="result-primary-cta premium-button-primary w-full font-montserrat font-black text-sm md:text-base py-3 rounded-xl mb-2.5"
                 >
                   Guarda esta partida y entra al sorteo
                 </motion.button>
 
-                <p className="text-sm text-slate-600 text-center mb-4 leading-relaxed">
+                <p className="text-sm text-slate-600 text-center mb-3 leading-relaxed">
                   Crea tu cuenta para conservar tu resultado, tus cupones y tu progreso.
                 </p>
 
-                <div className="result-guest-prize mb-4">
+                <div className="result-guest-prize mb-3">
                   <PrizeProduct variant="result" />
                   <div>
                     <p>Participa por la {ACTIVE_PRIZE.title}</p>
@@ -399,12 +399,12 @@ export default function App() {
                 </div>
 
                 {lastScore > 0 && (
-                  <p className="text-sm text-slate-500 text-center mb-4 leading-relaxed">
+                  <p className="text-sm text-slate-500 text-center mb-3 leading-relaxed">
                     Hoy hiciste {lastScore.toLocaleString('es-PE')} puntos y ganaste +{pendingGoldenCoupons || lastEarnedCoupons} cupones.
                   </p>
                 )}
 
-                <div className="result-share-actions w-full mb-2">
+                <div className="result-share-actions w-full mb-1.5">
                   <span className="result-share-label">Compartir resultado</span>
                   <div className="result-share-list">
                     <button
@@ -434,7 +434,7 @@ export default function App() {
             <div className="result-secondary-actions w-full">
               <button 
                 onClick={handlePlay}
-                className={`${isLoggedIn ? 'premium-button-primary font-black text-base md:text-lg py-4 rounded-xl' : 'result-replay-button'} w-full font-montserrat flex items-center justify-center transition-transform`}
+                className={`${isLoggedIn ? 'premium-button-primary font-black text-sm md:text-lg py-3 md:py-4 rounded-xl' : 'result-replay-button'} w-full font-montserrat flex items-center justify-center transition-transform`}
               >
                 {lives > 0 ? (
                   <><Play className="mr-2" fill="currentColor" size={isLoggedIn ? 24 : 18} /> JUGAR DE NUEVO {isLoggedIn ? <span className="inline-flex items-center ml-2">(<Heart className="mx-1" size={16} fill="currentColor" /> {lives})</span> : ''}</>

@@ -118,7 +118,7 @@ export default function LoginModal({
               className="auth-secondary-button premium-button-secondary w-full font-black py-3.5 rounded-xl flex items-center justify-center transition-colors border-2 border-blue-500/30"
             >
               <span className="auth-facebook-icon">f</span>
-              Continuar con Facebook
+              <span>Continuar con Facebook</span>
             </button>
           </div>
 
