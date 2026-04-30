@@ -8,13 +8,15 @@ interface PrizeProductProps {
 
 export default function PrizeProduct({ variant = 'hero', hideLabel = false }: PrizeProductProps) {
   return (
-    <div className={`prize-product prize-product-${variant}`} role="img" aria-label="PlayStation 5">
-      <div className="prize-product-glow" />
-      <img 
-        src={ps5Image} 
-        alt="PlayStation 5" 
-        className="prize-product-image"
-      />
+    <div className={`prize-product prize-product-${variant}`}>
+      <div className="prize-product-stage" role="img" aria-label="PlayStation 5">
+        <div className="prize-product-glow" />
+        <img 
+          src={ps5Image} 
+          alt="PlayStation 5" 
+          className="prize-product-image"
+        />
+      </div>
       {!hideLabel && (
         <div className="prize-product-label">
           <strong>PS5</strong>

@@ -1138,11 +1138,17 @@ body::after {
 }
 
 .prize-product {
-  position: relative;
-  isolation: isolate;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
+  gap: 10px;
+}
+
+.prize-product-stage {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
 }
 
 .prize-product-glow {
@@ -1171,40 +1177,37 @@ body::after {
 }
 
 .prize-product-label {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  gap: 1px;
-  padding: 6px 8px;
-  border-radius: 12px;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
   color: #101828;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow: 0 10px 22px rgba(13, 116, 200, 0.1);
-  backdrop-filter: blur(12px) saturate(140%);
 }
 
 .prize-product-label strong {
   font-family: Montserrat, sans-serif;
-  font-size: 13px;
+  font-size: 18px;
   font-weight: 950;
   line-height: 1;
+  letter-spacing: -0.03em;
 }
 
 .prize-product-label span {
-  color: #667085;
-  font-size: 8px;
+  color: #475467;
+  font-size: 9px;
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .prize-product-hero {
   width: min(220px, 80vw);
-  height: 180px;
   margin-inline: auto;
+}
+
+.prize-product-hero .prize-product-stage {
+  height: 180px;
 }
 
 .prize-product-hero .prize-product-image {
@@ -1214,6 +1217,9 @@ body::after {
 @media (min-width: 768px) {
   .prize-product-hero {
     width: min(280px, 72vw);
+  }
+
+  .prize-product-hero .prize-product-stage {
     height: 230px;
   }
 }
