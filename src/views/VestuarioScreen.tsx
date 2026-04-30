@@ -249,11 +249,10 @@ export default function VestuarioScreen({
       data-onboarding="tutorial"
     >
       <div className="info-card premium-soft-panel rounded-2xl p-4 md:p-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4">
           <h3 className="text-slate-900 font-bold uppercase tracking-[0.2em] text-xs">
-            Cómo se juega
+            Así entras al sorteo
           </h3>
-          <span className="text-xs text-slate-500 uppercase tracking-[0.18em]">Mecánica base</span>
         </div>
         <div className="tutorial-info-list">
           <div className="info-card tutorial-info-card">
@@ -261,8 +260,8 @@ export default function VestuarioScreen({
               <Heart className="text-blue-400" size={16} fill="currentColor" />
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-sm mb-1">Usa vidas</p>
-              <p className="text-sm text-slate-600 leading-relaxed">Cada partida consume 1 vida.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Cada ronda empieza con 1 vida</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Entrar a jugar consume una vida disponible.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -270,8 +269,8 @@ export default function VestuarioScreen({
               <Clock className="text-orange-500" size={16} />
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-sm mb-1">Juega trivias cortas</p>
-              <p className="text-sm text-slate-600 leading-relaxed">Responde rápido para mejorar tu PR.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Tus respuestas construyen tu progreso</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Tu puntaje y tu PR mejoran mientras juegas mejor.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -279,8 +278,8 @@ export default function VestuarioScreen({
               <Trophy className="text-rpp-yellow" size={16} />
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-sm mb-1">Gana cupones</p>
-              <p className="text-sm text-slate-600 leading-relaxed">Son oportunidades para el sorteo.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Los Cupones Dorados son tus chances reales</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Cada cupón suma oportunidades para ganar el premio.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -288,8 +287,8 @@ export default function VestuarioScreen({
               <LogIn className="text-neon-green" size={16} />
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-sm mb-1">Registra tu avance</p>
-              <p className="text-sm text-slate-600 leading-relaxed">Necesitas cuenta para participar.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Si te registras, guardas todo y participas</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Necesitas una cuenta para conservar tu avance y entrar al sorteo.</p>
             </div>
           </div>
         </div>
