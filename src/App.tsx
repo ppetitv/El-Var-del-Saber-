@@ -294,20 +294,20 @@ export default function App() {
             
             <div className="premium-chip mb-4">Resultado</div>
             <h1 className="premium-title text-2xl md:text-4xl font-montserrat font-black text-slate-950 mb-2 text-center">¡PARTIDO TERMINADO!</h1>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 mb-8 w-full">
-              <div className="flex flex-col items-center">
-                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-3">Puntaje final</p>
-                <div className="text-6xl md:text-7xl font-montserrat font-black text-rpp-yellow drop-shadow-[0_0_24px_rgba(255,224,0,0.32)]">
+            <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:items-center md:justify-center md:gap-16 mb-6 md:mb-8 w-full">
+              <div className="premium-soft-panel rounded-2xl p-4 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
+                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-2 md:mb-3">Puntaje final</p>
+                <div className="text-4xl sm:text-5xl md:text-7xl font-montserrat font-black text-rpp-yellow drop-shadow-[0_0_24px_rgba(255,224,0,0.32)] leading-none">
                   {lastScore}
                 </div>
               </div>
 
               <div className="hidden md:block w-px h-20 bg-white/10"></div>
 
-              <div className="flex flex-col items-center">
-                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-3">Cupones ganados</p>
-                <div className="flex items-center text-6xl md:text-7xl font-montserrat font-black text-slate-950 drop-shadow-[0_0_24px_rgba(255,255,255,0.12)]">
-                  <Ticket className="text-rpp-yellow mr-3" size={42} />
+              <div className="premium-soft-panel rounded-2xl p-4 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
+                <p className="text-slate-500 text-xs uppercase tracking-[0.2em] font-bold mb-2 md:mb-3">Cupones ganados</p>
+                <div className="flex items-center text-4xl sm:text-5xl md:text-7xl font-montserrat font-black text-slate-950 drop-shadow-[0_0_24px_rgba(255,255,255,0.12)] leading-none">
+                  <Ticket className="text-rpp-yellow mr-2 md:mr-3" size={28} />
                   {lastEarnedCoupons}
                 </div>
               </div>

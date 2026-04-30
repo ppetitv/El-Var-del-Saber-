@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight } from 'lucide-react';
+import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight, HelpCircle } from 'lucide-react';
 import { mockUser, mockNewUser, mockGuestUser } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 import PrizeProduct from '../components/PrizeProduct';
@@ -548,7 +548,69 @@ export default function VestuarioScreen({
 
   return (
     <div className="min-h-screen bg-stadium text-white p-3 md:p-5 font-sans max-w-6xl mx-auto pb-20 md:pb-12">
-      <header className={`premium-panel flex flex-col md:flex-row justify-between items-center mb-4 md:mb-6 p-2.5 md:p-3 rounded-2xl shadow-lg gap-2.5 md:gap-0`}>
+      <header className="md:hidden mobile-header-shell premium-panel mb-4 rounded-[28px] p-3 shadow-lg">
+        <div className="mobile-header-top">
+          <div className="mobile-header-brand" data-onboarding="brand">
+            <div className="mobile-header-brand-mark">
+              <MonitorPlay className="text-stadium" size={18} />
+            </div>
+            <div className="mobile-header-brand-copy">
+              <span>EL VAR</span>
+              <strong>DEL SABER</strong>
+            </div>
+          </div>
+
+          {isLoggedIn ? (
+            <button onClick={onLogoutClick} className="mobile-header-utility" title="Cerrar Sesión" aria-label="Cerrar sesión">
+              <LogOut size={17} />
+            </button>
+          ) : (
+            <div className="mobile-header-utility-spacer" aria-hidden="true" />
+          )}
+        </div>
+
+        {!isLoggedIn ? (
+          <div className="mobile-header-grid">
+            <button onClick={replayOnboarding} className="mobile-header-link">
+              <MonitorPlay size={16} />
+              <span>Cómo jugar</span>
+            </button>
+            <button onClick={onGoToFaq} className="mobile-header-link">
+              <HelpCircle size={16} />
+              <span>FAQ</span>
+            </button>
+            <button onClick={onGoToPrize} className="mobile-header-link">
+              <Trophy size={16} />
+              <span>Premio</span>
+            </button>
+            <button onClick={onLoginClick} data-onboarding="login-entry" className="mobile-header-link mobile-header-link-muted">
+              <LogIn size={16} />
+              <span>Iniciar sesión</span>
+            </button>
+          </div>
+        ) : (
+          <div className="mobile-header-grid">
+            <button onClick={onGoToRanking} className="mobile-header-link">
+              <Flame size={16} />
+              <span>Ranking</span>
+            </button>
+            <button onClick={onGoToPrize} className="mobile-header-link">
+              <Trophy size={16} />
+              <span>Sorteo</span>
+            </button>
+            <button onClick={onGoToFaq} className="mobile-header-link">
+              <HelpCircle size={16} />
+              <span>FAQ</span>
+            </button>
+            <button onClick={replayOnboarding} className="mobile-header-link">
+              <MonitorPlay size={16} />
+              <span>Guía</span>
+            </button>
+          </div>
+        )}
+      </header>
+
+      <header className={`hidden md:flex premium-panel flex-col md:flex-row justify-between items-center mb-4 md:mb-6 p-2.5 md:p-3 rounded-2xl shadow-lg gap-2.5 md:gap-0`}>
         <div className="flex items-center justify-center md:justify-start w-full md:w-auto relative">
           <div className="flex items-center" data-onboarding="brand">
             <div className="w-8 h-8 bg-rpp-yellow rounded-lg flex items-center justify-center mr-3 shadow-[0_0_12px_rgba(255,224,0,0.24)]">
@@ -559,12 +621,6 @@ export default function VestuarioScreen({
               <span className="text-xs font-bold text-rpp-yellow tracking-tighter">DEL SABER</span>
             </div>
           </div>
-          
-          {isLoggedIn && (
-            <button onClick={onLogoutClick} className="absolute right-0 md:relative md:right-auto md:hidden p-2 rounded-xl text-gray-500 hover:text-var-red hover:bg-var-red/10 transition-colors" title="Cerrar Sesión">
-              <LogOut size={18} />
-            </button>
-          )}
         </div>
 
         <div className={`flex items-center justify-center md:justify-end gap-1.5 md:gap-2 w-full md:w-auto ${!isLoggedIn ? 'border-t border-gray-800/30 pt-2.5 md:pt-0 md:border-0' : ''}`}>
