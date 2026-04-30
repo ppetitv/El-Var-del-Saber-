@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight, HelpCircle } from 'lucide-react';
+import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight, HelpCircle, Menu, UserRound } from 'lucide-react';
 import { mockUser, mockNewUser, mockGuestUser } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 import PrizeProduct from '../components/PrizeProduct';
 import { ACTIVE_PRIZE, formatCountdownParts, getWeeklyClosingDate } from '../data/gameConfig';
+import brandLogo from '../assets/logo_elvardelsaber.svg';
 
 interface VestuarioProps {
   onPlay: () => void;
@@ -37,6 +38,7 @@ export default function VestuarioScreen({
   const [showAdModal, setShowAdModal] = useState(false);
   const [adState, setAdState] = useState<'idle' | 'playing' | 'finished'>('idle');
   const [adTimer, setAdTimer] = useState(5);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingTarget, setOnboardingTarget] = useState<DOMRect | null>(null);
@@ -232,6 +234,10 @@ export default function VestuarioScreen({
   const closeAdModal = () => {
     setShowAdModal(false);
     setTimeout(() => setAdState('idle'), 300);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   const renderTutorial = () => (
@@ -548,106 +554,132 @@ export default function VestuarioScreen({
 
   return (
     <div className="min-h-screen bg-stadium text-white p-3 md:p-5 font-sans max-w-6xl mx-auto pb-20 md:pb-12">
-      <header className="md:hidden mobile-header-shell premium-panel mb-4 rounded-[28px] p-3 shadow-lg">
+      <header className="md:hidden mobile-header-shell mb-4 rounded-[24px] p-2.5">
         <div className="mobile-header-top">
           <div className="mobile-header-brand" data-onboarding="brand">
-            <div className="mobile-header-brand-mark">
-              <MonitorPlay className="text-stadium" size={18} />
-            </div>
-            <div className="mobile-header-brand-copy">
-              <span>EL VAR</span>
-              <strong>DEL SABER</strong>
-            </div>
+            <img src={brandLogo} alt="El VAR del Saber" className="mobile-header-logo" />
           </div>
 
-          {isLoggedIn ? (
-            <button onClick={onLogoutClick} className="mobile-header-utility" title="Cerrar Sesión" aria-label="Cerrar sesión">
-              <LogOut size={17} />
+          <div className="mobile-header-actions">
+            {!isLoggedIn && (
+              <button
+                onClick={onLoginClick}
+                data-onboarding="login-entry"
+                className="mobile-header-login"
+                title="Iniciar sesión"
+                aria-label="Iniciar sesión"
+              >
+                <span>Iniciar sesión</span>
+              </button>
+            )}
+            <button
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="mobile-header-utility"
+              title={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
-          ) : (
-            <div className="mobile-header-utility-spacer" aria-hidden="true" />
-          )}
+          </div>
         </div>
-
-        {!isLoggedIn ? (
-          <div className="mobile-header-grid">
-            <button onClick={replayOnboarding} className="mobile-header-link">
-              <MonitorPlay size={16} />
-              <span>Cómo jugar</span>
-            </button>
-            <button onClick={onGoToFaq} className="mobile-header-link">
-              <HelpCircle size={16} />
-              <span>FAQ</span>
-            </button>
-            <button onClick={onGoToPrize} className="mobile-header-link">
-              <Trophy size={16} />
-              <span>Premio</span>
-            </button>
-            <button onClick={onLoginClick} data-onboarding="login-entry" className="mobile-header-link mobile-header-link-muted">
-              <LogIn size={16} />
-              <span>Iniciar sesión</span>
-            </button>
-          </div>
-        ) : (
-          <div className="mobile-header-grid">
-            <button onClick={onGoToRanking} className="mobile-header-link">
-              <Flame size={16} />
-              <span>Ranking</span>
-            </button>
-            <button onClick={onGoToPrize} className="mobile-header-link">
-              <Trophy size={16} />
-              <span>Sorteo</span>
-            </button>
-            <button onClick={onGoToFaq} className="mobile-header-link">
-              <HelpCircle size={16} />
-              <span>FAQ</span>
-            </button>
-            <button onClick={replayOnboarding} className="mobile-header-link">
-              <MonitorPlay size={16} />
-              <span>Guía</span>
-            </button>
-          </div>
-        )}
       </header>
 
-      <header className={`hidden md:flex premium-panel flex-col md:flex-row justify-between items-center mb-4 md:mb-6 p-2.5 md:p-3 rounded-2xl shadow-lg gap-2.5 md:gap-0`}>
-        <div className="flex items-center justify-center md:justify-start w-full md:w-auto relative">
-          <div className="flex items-center" data-onboarding="brand">
-            <div className="w-8 h-8 bg-rpp-yellow rounded-lg flex items-center justify-center mr-3 shadow-[0_0_12px_rgba(255,224,0,0.24)]">
-              <MonitorPlay className="text-stadium" size={18} />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-sm font-black tracking-tight text-slate-950 leading-none">EL VAR</span>
-              <span className="text-xs font-bold text-rpp-yellow tracking-tighter">DEL SABER</span>
-            </div>
-          </div>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.button
+              type="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeMobileMenu}
+              className="mobile-menu-backdrop md:hidden"
+              aria-label="Cerrar menú"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              className="mobile-menu-panel md:hidden"
+            >
+              {!isLoggedIn ? (
+                <div className="mobile-header-menu-list">
+                  <button onClick={() => { closeMobileMenu(); replayOnboarding(); }} className="mobile-header-link">
+                    <MonitorPlay size={16} />
+                    <span>Cómo jugar</span>
+                  </button>
+                  <button onClick={() => { closeMobileMenu(); onGoToFaq(); }} className="mobile-header-link">
+                    <HelpCircle size={16} />
+                    <span>FAQ</span>
+                  </button>
+                  <button onClick={() => { closeMobileMenu(); onGoToPrize(); }} className="mobile-header-link">
+                    <Trophy size={16} />
+                    <span>Premio</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="mobile-header-menu-list">
+                  <button onClick={() => { closeMobileMenu(); onGoToRanking(); }} className="mobile-header-link">
+                    <Flame size={16} />
+                    <span>Ranking</span>
+                  </button>
+                  <button onClick={() => { closeMobileMenu(); onGoToPrize(); }} className="mobile-header-link">
+                    <Trophy size={16} />
+                    <span>Sorteo</span>
+                  </button>
+                  <button onClick={() => { closeMobileMenu(); onGoToFaq(); }} className="mobile-header-link">
+                    <HelpCircle size={16} />
+                    <span>FAQ</span>
+                  </button>
+                  <button onClick={() => { closeMobileMenu(); replayOnboarding(); }} className="mobile-header-link">
+                    <MonitorPlay size={16} />
+                    <span>Guía</span>
+                  </button>
+                  <button onClick={() => { closeMobileMenu(); onLogoutClick(); }} className="mobile-header-link mobile-header-link-muted">
+                    <LogOut size={16} />
+                    <span>Cerrar sesión</span>
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <header className="hidden md:flex desktop-header-shell items-start justify-between mb-6">
+        <div className="desktop-header-brand" data-onboarding="brand">
+          <img src={brandLogo} alt="El VAR del Saber" className="desktop-header-logo" />
         </div>
 
-        <div className={`flex items-center justify-center md:justify-end gap-1.5 md:gap-2 w-full md:w-auto ${!isLoggedIn ? 'border-t border-gray-800/30 pt-2.5 md:pt-0 md:border-0' : ''}`}>
+        <div className="desktop-header-actions">
           {!isLoggedIn ? (
-            <>
-              <button onClick={replayOnboarding} className="premium-nav-btn px-2.5 py-1.5 rounded-xl text-[11px] font-bold">
-                Cómo jugar
-              </button>
-              <button onClick={onGoToFaq} className="premium-nav-btn px-2.5 py-1.5 rounded-xl text-[11px] font-bold">
-                FAQ
-              </button>
-              <button onClick={onLoginClick} data-onboarding="login-entry" className="premium-button-primary px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center">
-                <LogIn size={14} className="mr-1.5" /> Entrar
-              </button>
-            </>
+            <nav className="desktop-header-nav-shell">
+              <div className="desktop-header-nav">
+                <button onClick={replayOnboarding} className="desktop-header-link">
+                  Cómo jugar
+                </button>
+                <button onClick={onGoToFaq} className="desktop-header-link">
+                  FAQ
+                </button>
+                <button onClick={onGoToPrize} className="desktop-header-link">
+                  Premio
+                </button>
+                <button onClick={onLoginClick} data-onboarding="login-entry" className="desktop-header-user">
+                  <UserRound size={16} />
+                  <span>Entrar</span>
+                </button>
+              </div>
+            </nav>
           ) : (
-            <nav className="flex space-x-1 md:space-x-2 overflow-x-auto w-full md:w-auto pb-0.5 md:pb-0 hide-scrollbar justify-center md:justify-end items-center">
-              <button onClick={onGoToRanking} className="premium-nav-btn whitespace-nowrap">Ranking</button>
-              <button onClick={onGoToPrize} className="premium-nav-btn whitespace-nowrap">Sorteo</button>
-              <button onClick={onGoToFaq} className="premium-nav-btn whitespace-nowrap">FAQ</button>
-              <button onClick={replayOnboarding} className="premium-nav-btn whitespace-nowrap">Cómo jugar</button>
-
-              <div className="w-px h-6 bg-gray-800 mx-2 hidden md:block"></div>
-
-              <div className="hidden md:block">
-                <button onClick={onLogoutClick} className="p-2 rounded-xl text-gray-500 hover:text-var-red hover:bg-var-red/10 transition-colors ml-2" title="Cerrar Sesión">
-                  <LogOut size={20} />
+            <nav className="desktop-header-nav-shell">
+              <div className="desktop-header-nav">
+                <button onClick={onGoToRanking} className="desktop-header-link">Ranking</button>
+                <button onClick={onGoToPrize} className="desktop-header-link">Sorteo</button>
+                <button onClick={onGoToFaq} className="desktop-header-link">FAQ</button>
+                <button onClick={replayOnboarding} className="desktop-header-link">Cómo jugar</button>
+                <button onClick={onLogoutClick} className="desktop-header-user desktop-header-user-icon" title="Cerrar sesión" aria-label="Cerrar sesión">
+                  <LogOut size={17} />
                 </button>
               </div>
             </nav>
