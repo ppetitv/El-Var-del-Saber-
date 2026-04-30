@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronLeft, Trophy, Medal, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { mockRanking } from '../data/mockData';
 import { motion } from 'motion/react';
+import AvatarImage from '../components/AvatarImage';
 
 export default function RankingScreen({ onBack }: { onBack: () => void }) {
   const top3 = mockRanking.slice(0, 3);
@@ -32,7 +33,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center min-w-0">
               <div className="w-11 h-11 bg-card-light rounded-full flex items-center justify-center text-xl mr-3 shrink-0 border border-rpp-yellow">
-                {currentUser.avatar}
+                <AvatarImage src={currentUser.avatar} alt={currentUser.username} />
               </div>
               <div className="min-w-0">
                 <p className="text-xs uppercase tracking-[0.18em] text-slate-500 font-black mb-1">Tu posicion</p>
@@ -48,7 +49,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
       )}
 
       {/* PODIUM (Top 3) */}
-      <div className="ranking-podium premium-panel flex justify-center items-end h-60 md:h-72 mb-8 md:mb-10 gap-2 md:gap-6 rounded-3xl px-3 md:px-8 pt-6 md:pt-8 overflow-hidden">
+      <div className="ranking-podium premium-panel flex justify-center items-end min-h-[18.5rem] md:min-h-[22rem] mb-8 md:mb-10 gap-2 md:gap-6 rounded-3xl px-3 md:px-8 pt-6 md:pt-8 pb-3 md:pb-4 overflow-visible">
         {/* 2nd Place */}
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
@@ -57,7 +58,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           className="flex flex-col items-center w-1/3 max-w-[120px]"
         >
           <div className="ranking-avatar ranking-avatar-silver w-16 h-16 bg-card-light rounded-full flex items-center justify-center text-3xl border-4 border-gray-400 z-10 relative shadow-[0_0_15px_rgba(156,163,175,0.5)] mb-2">
-            {top3[1].avatar}
+            <AvatarImage src={top3[1].avatar} alt={top3[1].username} />
             <div className="absolute -bottom-2 bg-gray-400 text-stadium text-xs font-black px-2 py-0.5 rounded-full">#2</div>
           </div>
           <p className="font-bold text-sm text-slate-900 truncate w-full text-center">{top3[1].username}</p>
@@ -75,7 +76,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           className="flex flex-col items-center w-1/3 max-w-[140px] z-10"
         >
           <div className="ranking-avatar ranking-avatar-gold w-20 h-20 bg-card-light rounded-full flex items-center justify-center text-4xl border-4 border-rpp-yellow z-10 relative shadow-[0_0_25px_rgba(255,224,0,0.6)] mb-2">
-            {top3[0].avatar}
+            <AvatarImage src={top3[0].avatar} alt={top3[0].username} />
             <div className="absolute -bottom-2 bg-rpp-yellow text-stadium text-xs font-black px-2 py-0.5 rounded-full">#1</div>
           </div>
           <p className="font-bold text-base text-slate-900 truncate w-full text-center">{top3[0].username}</p>
@@ -93,7 +94,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
           className="flex flex-col items-center w-1/3 max-w-[120px]"
         >
           <div className="ranking-avatar ranking-avatar-bronze w-16 h-16 bg-card-light rounded-full flex items-center justify-center text-3xl border-4 border-amber-700 z-10 relative shadow-[0_0_15px_rgba(180,83,9,0.5)] mb-2">
-            {top3[2].avatar}
+            <AvatarImage src={top3[2].avatar} alt={top3[2].username} />
             <div className="absolute -bottom-2 bg-amber-700 text-white text-xs font-black px-2 py-0.5 rounded-full">#3</div>
           </div>
           <p className="font-bold text-sm text-slate-900 truncate w-full text-center">{top3[2].username}</p>
@@ -118,7 +119,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
               #{user.id}
             </div>
             <div className="w-10 h-10 bg-card-light rounded-full flex items-center justify-center text-xl mr-4 shrink-0 border border-gray-700">
-              {user.avatar}
+              <AvatarImage src={user.avatar} alt={user.username} />
             </div>
             <div className="flex-grow min-w-0">
               <p className={`font-bold truncate ${user.isCurrentUser ? 'text-rpp-yellow' : 'text-slate-900'}`}>

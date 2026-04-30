@@ -1,3 +1,5 @@
+import { getDicebearAvatar } from '../lib/avatar';
+
 export const mockQuestions = [
   {
     id: 1,
@@ -39,7 +41,7 @@ export const mockQuestions = [
 
 export const mockUser = {
   username: "ElTigreGareca",
-  avatar: "🐯",
+  avatar: getDicebearAvatar("ElTigreGareca"),
   pr: 1850,
   rankingNational: 4532,
   rankingRegional: 15,
@@ -54,7 +56,7 @@ export const mockUser = {
 
 export const mockNewUser = {
   username: "NovatoGol",
-  avatar: "⚽",
+  avatar: getDicebearAvatar("NovatoGol"),
   pr: 0,
   rankingNational: "-",
   rankingRegional: "-",
@@ -69,7 +71,7 @@ export const mockNewUser = {
 
 export const mockGuestUser = {
   username: "Jugador Invitado",
-  avatar: "👤",
+  avatar: getDicebearAvatar("Jugador Invitado"),
   pr: 0,
   rankingNational: 0,
   rankingRegional: 0,
@@ -83,12 +85,12 @@ export const mockGuestUser = {
 };
 
 export const mockRanking = [
-  { id: 1, username: "ElProfe", avatar: "👨‍🏫", pr: 15420, trend: "same" },
-  { id: 2, username: "Futbolero99", avatar: "⚽", pr: 14850, trend: "up" },
-  { id: 3, username: "MartinG", avatar: "😎", pr: 14200, trend: "down" },
-  { id: 4, username: "Capi7", avatar: "©️", pr: 2300, trend: "up" },
-  { id: 5, username: "GoleadorX", avatar: "👟", pr: 2100, trend: "same" },
-  { id: 6, username: "LaAraña", avatar: "🕷️", pr: 1950, trend: "up" },
-  { id: 7, username: "MuroDefensivo", avatar: "🧱", pr: 1450, trend: "down" },
-  { id: 4532, username: "ElTigreGareca", avatar: "🐯", pr: 1850, trend: "up", isCurrentUser: true },
+  { id: 1, username: "ElProfe", avatar: getDicebearAvatar("ElProfe"), pr: 15420, trend: "same" },
+  { id: 2, username: "Futbolero99", avatar: getDicebearAvatar("Futbolero99"), pr: 14850, trend: "up" },
+  { id: 3, username: "MartinG", avatar: getDicebearAvatar("MartinG"), pr: 14200, trend: "down" },
+  { id: 4, username: "Capi7", avatar: getDicebearAvatar("Capi7"), pr: 2300, trend: "up" },
+  { id: 5, username: "GoleadorX", avatar: getDicebearAvatar("GoleadorX"), pr: 2100, trend: "same" },
+  { id: 6, username: "LaAraña", avatar: getDicebearAvatar("LaAraña"), pr: 1950, trend: "up" },
+  { id: 7, username: "MuroDefensivo", avatar: getDicebearAvatar("MuroDefensivo"), pr: 1450, trend: "down" },
+  { id: 4532, username: "ElTigreGareca", avatar: getDicebearAvatar("ElTigreGareca"), pr: 1850, trend: "up", isCurrentUser: true },
 ];

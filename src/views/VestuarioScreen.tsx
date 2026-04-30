@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight, HelpCircle, Menu, UserRound } from 'lucide-react';
-import { mockUser, mockNewUser, mockGuestUser } from '../data/mockData';
+import { mockUser, mockNewUser, mockGuestUser, mockRanking } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 import PrizeProduct from '../components/PrizeProduct';
 import { ACTIVE_PRIZE, formatCountdownParts, getWeeklyClosingDate } from '../data/gameConfig';
 import brandLogo from '../assets/logo_elvardelsaber.svg';
+import AvatarImage from '../components/AvatarImage';
 
 interface VestuarioProps {
   onPlay: () => void;
@@ -44,6 +45,8 @@ export default function VestuarioScreen({
   const [onboardingTarget, setOnboardingTarget] = useState<DOMRect | null>(null);
 
   const currentUser = isLoggedIn ? (hasPlayed ? mockUser : mockNewUser) : mockGuestUser;
+  const rankingUserAbove = mockRanking.find((user) => user.username === 'MartinG');
+  const rankingUserBelow = mockRanking.find((user) => user.username === 'MuroDefensivo');
   const closingDate = useMemo(() => getWeeklyClosingDate(), []);
   const [prizeCountdown, setPrizeCountdown] = useState(() => formatCountdownParts(closingDate));
   const onboardingSteps = useMemo(() => {
@@ -301,44 +304,45 @@ export default function VestuarioScreen({
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
       onClick={onGoToPrize}
-      className="prize-banner-card premium-panel w-full rounded-2xl p-4 border border-blue-500/15 shadow-[0_0_20px_rgba(59,130,246,0.08)] cursor-pointer relative overflow-hidden group"
+      className="prize-banner-card premium-panel w-full rounded-2xl p-4 md:p-5 cursor-pointer relative overflow-hidden group"
       data-onboarding="prize-banner"
     >
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-500/12 to-transparent pointer-events-none"></div>
+      <div className="prize-banner-haze" />
 
-      <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <div className="premium-icon-wrap shrink-0 bg-blue-500/10 border-blue-400/20 w-10 h-10 rounded-xl mt-1">
+      <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 md:gap-6">
+        <div className="flex items-start gap-3 md:gap-4 min-w-0">
+          <div className="premium-icon-wrap prize-banner-icon shrink-0 w-10 h-10 rounded-xl mt-0.5">
             <Trophy className="text-blue-400" size={20} />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              <span className="bg-blue-500 text-white text-[11px] font-bold uppercase tracking-[0.16em] px-2 py-0.5 rounded-full">Sorteo semanal</span>
-              <span className="text-blue-600 text-xs font-semibold flex items-center">
+          <div className="flex-1 min-w-0 prize-banner-copy">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="prize-banner-topline">Premio activo</span>
+              <span className="prize-banner-countdown">
                 <Clock size={12} className="mr-1" /> Cierra en {prizeCountdown}
               </span>
             </div>
-            <h3 className="premium-title text-lg md:text-xl font-black font-montserrat text-slate-950 tracking-tight mb-2">{ACTIVE_PRIZE.title}</h3>
+            <h3 className="premium-title text-lg md:text-[1.45rem] font-black font-montserrat text-slate-950 tracking-tight mb-1">{ACTIVE_PRIZE.title}</h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Acumula Cupones Dorados y suma más oportunidades para quedarte con el premio semanal.
+            </p>
             
             {isLoggedIn && (
-              <div className="inline-flex bg-rpp-yellow/10 px-2.5 py-1 rounded-lg border border-rpp-yellow/20 items-center gap-2 shadow-sm">
+              <div className="prize-banner-coupons">
                 <Ticket className="text-rpp-yellow" size={14} />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#d09b00' }}>Mis Cupones:</span>
-                  <span className="text-xs font-black text-rpp-yellow leading-none">{goldenCoupons}</span>
-                </div>
+                <span className="text-slate-600">Tus Cupones Dorados:</span>
+                <strong>{goldenCoupons}</strong>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row md:flex-row items-center md:items-center gap-3 w-full md:w-auto pt-2 md:pt-0 border-t border-blue-500/10 md:border-0">
-          <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
-            <div className="flex-shrink-0">
+        <div className="prize-banner-actions">
+          <div className="flex items-center justify-between md:justify-end gap-3 md:gap-4 w-full md:w-auto">
+            <div className="flex-shrink-0 prize-banner-product">
               <PrizeProduct variant="banner" />
             </div>
-            <button className="premium-button-secondary flex-1 md:flex-none font-bold py-3 px-6 rounded-xl transition-colors whitespace-nowrap min-w-[120px] text-sm">
-              Ver Detalles
+            <button className="premium-button-secondary flex-1 md:flex-none font-bold py-3 px-5 rounded-xl transition-colors whitespace-nowrap min-w-[120px] text-sm">
+              Ver premio
             </button>
           </div>
           <button 
@@ -346,7 +350,7 @@ export default function VestuarioScreen({
               e.stopPropagation();
               onOpenLegal();
             }}
-            className="text-xs text-slate-500 hover:text-blue-600 transition-colors font-medium underline underline-offset-4 self-center md:self-center whitespace-nowrap"
+            className="prize-banner-legal"
           >
             Ver términos y condiciones
           </button>
@@ -362,9 +366,9 @@ export default function VestuarioScreen({
       className="info-card premium-panel flex items-center justify-between p-3.5 md:p-4 rounded-2xl shadow-lg"
     >
       <div className="flex items-center space-x-4">
-        <div className="relative">
+          <div className="relative">
           <div className="w-12 h-12 bg-card-light rounded-full flex items-center justify-center text-xl border border-rpp-yellow">
-            {currentUser.avatar}
+            <AvatarImage src={currentUser.avatar} alt={currentUser.username} />
           </div>
           <div className="absolute -bottom-2 -right-2 bg-rpp-yellow text-stadium text-xs font-bold px-2 py-0.5 rounded-full">
             PR
@@ -453,7 +457,7 @@ export default function VestuarioScreen({
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center min-w-0">
           <div className="w-12 h-12 bg-card-light rounded-full flex items-center justify-center text-xl border border-rpp-yellow mr-3 shrink-0">
-            {currentUser.avatar}
+            <AvatarImage src={currentUser.avatar} alt={currentUser.username} />
           </div>
           <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Tu progreso hoy</p>
@@ -510,7 +514,7 @@ export default function VestuarioScreen({
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-gray-500">#{Number(currentUser.rankingNational) - 1}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-gray-700">
-              😎
+              {rankingUserAbove && <AvatarImage src={rankingUserAbove.avatar} alt={rankingUserAbove.username} />}
             </div>
             <div className="min-w-0">
               <p className="font-bold text-slate-900 text-sm truncate">MartinG</p>
@@ -524,7 +528,7 @@ export default function VestuarioScreen({
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-rpp-yellow">#{currentUser.rankingNational}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-rpp-yellow">
-              {currentUser.avatar}
+              <AvatarImage src={currentUser.avatar} alt={currentUser.username} />
             </div>
             <div className="min-w-0">
               <p className="font-bold text-rpp-yellow text-sm">{currentUser.username} <span className="text-[11px] opacity-70">(Tú)</span></p>
@@ -538,7 +542,7 @@ export default function VestuarioScreen({
           <div className="flex items-center">
             <span className="w-10 flex-shrink-0 text-center font-black text-xs text-gray-500">#{Number(currentUser.rankingNational) + 1}</span>
             <div className="w-9 h-9 bg-card-light rounded-full flex items-center justify-center text-base mx-3 border border-gray-700">
-              🧱
+              {rankingUserBelow && <AvatarImage src={rankingUserBelow.avatar} alt={rankingUserBelow.username} />}
             </div>
             <div className="min-w-0">
               <p className="font-bold text-slate-900 text-sm truncate">MuroDefensivo</p>
@@ -736,7 +740,7 @@ export default function VestuarioScreen({
           >
             <div className="premium-chip mx-auto w-fit mb-5">Tu cuenta está lista</div>
             <div className="w-20 h-20 bg-card-light rounded-full flex items-center justify-center text-4xl border border-rpp-yellow mx-auto mb-5 shadow-[0_0_24px_rgba(255,224,0,0.18)]">
-              {currentUser.avatar}
+              <AvatarImage src={currentUser.avatar} alt={currentUser.username} />
             </div>
             <h1 className="premium-title text-3xl md:text-4xl font-black font-montserrat mb-3">
               ¡Bienvenido a la cancha, <span className="text-rpp-yellow">{currentUser.username}</span>!
