@@ -7,6 +7,8 @@ import { ACTIVE_PRIZE, formatCountdownParts, getWeeklyClosingDate } from '../dat
 interface PrizeScreenProps {
   onBack: () => void;
   goldenCoupons: number;
+  lives: number;
+  nextLifeInMs: number;
   isLoggedIn: boolean;
   onLoginClick: () => void;
   onPlayClick: () => void;
@@ -14,26 +16,33 @@ interface PrizeScreenProps {
   initialSection?: 'overview' | 'faq';
 }
 
-export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLoginClick, onPlayClick, onOpenLegal, initialSection = 'overview' }: PrizeScreenProps) {
+export default function PrizeScreen({ onBack, goldenCoupons, lives, nextLifeInMs, isLoggedIn, onLoginClick, onPlayClick, onOpenLegal, initialSection = 'overview' }: PrizeScreenProps) {
   const closingDate = useMemo(() => getWeeklyClosingDate(), []);
   const [countdown, setCountdown] = useState(() => formatCountdownParts(closingDate));
+  const nextLifeCountdown = useMemo(() => {
+    const totalSeconds = Math.max(0, Math.ceil(nextLifeInMs / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+  }, [nextLifeInMs]);
 
   const faqs = [
     {
       question: '¿Cómo participo por el premio?',
-      answer: 'Juega partidas, suma puntaje y regístrate para que tus Cupones Dorados queden asociados a tu cuenta.'
+      answer: 'Juega partidas, suma puntaje y regístrate para que tus boletos para el premio queden asociados a tu cuenta.'
     },
     {
       question: '¿Puedo jugar infinitamente?',
-      answer: 'No de forma libre. Cada partida consume vidas. Si te quedas sin vidas, puedes ver un video sponsor para recargar y seguir jugando.'
+      answer: 'No de forma libre. Cada partida consume vidas. Cuando llegas a 0, tu próxima vida se recarga automáticamente con el tiempo para que puedas volver a jugar.'
     },
     {
-      question: '¿Para qué sirven los Cupones Dorados?',
-      answer: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más cupones acumules, más oportunidades tienes de ganar. Ten en cuenta que los cupones acumulados se resetean al entregarse el premio semanal.'
+      question: '¿Para qué sirven los boletos para el premio?',
+      answer: 'Cada boleto cuenta como una participación para el sorteo semanal. Mientras más boletos para el premio acumules, más oportunidades tienes de ganar. Ten en cuenta que los boletos acumulados se resetean al entregarse el premio semanal.'
     },
     {
       question: '¿Tengo que registrarme para ganar?',
-      answer: 'Sí. Puedes probar el juego sin cuenta, pero necesitas registrarte para guardar tu avance, tus cupones y participar por premios.'
+      answer: 'Sí. Puedes probar el juego sin cuenta, pero necesitas registrarte para guardar tu avance, tus boletos para el premio y participar por premios.'
     },
     {
       question: '¿Puedo participar en más premios?',
@@ -41,7 +50,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
     },
     {
       question: '¿El ranking influye en el sorteo?',
-      answer: 'El ranking mide tu rendimiento y progreso. Los premios se impulsan principalmente con tus Cupones Dorados acumulados.'
+      answer: 'El ranking mide tu rendimiento y progreso. Los premios se impulsan principalmente con tus boletos para el premio acumulados.'
     }
   ];
 
@@ -99,7 +108,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
               {ACTIVE_PRIZE.title}
             </h2>
             <p className="text-base md:text-lg text-blue-200 max-w-2xl font-medium">
-              Suma Cupones Dorados con tus partidas y conviértelos en participaciones reales para el cierre semanal del sorteo.
+              Suma boletos para el premio con tus partidas y conviértelos en participaciones reales para el cierre semanal del sorteo.
             </p>
           </div>
           <PrizeProduct variant="hero" />
@@ -121,7 +130,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
             <div className="premium-icon-wrap prize-coupon-icon w-14 h-14 rounded-full mx-auto mb-4 border-rpp-yellow/20 bg-rpp-yellow/10">
               <Ticket className="text-rpp-yellow" size={40} />
             </div>
-              <h3 className="text-xl font-bold font-montserrat mb-1">Tus Cupones Dorados</h3>
+              <h3 className="text-xl font-bold font-montserrat mb-1">Tus boletos para el premio</h3>
               <p className="text-sm text-gray-400">Participaciones para el sorteo</p>
             </div>
 
@@ -132,16 +141,22 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
                 </div>
                 <button 
                   onClick={onPlayClick}
-                  className="premium-button-primary w-full font-bold py-3.5 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
+                  disabled={lives <= 0}
+                  className="premium-button-primary w-full font-bold py-3.5 rounded-xl flex items-center justify-center hover:scale-105 transition-transform disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <Play className="mr-2" size={20} fill="currentColor" /> JUGAR PARA GANAR MÁS
+                  <Play className="mr-2" size={20} fill="currentColor" /> {lives > 0 ? 'JUGAR PARA GANAR MÁS' : 'ESPERANDO RECARGA'}
                 </button>
+                {lives < 5 && (
+                  <p className="text-xs text-gray-400 mt-3">
+                    Próxima vida en {nextLifeCountdown}
+                  </p>
+                )}
               </div>
             ) : (
               <div className="text-center bg-card-light/50 p-5 rounded-xl border border-gray-700">
                 <LockKeyhole className="mx-auto text-gray-500 mb-3" size={32} />
                 <p className="text-sm text-gray-300 mb-4">
-                  Inicia sesión o regístrate gratis para empezar a acumular cupones y participar en el sorteo.
+                  Inicia sesión o regístrate gratis para empezar a acumular boletos para el premio y participar en el sorteo.
                 </p>
                 <button 
                   onClick={onLoginClick}
@@ -163,7 +178,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
             className="info-card prize-rules-card premium-panel rounded-2xl p-6 h-full"
           >
             <h3 className="text-lg font-bold font-montserrat mb-5 flex items-center">
-              <Info className="mr-2 text-blue-400" size={24} /> ¿Cómo ganar cupones?
+              <Info className="mr-2 text-blue-400" size={24} /> ¿Cómo ganar boletos?
             </h3>
             
             <div className="space-y-4">
@@ -204,7 +219,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
                   </div>
                   <div>
                     <p className="font-bold text-slate-900">Guardar tu cuenta</p>
-                    <p className="text-sm text-slate-600">Necesitas registro para conservar el puntaje y dejar activos tus cupones.</p>
+                    <p className="text-sm text-slate-600">Necesitas registro para conservar el puntaje y dejar activos tus boletos para el premio.</p>
                   </div>
                 </div>
                 <div className="prize-reward-chip flex items-center text-slate-700 font-black text-sm bg-slate-100 px-3 py-1 rounded-lg">
@@ -232,7 +247,7 @@ export default function PrizeScreen({ onBack, goldenCoupons, isLoggedIn, onLogin
             </h3>
           </div>
           <p className="text-sm text-gray-400 max-w-md">
-            Todo lo importante sobre vidas, cupones, registro y sorteos.
+            Todo lo importante sobre vidas, boletos para el premio, registro y sorteos.
           </p>
         </div>
 

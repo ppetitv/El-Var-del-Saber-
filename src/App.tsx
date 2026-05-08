@@ -17,13 +17,18 @@ interface MatchSummary {
   averageTime: number;
 }
 
+const MAX_LIVES = 5;
+const LIFE_RECHARGE_MS = 30 * 60 * 1000;
+
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<'vestuario' | 'match' | 'result' | 'ranking' | 'prize' | 'welcome'>('vestuario');
   const [lastScore, setLastScore] = useState(0);
   const [lastCorrectAnswers, setLastCorrectAnswers] = useState(0);
   const [lastAverageTime, setLastAverageTime] = useState(0);
   const [lastEarnedCoupons, setLastEarnedCoupons] = useState(0);
-  const [lives, setLives] = useState(5);
+  const [lives, setLives] = useState(MAX_LIVES);
+  const [lifeRechargeAnchor, setLifeRechargeAnchor] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const [goldenCoupons, setGoldenCoupons] = useState(0);
   const [pendingGoldenCoupons, setPendingGoldenCoupons] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,17 +43,58 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [currentScreen]);
 
+  useEffect(() => {
+    if (lives >= MAX_LIVES || lifeRechargeAnchor === null) return;
+
+    const timerId = window.setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => window.clearInterval(timerId);
+  }, [lives, lifeRechargeAnchor]);
+
+  useEffect(() => {
+    if (lives >= MAX_LIVES || lifeRechargeAnchor === null) return;
+
+    const elapsed = now - lifeRechargeAnchor;
+    const recoveredLives = Math.floor(elapsed / LIFE_RECHARGE_MS);
+
+    if (recoveredLives <= 0) return;
+
+    setLives((prev) => {
+      const nextLives = Math.min(MAX_LIVES, prev + recoveredLives);
+
+      if (nextLives >= MAX_LIVES) {
+        setLifeRechargeAnchor(null);
+      } else {
+        setLifeRechargeAnchor((prevAnchor) => (
+          prevAnchor === null ? prevAnchor : prevAnchor + (recoveredLives * LIFE_RECHARGE_MS)
+        ));
+      }
+
+      return nextLives;
+    });
+  }, [lives, lifeRechargeAnchor, now]);
+
   const handlePlay = () => {
     if (lives <= 0) {
       setCurrentScreen('vestuario');
       return;
     }
-    setLives(prev => Math.max(0, prev - 1));
-    setCurrentScreen('match');
-  };
+    const spentAt = Date.now();
+    setNow(spentAt);
+    setLives((prev) => {
+      const nextLives = Math.max(0, prev - 1);
 
-  const handleAddLives = (amount: number) => {
-    setLives(prev => Math.min(prev + amount, 5));
+      if (prev === MAX_LIVES) {
+        setLifeRechargeAnchor(spentAt);
+      } else if (lifeRechargeAnchor === null && nextLives < MAX_LIVES) {
+        setLifeRechargeAnchor(spentAt);
+      }
+
+      return nextLives;
+    });
+    setCurrentScreen('match');
   };
 
   const handleFinishMatch = ({ score, correctAnswers, averageTime }: MatchSummary) => {
@@ -153,6 +199,9 @@ export default function App() {
   };
 
   const relativeStanding = getRelativeStanding(lastScore);
+  const nextLifeInMs = lives >= MAX_LIVES || lifeRechargeAnchor === null
+    ? 0
+    : Math.max(0, LIFE_RECHARGE_MS - (now - lifeRechargeAnchor));
 
   return (
     <div className="premium-shell bg-stadium min-h-screen text-white">
@@ -160,8 +209,8 @@ export default function App() {
         <VestuarioScreen 
           onPlay={handlePlay} 
           lives={lives}
+          nextLifeInMs={nextLifeInMs}
           goldenCoupons={goldenCoupons}
-          onAddLives={handleAddLives}
           onGoToRanking={handleGoToRanking}
           onGoToPrize={handleGoToPrize}
           onGoToFaq={handleGoToFaq}
@@ -178,6 +227,8 @@ export default function App() {
         <PrizeScreen 
           onBack={handleBackToDashboard} 
           goldenCoupons={goldenCoupons}
+          lives={lives}
+          nextLifeInMs={nextLifeInMs}
           isLoggedIn={isLoggedIn} 
           onLoginClick={handleOpenDefaultLogin}
           onPlayClick={handlePlay}
@@ -236,9 +287,9 @@ export default function App() {
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{lastScore}</p>
               </div>
               <div className="info-card premium-soft-panel rounded-xl p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Cupones activos</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Boletos activos</p>
                 <p className="text-3xl font-black font-montserrat text-rpp-yellow">{goldenCoupons}</p>
-                <p className="text-sm text-slate-500 mt-2">Participaciones para el premio semanal</p>
+                <p className="text-sm text-slate-500 mt-2">Boletos para el premio semanal</p>
               </div>
               <div className="info-card premium-soft-panel rounded-xl p-4">
                 <p className="text-xs uppercase tracking-[0.18em] text-slate-500 mb-2">Estado de hoy</p>
@@ -256,7 +307,7 @@ export default function App() {
               <div className="relative z-10">
                 <p className="font-black font-montserrat text-base md:text-lg mb-1">Ya estás dentro del premio de esta semana</p>
                 <p className="text-xs md:text-sm text-amber-900/80 font-medium leading-relaxed">
-                  Sigue jugando para sumar más cupones y aumentar tus probabilidades de ganar la <span className="font-bold">{ACTIVE_PRIZE.title}</span>.
+                  Sigue jugando para sumar más boletos para el premio y aumentar tus probabilidades de ganar la <span className="font-bold">{ACTIVE_PRIZE.title}</span>.
                 </p>
               </div>
             </div>
@@ -305,7 +356,7 @@ export default function App() {
               <div className="hidden md:block w-px h-16 bg-white/10"></div>
 
               <div className="premium-soft-panel rounded-2xl p-2.5 md:bg-transparent md:border-0 md:shadow-none flex flex-col items-center">
-                <p className="text-slate-500 text-[10px] uppercase tracking-[0.16em] font-bold mb-1.5">Cupones ganados</p>
+                <p className="text-slate-500 text-[10px] uppercase tracking-[0.16em] font-bold mb-1.5">Boletos ganados</p>
                 <div className="flex items-center text-[1.9rem] sm:text-4xl md:text-6xl font-montserrat font-black text-slate-950 drop-shadow-[0_0_24px_rgba(255,255,255,0.12)] leading-none">
                   <Ticket className="text-rpp-yellow mr-1.5 md:mr-3" size={20} />
                   {lastEarnedCoupons}
@@ -344,7 +395,7 @@ export default function App() {
                   <div className="text-left">
                     <p className="text-xs text-rpp-yellow font-bold uppercase tracking-[0.18em] mb-0.5">Acumulas por el premio</p>
                     <p className="text-xl md:text-2xl font-black font-montserrat text-slate-950">
-                      {goldenCoupons} <span className="text-sm text-slate-500 font-medium">Cupones Dorados</span>
+                      {goldenCoupons} <span className="text-sm text-slate-500 font-medium">Boletos para el premio</span>
                     </p>
                   </div>
                 </motion.div>
@@ -360,7 +411,7 @@ export default function App() {
                     </>
                   ) : (
                     <p className="text-sm md:text-base font-bold text-slate-900 leading-relaxed">
-                      ¡Cero puntos esta vez! Calienta un poco más y vuelve a la cancha. Marca tu primer récord y regístrate para que tus cupones no se pierdan.
+                      ¡Cero puntos esta vez! Calienta un poco más y vuelve a la cancha. Marca tu primer récord y regístrate para que tus boletos para el premio no se pierdan.
                     </p>
                   )}
                 </div>
@@ -387,20 +438,20 @@ export default function App() {
                 </motion.button>
 
                 <p className="text-sm text-slate-600 text-center mb-3 leading-relaxed">
-                  Crea tu cuenta para conservar tu resultado, tus cupones y tu progreso.
+                  Crea tu cuenta para conservar tu resultado, tus boletos para el premio y tu progreso.
                 </p>
 
                 <div className="result-guest-prize mb-3">
                   <PrizeProduct variant="result" />
                   <div>
                     <p>Participa por la {ACTIVE_PRIZE.title}</p>
-                    <span>Tus cupones cuentan al crear tu cuenta.</span>
+                    <span>Tus boletos para el premio cuentan al crear tu cuenta.</span>
                   </div>
                 </div>
 
                 {lastScore > 0 && (
                   <p className="text-sm text-slate-500 text-center mb-3 leading-relaxed">
-                    Hoy hiciste {lastScore.toLocaleString('es-PE')} puntos y ganaste +{pendingGoldenCoupons || lastEarnedCoupons} cupones.
+                    Hoy hiciste {lastScore.toLocaleString('es-PE')} puntos y ganaste +{pendingGoldenCoupons || lastEarnedCoupons} boletos para el premio.
                   </p>
                 )}
 
@@ -477,9 +528,9 @@ export default function App() {
         onClose={() => setShowLegalModal(false)}
         title="Terminos del sorteo semanal"
         body={[
-          'Necesitas una cuenta para guardar tu puntaje, conservar tus Cupones Dorados y participar formalmente en el sorteo semanal.',
-          'En esta version, una partida con puntaje te da 1 Cupon Dorado y una partida de mas de 1000 puntos te da 3. Cada cupon cuenta como una participacion.',
-          `El premio activo es una ${ACTIVE_PRIZE.title} y el ciclo se cierra de forma semanal. Mientras mas cupones acumules durante la semana activa, mas oportunidades tienes de ganar.`,
+          'Necesitas una cuenta para guardar tu puntaje, conservar tus Boletos para el premio y participar formalmente en el sorteo semanal.',
+          'En esta version, una partida con puntaje te da 1 boleto para el premio y una partida de mas de 1000 puntos te da 3. Cada boleto cuenta como una participacion.',
+          `El premio activo es una ${ACTIVE_PRIZE.title} y el ciclo se cierra de forma semanal. Mientras mas boletos para el premio acumules durante la semana activa, mas oportunidades tienes de ganar.`,
           'En esta version del interactivo el detalle legal completo aun no esta conectado a una fuente dinamica, asi que mostramos este resumen operativo para que la accion no quede rota.'
         ]}
       />

@@ -1054,17 +1054,6 @@ body::after {
   filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.75));
 }
 
-.sponsor-ad-badge {
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(13, 116, 200, 0.18);
-  color: #355169;
-  box-shadow:
-    0 8px 18px rgba(13, 116, 200, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(10px) saturate(140%);
-}
-
 .ad-success-icon {
   width: 84px;
   height: 84px;

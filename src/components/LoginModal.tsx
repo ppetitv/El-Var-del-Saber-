@@ -63,9 +63,9 @@ export default function LoginModal({
                 <p>Juegas por una {ACTIVE_PRIZE.title}</p>
                 <span>
                   {pendingCoupons >= 3
-                    ? "Tienes 3 cupones dorados esperando ser guardados."
+                    ? "Tienes 3 boletos para el premio esperando ser guardados."
                     : (pendingCoupons > 0 
-                      ? "Tienes un cupón dorado esperando ser guardado." 
+                      ? "Tienes 1 boleto para el premio esperando ser guardado." 
                       : "Regístrate para participar en el sorteo en tu siguiente partida.")
                   }
                 </span>
@@ -93,7 +93,7 @@ export default function LoginModal({
               <div>
                 <p className="font-bold text-sm">{isPostMatch ? 'Activa tus premios' : 'Guarda tu Progreso'}</p>
                 <p className="text-xs text-gray-400">
-                  {isPostMatch ? 'Tus cupones quedan asociados a tu cuenta para entrar al sorteo semanal.' : 'Tus estadísticas y vidas seguras en la nube.'}
+                  {isPostMatch ? 'Tus boletos para el premio quedan asociados a tu cuenta para entrar al sorteo semanal.' : 'Tus estadísticas y vidas seguras en la nube.'}
                 </p>
               </div>
             </div>

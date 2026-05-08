@@ -66,13 +66,13 @@ Cada cambio de pantalla ejecuta `window.scrollTo(0, 0)`.
 ### Invitado
 1. Entra al vestuario en modo abierto.
 2. Puede jugar sin cuenta.
-3. Si termina una partida con puntos, genera cupones pendientes.
-4. En resultado se le invita a registrarse para guardar la partida y activar esos cupones.
+3. Si termina una partida con puntos, genera boletos para el premio pendientes.
+4. En resultado se le invita a registrarse para guardar la partida y activar esos boletos.
 
 ### Usuario logueado
 1. Entra al vestuario con resumen de progreso.
 2. Juega consumiendo vidas.
-3. Al terminar, suma cupones directamente a su cuenta.
+3. Al terminar, suma boletos para el premio directamente a su cuenta.
 4. Puede volver al vestuario, revisar ranking o ir al premio.
 
 ## Mecánicas actuales
@@ -83,8 +83,8 @@ Cada cambio de pantalla ejecuta `window.scrollTo(0, 0)`.
 - Si la última vida se consume al entrar al match, el badge puede mostrar `0/5` durante esa partida.
   Eso significa: no quedan vidas para la siguiente partida, no que la partida actual sea inválida.
 - Si el usuario se queda en `0`, no puede iniciar una nueva partida directamente.
-- En ese caso se abre un modal para ver un video sponsor simulado.
-- Al completar ese video sponsor se recuperan `2` vidas.
+- La recarga es automática: se recupera `1` vida cada `30` minutos mientras el usuario esté por debajo del máximo.
+- La UI muestra cuánto falta para la próxima vida disponible.
 - El máximo visible sigue siendo `5`.
 
 ### 2. Partida
@@ -109,19 +109,19 @@ La partida tiene tres comodines de uso único por match:
 - `Cambio`
   Reemplaza la pregunta actual por una pregunta reserva fija.
 
-### 5. Cupones Dorados
+### 5. Boletos para el premio
 La lógica vigente está centralizada en `src/data/gameConfig.ts`.
 
 Regla actual:
-- Si el score final es `0`: `0` cupones.
-- Si el score final es mayor a `0`: `1` cupón.
-- Si el score final es mayor a `1000`: `3` cupones.
+- Si el score final es `0`: `0` boletos.
+- Si el score final es mayor a `0`: `1` boleto.
+- Si el score final es mayor a `1000`: `3` boletos.
 
 Comportamiento:
 - Usuario logueado:
-  los cupones se suman directo a `goldenCoupons`.
+  los boletos para el premio se suman directo a `goldenCoupons`.
 - Invitado:
-  los cupones quedan en `pendingGoldenCoupons` hasta registrarse.
+  los boletos para el premio quedan en `pendingGoldenCoupons` hasta registrarse.
 
 ### 6. Premio semanal
 - El premio activo actual es `PlayStation 5`.
@@ -135,7 +135,7 @@ Comportamiento:
 - El login es simulado desde el modal.
 - Si un invitado se registra después de jugar:
   - la partida se considera guardada
-  - los cupones pendientes pasan a la cuenta
+  - los boletos para el premio pendientes pasan a la cuenta
   - se muestra una pantalla de bienvenida / activación
 
 ## Pantallas y comportamiento
@@ -178,7 +178,7 @@ Estados:
 
 Incluye:
 - Puntaje final.
-- Cupones ganados.
+- Boletos ganados.
 - Estado relativo del día.
 - CTA para volver a jugar.
 - CTA de registro para invitado.
@@ -199,7 +199,7 @@ Archivo principal:
 
 Incluye:
 - Hero con countdown.
-- Resumen de cupones.
+- Resumen de boletos para el premio.
 - Reglas reales del prototipo.
 - FAQ.
 - Acceso a términos resumidos.
@@ -221,7 +221,7 @@ También existen mejoras de accesibilidad y polish:
 
 ## Archivos clave
 - `src/App.tsx`
-  Orquesta navegación, vidas, cupones, resultados y modales.
+  Orquesta navegación, vidas, boletos para el premio, resultados y modales.
 - `src/views/VestuarioScreen.tsx`
   Dashboard principal y entrada al producto.
 - `src/views/MatchScreen.tsx`
@@ -235,7 +235,7 @@ También existen mejoras de accesibilidad y polish:
 - `src/components/InfoModal.tsx`
   Modal informativo / legal resumido.
 - `src/data/gameConfig.ts`
-  Configuración local del premio y reglas de cupones.
+  Configuración local del premio y reglas de boletos para el premio.
 - `src/data/mockData.ts`
   Preguntas, usuario y ranking mock.
 
@@ -244,8 +244,7 @@ También existen mejoras de accesibilidad y polish:
 - No hay backend.
 - No hay autenticación real.
 - No hay persistencia entre sesiones.
-- No hay regeneración automática de vidas por tiempo.
-  La UI la menciona como promesa de sistema, pero hoy no está implementada.
+- La regeneración de vidas existe solo en frontend y no persiste entre sesiones.
 - No hay términos legales definitivos.
 - El ranking contextual y global son simulados.
 - El premio activo sigue siendo configuración local.
@@ -254,9 +253,9 @@ También existen mejoras de accesibilidad y polish:
 
 ### Producto / negocio
 - Definir reglas finales del premio semanal.
-- Confirmar si los cupones se resetean cada semana a nivel real.
+- Confirmar si los boletos para el premio se resetean cada semana a nivel real.
 - Cerrar condiciones legales y T&C.
-- Definir si la regeneración de vidas por tiempo será real o se eliminará del copy.
+- Definir si la regeneración de vidas por tiempo será persistente y sincronizada con backend.
 
 ### Backend
 - Perfil de usuario.
@@ -265,7 +264,7 @@ También existen mejoras de accesibilidad y polish:
 - Persistencia de PR y ranking.
 - Premio semanal dinámico.
 - Banco de preguntas dinámico.
-- Sorteos / cupones reales.
+- Sorteos / boletos para el premio reales.
 
 ### Frontend
 - Router real.

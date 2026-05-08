@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, Video, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight, HelpCircle, Menu, UserRound } from 'lucide-react';
+import { Play, Trophy, Star, Clock, Target, Flame, Ticket, Heart, X, MonitorPlay, LogIn, LogOut, Gamepad2, ChevronRight, HelpCircle, Menu, UserRound } from 'lucide-react';
 import { mockUser, mockNewUser, mockGuestUser, mockRanking } from '../data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
 import PrizeProduct from '../components/PrizeProduct';
@@ -10,8 +10,8 @@ import AvatarImage from '../components/AvatarImage';
 interface VestuarioProps {
   onPlay: () => void;
   lives: number;
+  nextLifeInMs: number;
   goldenCoupons: number;
-  onAddLives: (amount: number) => void;
   onGoToRanking: () => void;
   onGoToPrize: () => void;
   onGoToFaq: () => void;
@@ -25,8 +25,8 @@ interface VestuarioProps {
 export default function VestuarioScreen({
   onPlay,
   lives,
+  nextLifeInMs,
   goldenCoupons,
-  onAddLives,
   onGoToRanking,
   onGoToPrize,
   onGoToFaq,
@@ -36,9 +36,7 @@ export default function VestuarioScreen({
   onLogoutClick,
   onOpenLegal
 }: VestuarioProps) {
-  const [showAdModal, setShowAdModal] = useState(false);
-  const [adState, setAdState] = useState<'idle' | 'playing' | 'finished'>('idle');
-  const [adTimer, setAdTimer] = useState(5);
+  const [showNoLivesModal, setShowNoLivesModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(0);
@@ -53,7 +51,7 @@ export default function VestuarioScreen({
     const introStep = {
       target: 'brand',
       title: 'Así funciona el juego',
-      body: 'Juegas trivias cortas de fútbol, sumas puntaje y avanzas en una dinámica de vidas, PR, cupones y premios.'
+      body: 'Juegas trivias cortas de fútbol, sumas puntaje y avanzas en una dinámica de vidas, PR, boletos para el premio y sorteos.'
     };
     const playStep = {
       target: 'primary-play',
@@ -68,12 +66,12 @@ export default function VestuarioScreen({
     const registrationStep = {
       target: 'login-entry',
       title: 'Regístrate para participar por premios',
-      body: 'Puedes probar sin cuenta, pero necesitas registrarte para guardar tu avance, conservar cupones y entrar a sorteos.'
+      body: 'Puedes probar sin cuenta, pero necesitas registrarte para guardar tu avance, conservar tus boletos para el premio y entrar a sorteos.'
     };
     const prizeStep = {
       target: 'prize-banner',
-      title: 'Los Cupones Dorados son tus oportunidades',
-      body: 'Cada cupón cuenta como una participación para el sorteo semanal. Mientras más acumules, más oportunidades tienes.'
+      title: 'Tus boletos para el premio son tus oportunidades',
+      body: 'Cada boleto cuenta como una participación para el sorteo semanal. Mientras más acumules, más oportunidades tienes.'
     };
 
     if (!isLoggedIn) {
@@ -98,12 +96,12 @@ export default function VestuarioScreen({
       {
         target: 'dashboard-summary',
         title: 'Tu vestuario resume qué hacer ahora',
-        body: 'Desde aquí decides si juegas otra ronda, revisas tus vidas, miras el ranking o sigues acumulando cupones.'
+        body: 'Desde aquí decides si juegas otra ronda, revisas tus vidas, miras el ranking o sigues acumulando boletos para el premio.'
       },
       {
         target: 'lives-card',
         title: 'Tus vidas controlan las partidas',
-        body: 'Cada partida consume 1 vida. Si te quedas sin vidas, puedes recargar viendo un video sponsor.'
+        body: 'Cada partida consume 1 vida. Si te quedas sin vidas, tu próxima vida se recarga automáticamente con el tiempo.'
       },
       prizeStep,
       {
@@ -114,21 +112,10 @@ export default function VestuarioScreen({
       {
         target: 'primary-play',
         title: 'Sigue jugando para aumentar tus opciones',
-        body: 'Más partidas significan más oportunidades de mejorar tu PR y sumar cupones para el premio semanal.'
+        body: 'Más partidas significan más oportunidades de mejorar tu PR y sumar boletos para el premio semanal.'
       }
     ];
   }, [hasPlayed, isLoggedIn]);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (adState === 'playing' && adTimer > 0) {
-      timer = setTimeout(() => setAdTimer(adTimer - 1), 1000);
-    } else if (adState === 'playing' && adTimer === 0) {
-      setAdState('finished');
-      onAddLives(2);
-    }
-    return () => clearTimeout(timer);
-  }, [adState, adTimer, onAddLives]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -226,21 +213,19 @@ export default function VestuarioScreen({
       onPlay();
       return;
     }
-    setShowAdModal(true);
-  };
-
-  const handleWatchAd = () => {
-    setAdState('playing');
-    setAdTimer(5);
-  };
-
-  const closeAdModal = () => {
-    setShowAdModal(false);
-    setTimeout(() => setAdState('idle'), 300);
+    setShowNoLivesModal(true);
   };
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  const formatNextLifeCountdown = (milliseconds: number) => {
+    const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
   };
 
   const renderTutorial = () => (
@@ -281,8 +266,8 @@ export default function VestuarioScreen({
               <Trophy className="text-rpp-yellow" size={16} />
             </div>
             <div>
-              <p className="font-bold text-slate-900 text-sm mb-1">Los Cupones Dorados son tus chances reales</p>
-              <p className="text-sm text-slate-600 leading-relaxed">Cada cupón suma oportunidades para ganar el premio.</p>
+              <p className="font-bold text-slate-900 text-sm mb-1">Tus boletos para el premio son tus chances reales</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Cada boleto suma oportunidades para ganar el premio.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -323,13 +308,13 @@ export default function VestuarioScreen({
             </div>
             <h3 className="premium-title text-lg md:text-[1.45rem] font-black font-montserrat text-slate-950 tracking-tight mb-1">{ACTIVE_PRIZE.title}</h3>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Acumula Cupones Dorados y suma más oportunidades para quedarte con el premio semanal.
+              Acumula boletos para el premio y suma más oportunidades para quedarte con el premio semanal.
             </p>
             
             {isLoggedIn && (
               <div className="prize-banner-coupons">
                 <Ticket className="text-rpp-yellow" size={14} />
-                <span className="text-slate-600">Tus Cupones Dorados:</span>
+                <span className="text-slate-600">Tus boletos para el premio:</span>
                 <strong>{goldenCoupons}</strong>
               </div>
             )}
@@ -443,7 +428,11 @@ export default function VestuarioScreen({
       <div className="w-full bg-stadium rounded-full h-3 border border-gray-800">
         <div className="h-3 rounded-full bg-rpp-yellow" style={{ width: `${(lives / 5) * 100}%` }} />
       </div>
-      <p className="text-xs text-slate-500 mt-2.5">Si te quedas sin vidas, puedes recargarlas viendo un video sponsor.</p>
+      <p className="text-xs text-slate-500 mt-2.5">
+        {lives < 5
+          ? `Tu próxima vida llega en ${formatNextLifeCountdown(nextLifeInMs)}.`
+          : 'Tus vidas se recargan solas con el tiempo hasta volver a 5.'}
+      </p>
     </motion.div>
   );
 
@@ -487,7 +476,11 @@ export default function VestuarioScreen({
         <div className="w-full bg-stadium rounded-full h-3 border border-gray-800">
           <div className="h-3 rounded-full bg-rpp-yellow" style={{ width: `${(lives / 5) * 100}%` }} />
         </div>
-        <p className="text-xs text-slate-500 mt-2">Si te quedas sin vidas, puedes recargarlas viendo un video sponsor.</p>
+        <p className="text-xs text-slate-500 mt-2">
+          {lives < 5
+            ? `Tu próxima vida llega en ${formatNextLifeCountdown(nextLifeInMs)}.`
+            : 'Tus vidas se recargan solas con el tiempo hasta volver a 5.'}
+        </p>
       </div>
     </motion.div>
   );
@@ -702,7 +695,7 @@ export default function VestuarioScreen({
               Demuestra cuánto sabes de fútbol y <span className="text-blue-400">gana una PS5</span>
             </h1>
             <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-6">
-              Responde trivias cortas de fútbol, acierta más que el resto y suma Cupones Dorados para el premio semanal.
+              Responde trivias cortas de fútbol, acierta más que el resto y suma boletos para el premio en el sorteo semanal.
             </p>
             <div className="flex justify-center mb-4">
               <PrizeProduct variant="hero" />
@@ -723,7 +716,7 @@ export default function VestuarioScreen({
               <div className="flex items-center relative z-10">
                 <Play className="mr-3" fill="currentColor" size={28} /> COMENZAR A JUGAR
               </div>
-              <p className="text-xs font-bold text-stadium/70 mt-2 relative z-10">Entra a la cancha y suma tus primeros Cupones Dorados.</p>
+              <p className="text-xs font-bold text-stadium/70 mt-2 relative z-10">Entra a la cancha y suma tus primeros boletos para el premio.</p>
             </button>
           </motion.div>
 
@@ -767,7 +760,7 @@ export default function VestuarioScreen({
                 <Play className="mr-3" fill="currentColor" size={28} /> JUGAR MI PRIMER PARTIDO
               </div>
               <p className="text-xs font-bold text-stadium/70 mt-2 relative z-10 flex items-center">
-                <Ticket size={16} className="mr-1" /> Gana tu primer Cupón Dorado para la PS5
+                <Ticket size={16} className="mr-1" /> Gana tu primer boleto para el premio de la PS5
               </p>
             </button>
           </motion.div>
@@ -793,7 +786,7 @@ export default function VestuarioScreen({
                       Sigue jugando para mejorar tu PR
                     </h2>
                     <p className="text-sm text-gray-400 max-w-xl">
-                      Juega otra ronda, protege tus vidas y sigue acumulando cupones para mantenerte competitivo.
+                      Juega otra ronda, protege tus vidas y sigue acumulando boletos para el premio para seguir competitivo.
                     </p>
                   </div>
                   <button
@@ -885,7 +878,7 @@ export default function VestuarioScreen({
             </div>
             {(!isLoggedIn || !hasPlayed) && (
               <p className="text-xs font-bold text-stadium/80 mt-1 flex items-center">
-                {!isLoggedIn ? 'Regístrate gratis' : <><Ticket size={14} className="mr-1" /> Gana tu primer Cupón Dorado</>}
+                {!isLoggedIn ? 'Regístrate gratis' : <><Ticket size={14} className="mr-1" /> Gana tu primer boleto para el premio</>}
               </p>
             )}
           </motion.button>
@@ -938,7 +931,7 @@ export default function VestuarioScreen({
           </motion.div>
         )}
 
-        {showAdModal && (
+        {showNoLivesModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -946,60 +939,27 @@ export default function VestuarioScreen({
               exit={{ opacity: 0, scale: 0.9 }}
               className="confirmation-modal-card premium-panel rounded-2xl p-5 max-w-sm w-full text-center relative overflow-hidden shadow-2xl"
             >
-              {adState === 'idle' && (
-                <button onClick={closeAdModal} className="modal-close-button absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-                  <X size={24} />
+              <button onClick={() => setShowNoLivesModal(false)} className="modal-close-button absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <X size={24} />
+              </button>
+
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="ad-empty-icon w-16 h-16 bg-var-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Heart className="text-var-red" size={32} fill="currentColor" />
+                </div>
+                <h3 className="text-2xl font-black font-montserrat mb-2">¡Sin vidas por ahora!</h3>
+                <p className="text-gray-400 mb-3">Ya jugaste tus 5 vidas disponibles. La próxima se recarga automáticamente con el tiempo.</p>
+                <div className="bg-card-light/50 border border-gray-700 rounded-2xl p-4 mb-5">
+                  <p className="text-xs uppercase tracking-[0.18em] text-gray-400 mb-2">Próxima vida en</p>
+                  <p className="text-3xl font-black font-montserrat text-rpp-yellow">{formatNextLifeCountdown(nextLifeInMs)}</p>
+                </div>
+                <button
+                  onClick={() => setShowNoLivesModal(false)}
+                  className="premium-button-primary w-full font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
+                >
+                  Entendido
                 </button>
-              )}
-
-              {adState === 'idle' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <div className="ad-empty-icon w-16 h-16 bg-var-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Heart className="text-var-red" size={32} fill="currentColor" />
-                  </div>
-                  <h3 className="text-2xl font-black font-montserrat mb-2">¡Sin vidas!</h3>
-                  <p className="text-gray-400 mb-6">Te has quedado sin vidas para jugar. Mira un video corto de nuestro sponsor y obtén 2 vidas extra al instante.</p>
-                  <button
-                    onClick={handleWatchAd}
-                    className="confirmation-primary-button confirmation-primary-button-gold w-full bg-rpp-yellow text-white font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
-                  >
-                    <Video className="mr-2" size={20} /> VER VIDEO SPONSOR
-                  </button>
-                </motion.div>
-              )}
-
-              {adState === 'playing' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-4">
-                  <div className="w-full aspect-video bg-stadium rounded-xl border border-gray-800 flex flex-col items-center justify-center mb-6 relative overflow-hidden">
-                    <div className="sponsor-ad-badge absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-[10px] font-bold text-gray-300 uppercase tracking-wider">
-                      Publicidad
-                    </div>
-                    <Star className="text-gray-600 mb-2" size={40} />
-                    <p className="font-bold text-gray-500">SPONSOR OFICIAL</p>
-                    <div className="absolute bottom-0 left-0 h-1 bg-rpp-yellow transition-all duration-1000 ease-linear" style={{ width: `${((5 - adTimer) / 5) * 100}%` }} />
-                  </div>
-                  <p className="font-bold font-montserrat text-xl">El video termina en {adTimer}s...</p>
-                </motion.div>
-              )}
-
-              {adState === 'finished' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-4">
-                  <div className="ad-success-icon w-20 h-20 bg-neon-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Heart className="text-neon-green" size={40} fill="currentColor" />
-                  </div>
-                  <h3 className="text-2xl font-black font-montserrat mb-2 text-neon-green">¡Vidas recargadas!</h3>
-                  <p className="text-gray-400 mb-6">Has recibido 2 vidas extra. ¡Vuelve a la cancha!</p>
-                  <button
-                    onClick={() => {
-                      closeAdModal();
-                      onPlay();
-                    }}
-                    className="confirmation-primary-button confirmation-primary-button-green w-full bg-neon-green text-white font-bold py-4 rounded-xl flex items-center justify-center hover:scale-105 transition-transform"
-                  >
-                    <Play className="mr-2" size={20} fill="currentColor" /> JUGAR AHORA
-                  </button>
-                </motion.div>
-              )}
+              </motion.div>
             </motion.div>
           </div>
         )}

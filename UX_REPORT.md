@@ -14,7 +14,7 @@ El punto a trabajar no es la falta de identidad, sino la disciplina del sistema.
 ## Fortalezas
 
 ### 1. Propuesta de valor clara
-- El core loop se entiende rápido: jugar, sumar puntaje, mejorar PR, competir y ganar cupones.
+- El core loop se entiende rápido: jugar, sumar puntaje, mejorar PR, competir y ganar boletos para el premio.
 - La narrativa del premio semanal agrega retorno y urgencia sin complicar demasiado el modelo mental.
 - La app evita navegación compleja y mantiene foco.
 
@@ -29,7 +29,7 @@ El punto a trabajar no es la falta de identidad, sino la disciplina del sistema.
 - El onboarding contextual intenta acompañar sin obligar a pasar por una pantalla separada.
 
 ### 4. Gamificación bien planteada
-- PR, ranking, vidas y cupones forman un ecosistema fácil de entender.
+- PR, ranking, vidas y boletos para el premio forman un ecosistema fácil de entender.
 - El resultado post-partida está pensado para retención, repetición y conversión.
 - La lógica de “probar sin cuenta” y luego capturar registro está bien orientada.
 
