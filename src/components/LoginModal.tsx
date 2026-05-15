@@ -74,23 +74,23 @@ export default function LoginModal({
           )}
 
           {/* Benefits */}
-          <div className="premium-soft-panel rounded-xl px-4 py-2.5 mb-4 md:mb-6">
+          <div className="mb-4 md:mb-6">
             <div className="space-y-2">
-              <div className="flex items-center gap-2.5 text-sm font-medium text-gray-900">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-neon-green/10">
-                  <Check className="text-neon-green" size={14} />
+              <div className="flex items-center gap-2.5 text-sm font-medium text-slate-700">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-emerald-200/70 bg-emerald-100/55">
+                  <Check className="text-emerald-600" size={15} strokeWidth={2.5} />
                 </span>
                 <span>Guarda tu progreso</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm font-medium text-gray-900">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rpp-yellow/10">
-                  <Trophy className="text-rpp-yellow" size={14} />
+              <div className="flex items-center gap-2.5 text-sm font-medium text-slate-700">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-amber-200/75 bg-amber-100/60">
+                  <Trophy className="text-amber-600" size={15} strokeWidth={2.25} />
                 </span>
                 <span>Aparece en el ranking</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm font-medium text-gray-900">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-400/10">
-                  <Cloud className="text-sky-300" size={14} />
+              <div className="flex items-center gap-2.5 text-sm font-medium text-slate-700">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-sky-200/75 bg-sky-100/60">
+                  <Cloud className="text-sky-600" size={15} strokeWidth={2.25} />
                 </span>
                 <span>Sincroniza tus estadísticas</span>
               </div>
