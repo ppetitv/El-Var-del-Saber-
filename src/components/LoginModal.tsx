@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Trophy, Save, MonitorPlay } from 'lucide-react';
+import { X, Trophy, Cloud, Check } from 'lucide-react';
 import PrizeProduct from './PrizeProduct';
 import { ACTIVE_PRIZE, getEarnedGoldenCoupons } from '../data/gameConfig';
 
@@ -74,27 +74,25 @@ export default function LoginModal({
           )}
 
           {/* Benefits */}
-          <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
-            <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
-              <div className="auth-benefit-icon auth-benefit-icon-gold w-10 h-10 bg-rpp-yellow/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
-                <Trophy className="text-rpp-yellow" size={20} />
+          <div className="premium-soft-panel rounded-xl px-4 py-2.5 mb-4 md:mb-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2.5 text-sm font-medium text-gray-900">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-neon-green/10">
+                  <Check className="text-neon-green" size={14} />
+                </span>
+                <span>Guarda tu progreso</span>
               </div>
-              <div>
-                <p className="font-bold text-sm">{isPostMatch ? 'Compite con tu resultado de hoy' : 'Compite en el Ranking'}</p>
-                <p className="text-xs text-gray-400">
-                  {isPostMatch ? 'Tu partida queda guardada y puedes entrar al ranking semanal.' : 'Mejora tu puntaje y demuestra quién sabe más.'}
-                </p>
+              <div className="flex items-center gap-2.5 text-sm font-medium text-gray-900">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rpp-yellow/10">
+                  <Trophy className="text-rpp-yellow" size={14} />
+                </span>
+                <span>Aparece en el ranking</span>
               </div>
-            </div>
-            <div className="info-card premium-soft-panel flex items-center p-3 rounded-xl">
-              <div className="auth-benefit-icon auth-benefit-icon-green w-10 h-10 bg-neon-green/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
-                <Save className="text-neon-green" size={20} />
-              </div>
-              <div>
-                <p className="font-bold text-sm">{isPostMatch ? 'Activa tus premios' : 'Guarda tu Progreso'}</p>
-                <p className="text-xs text-gray-400">
-                  {isPostMatch ? 'Tus boletos para el premio quedan asociados a tu cuenta para entrar al sorteo semanal.' : 'Tus estadísticas y vidas seguras en la nube.'}
-                </p>
+              <div className="flex items-center gap-2.5 text-sm font-medium text-gray-900">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-400/10">
+                  <Cloud className="text-sky-300" size={14} />
+                </span>
+                <span>Sincroniza tus estadísticas</span>
               </div>
             </div>
           </div>
@@ -112,13 +110,6 @@ export default function LoginModal({
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
               <span>Continuar con Google</span>
-            </button>
-            <button 
-              onClick={onLogin}
-              className="auth-secondary-button premium-button-secondary w-full font-black py-3.5 rounded-xl flex items-center justify-center transition-colors border-2 border-blue-500/30"
-            >
-              <span className="auth-facebook-icon">f</span>
-              <span>Continuar con Facebook</span>
             </button>
           </div>
 
