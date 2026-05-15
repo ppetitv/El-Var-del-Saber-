@@ -51,7 +51,7 @@ export default function VestuarioScreen({
     const introStep = {
       target: 'brand',
       title: 'Así funciona el juego',
-      body: 'Juegas trivias cortas de fútbol, sumas puntaje y avanzas en una dinámica de vidas, PR, boletos para el premio y sorteos.'
+      body: 'Juegas trivias cortas de fútbol, sumas puntaje y avanzas en una dinámica de vidas, boletos para el premio y sorteos.'
     };
     const playStep = {
       target: 'primary-play',
@@ -60,8 +60,8 @@ export default function VestuarioScreen({
     };
     const tipsStep = {
       target: 'tutorial',
-      title: 'Responde mejor para subir tu PR',
-      body: 'Tu PR refleja tu mejor rendimiento. Responder rápido, acertar más y usar comodines te ayuda a mejorar tu posición.'
+      title: 'Responde mejor para subir en el ranking',
+      body: 'Tu puntaje refleja tu rendimiento. Responder rápido, acertar más y usar comodines te ayuda a mejorar tu posición.'
     };
     const registrationStep = {
       target: 'login-entry',
@@ -106,13 +106,13 @@ export default function VestuarioScreen({
       prizeStep,
       {
         target: 'ranking-preview',
-        title: 'Ranking y PR',
-        body: 'El ranking compara tu rendimiento con otros jugadores. Tu PR es la referencia de tu mejor marca.'
+        title: 'Ranking y puntos',
+        body: 'El ranking compara tu rendimiento con otros jugadores usando los puntos de tus partidas.'
       },
       {
         target: 'primary-play',
         title: 'Sigue jugando para aumentar tus opciones',
-        body: 'Más partidas significan más oportunidades de mejorar tu PR y sumar boletos para el premio semanal.'
+        body: 'Más partidas significan más oportunidades de mejorar tu puntaje y sumar boletos para el premio semanal.'
       }
     ];
   }, [hasPlayed, isLoggedIn]);
@@ -258,7 +258,7 @@ export default function VestuarioScreen({
             </div>
             <div>
               <p className="font-bold text-slate-900 text-sm mb-1">Tus respuestas construyen tu progreso</p>
-              <p className="text-sm text-slate-600 leading-relaxed">Tu puntaje y tu PR mejoran mientras juegas mejor.</p>
+              <p className="text-sm text-slate-600 leading-relaxed">Tu puntaje sube mientras aciertas más y respondes mejor.</p>
             </div>
           </div>
           <div className="info-card tutorial-info-card">
@@ -356,7 +356,7 @@ export default function VestuarioScreen({
             <AvatarImage src={currentUser.avatar} alt={currentUser.username} />
           </div>
           <div className="absolute -bottom-2 -right-2 bg-rpp-yellow text-stadium text-xs font-bold px-2 py-0.5 rounded-full">
-            PR
+            PTS
           </div>
         </div>
         <div>
@@ -367,9 +367,9 @@ export default function VestuarioScreen({
       <div className="text-right">
         <div className="flex items-center justify-end space-x-1 mb-1 text-rpp-yellow">
           <Star size={14} fill="currentColor" />
-          <span className="font-bold font-montserrat text-sm">{currentUser.pr}</span>
+          <span className="font-bold font-montserrat text-sm">{currentUser.totalScore}</span>
         </div>
-        <p className="text-xs text-gray-400">Mejor Puntaje</p>
+        <p className="text-xs text-gray-400">Puntaje acumulado</p>
       </div>
     </motion.div>
   );
@@ -451,7 +451,7 @@ export default function VestuarioScreen({
           <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Tu progreso hoy</p>
             <h3 className="text-base font-black font-montserrat text-slate-950 truncate">{currentUser.username}</h3>
-            <p className="text-sm text-slate-500">PR actual: {currentUser.pr}</p>
+            <p className="text-sm text-slate-500">Puntaje acumulado: {currentUser.totalScore}</p>
           </div>
         </div>
         <div className="premium-badge shrink-0">Top play</div>
@@ -514,7 +514,7 @@ export default function VestuarioScreen({
               <p className="text-xs text-var-red">A 250 pts de distancia</p>
             </div>
           </div>
-          <span className="font-bold text-xs text-slate-500 whitespace-nowrap">2,100 PR</span>
+          <span className="font-bold text-xs text-slate-500 whitespace-nowrap">2,100 pts.</span>
         </div>
 
           <div className="ranking-preview-row ranking-preview-row-current p-3.5 flex items-center justify-between gap-3 bg-rpp-yellow/10 border-l-4 border-rpp-yellow">
@@ -525,10 +525,10 @@ export default function VestuarioScreen({
             </div>
             <div className="min-w-0">
               <p className="font-bold text-rpp-yellow text-sm">{currentUser.username} <span className="text-[11px] opacity-70">(Tú)</span></p>
-              <p className="text-xs text-slate-500">Tu mejor marca actual</p>
+              <p className="text-xs text-slate-500">Tus puntos actuales</p>
             </div>
           </div>
-          <span className="font-bold text-xs text-rpp-yellow whitespace-nowrap">{currentUser.pr} PR</span>
+          <span className="font-bold text-xs text-rpp-yellow whitespace-nowrap">{currentUser.pr} pts.</span>
         </div>
 
           <div className="ranking-preview-row p-3.5 flex items-center justify-between gap-3">
@@ -542,7 +542,7 @@ export default function VestuarioScreen({
               <p className="text-xs text-neon-green">Ya lo superaste por 400 pts</p>
             </div>
           </div>
-          <span className="font-bold text-xs text-slate-500 whitespace-nowrap">1,450 PR</span>
+          <span className="font-bold text-xs text-slate-500 whitespace-nowrap">1,450 pts.</span>
         </div>
       </div>
     </motion.div>
@@ -739,7 +739,7 @@ export default function VestuarioScreen({
               ¡Bienvenido a la cancha, <span className="text-rpp-yellow">{currentUser.username}</span>!
             </h1>
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Empieza con una partida, marca tu primer PR y participa en el ranking global.
+              Empieza con una partida, suma tus primeros puntos y participa en el ranking global.
             </p>
           </motion.div>
 
@@ -783,7 +783,7 @@ export default function VestuarioScreen({
                   <div className="flex-1">
                     <div className="premium-topline mb-2">Tu vestuario</div>
                     <h2 className="premium-title text-2xl md:text-3xl font-black font-montserrat text-slate-950 mb-2">
-                      Sigue jugando para mejorar tu PR
+                      Sigue jugando para mejorar tu puntaje
                     </h2>
                     <p className="text-sm text-gray-400 max-w-xl">
                       Juega otra ronda, protege tus vidas y sigue acumulando boletos para el premio para seguir competitivo.

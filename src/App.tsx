@@ -529,7 +529,7 @@ export default function App() {
         title="Terminos del sorteo semanal"
         body={[
           'Necesitas una cuenta para guardar tu puntaje, conservar tus Boletos para el premio y participar formalmente en el sorteo semanal.',
-          'En esta version, una partida con puntaje te da 1 boleto para el premio y una partida de mas de 1000 puntos te da 3. Cada boleto cuenta como una participacion.',
+          'En esta version, una partida con puntaje te da 1 boleto para el premio, desde 1000 puntos te da 2 y desde 1500 puntos te da 3. Cada boleto cuenta como una participacion.',
           `El premio activo es una ${ACTIVE_PRIZE.title} y el ciclo se cierra de forma semanal. Mientras mas boletos para el premio acumules durante la semana activa, mas oportunidades tienes de ganar.`,
           'En esta version del interactivo el detalle legal completo aun no esta conectado a una fuente dinamica, asi que mostramos este resumen operativo para que la accion no quede rota.'
         ]}

@@ -1,6 +1,6 @@
 # El VAR del Saber
 
-Prototipo frontend de una trivia deportiva gamificada con foco mobile-first. El producto combina partidas cortas de fútbol, sistema de vidas, PR (Personal Record), ranking global y participación por un premio semanal.
+Prototipo frontend de una trivia deportiva gamificada con foco mobile-first. El producto combina partidas cortas de fútbol, sistema de vidas, puntaje, ranking global y participación por un premio semanal.
 
 Este README documenta el estado real actual del proyecto. No describe la visión ideal ni una futura integración backend, sino lo que hoy existe en la app.
 
@@ -115,7 +115,8 @@ La lógica vigente está centralizada en `src/data/gameConfig.ts`.
 Regla actual:
 - Si el score final es `0`: `0` boletos.
 - Si el score final es mayor a `0`: `1` boleto.
-- Si el score final es mayor a `1000`: `3` boletos.
+- Si el score final es mayor o igual a `1000`: `2` boletos.
+- Si el score final es mayor o igual a `1500`: `3` boletos.
 
 Comportamiento:
 - Usuario logueado:
@@ -261,7 +262,7 @@ También existen mejoras de accesibilidad y polish:
 - Perfil de usuario.
 - Persistencia de partidas.
 - Persistencia de vidas.
-- Persistencia de PR y ranking.
+- Persistencia de puntaje y ranking.
 - Premio semanal dinámico.
 - Banco de preguntas dinámico.
 - Sorteos / boletos para el premio reales.

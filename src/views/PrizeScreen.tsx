@@ -184,8 +184,8 @@ export default function PrizeScreen({ onBack, goldenCoupons, lives, nextLifeInMs
             <div className="space-y-4">
               <div className="info-card prize-rule-row flex items-center justify-between p-3.5 bg-card-light/30 rounded-xl border border-gray-800/50">
                 <div className="flex items-center">
-                  <div className="prize-rule-icon prize-rule-icon-neutral w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <Play className="text-gray-300" size={18} fill="currentColor" />
+                  <div className="prize-rule-icon prize-rule-icon-neutral w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center mr-4 shrink-0">
+                    <LockKeyhole className="text-slate-600" size={18} />
                   </div>
                   <div>
                     <p className="font-bold text-slate-900">Terminar con puntaje</p>
@@ -203,8 +203,23 @@ export default function PrizeScreen({ onBack, goldenCoupons, lives, nextLifeInMs
                     <Trophy className="text-neon-green" size={18} />
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900">Superar 1000 puntos</p>
-                    <p className="text-sm text-slate-600">Las mejores partidas reciben una recompensa premium.</p>
+                    <p className="font-bold text-slate-900">Llegar a 1000 puntos</p>
+                    <p className="text-sm text-slate-600">Las partidas sólidas reciben un impulso extra.</p>
+                  </div>
+                </div>
+                <div className="prize-reward-chip flex items-center text-rpp-yellow font-black text-lg bg-rpp-yellow/10 px-3 py-1 rounded-lg">
+                  +2 <Ticket size={16} className="ml-1" />
+                </div>
+              </div>
+
+              <div className="info-card prize-rule-row flex items-center justify-between p-3.5 bg-card-light/30 rounded-xl border border-gray-800/50">
+                <div className="flex items-center">
+                  <div className="prize-rule-icon prize-rule-icon-gold w-10 h-10 bg-orange-900/30 rounded-full flex items-center justify-center mr-4 shrink-0">
+                    <Zap className="text-orange-500" size={18} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">Llegar a 1500 puntos</p>
+                    <p className="text-sm text-slate-600">Las mejores partidas activan el máximo de boletos.</p>
                   </div>
                 </div>
                 <div className="prize-reward-chip flex items-center text-rpp-yellow font-black text-lg bg-rpp-yellow/10 px-3 py-1 rounded-lg">
@@ -214,8 +229,8 @@ export default function PrizeScreen({ onBack, goldenCoupons, lives, nextLifeInMs
 
               <div className="info-card prize-rule-row flex items-center justify-between p-3.5 bg-card-light/30 rounded-xl border border-gray-800/50">
                 <div className="flex items-center">
-                  <div className="prize-rule-icon prize-rule-icon-gold w-10 h-10 bg-orange-900/30 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <Zap className="text-orange-500" size={18} />
+                  <div className="prize-rule-icon prize-rule-icon-neutral w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center mr-4 shrink-0">
+                    <Play className="text-gray-300" size={18} fill="currentColor" />
                   </div>
                   <div>
                     <p className="font-bold text-slate-900">Guardar tu cuenta</p>

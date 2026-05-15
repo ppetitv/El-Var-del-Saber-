@@ -4,7 +4,8 @@ export const ACTIVE_PRIZE = {
 };
 
 export function getEarnedGoldenCoupons(score: number) {
-  if (score > 1000) return 3;
+  if (score >= 1500) return 3;
+  if (score >= 1000) return 2;
   if (score > 0) return 1;
   return 0;
 }

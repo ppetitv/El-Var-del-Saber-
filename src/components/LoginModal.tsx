@@ -62,12 +62,9 @@ export default function LoginModal({
               <div>
                 <p>Juegas por una {ACTIVE_PRIZE.title}</p>
                 <span>
-                  {pendingCoupons >= 3
-                    ? "Tienes 3 boletos para el premio esperando ser guardados."
-                    : (pendingCoupons > 0 
-                      ? "Tienes 1 boleto para el premio esperando ser guardado." 
-                      : "Regístrate para participar en el sorteo en tu siguiente partida.")
-                  }
+                  {pendingCoupons > 0
+                    ? `Tienes ${pendingCoupons} ${pendingCoupons === 1 ? 'boleto' : 'boletos'} para el premio esperando ser ${pendingCoupons === 1 ? 'guardado' : 'guardados'}.`
+                    : "Regístrate para participar en el sorteo en tu siguiente partida."}
                 </span>
               </div>
             </div>

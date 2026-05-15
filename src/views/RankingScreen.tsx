@@ -42,7 +42,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
             </div>
             <div className="text-right shrink-0">
               <p className="text-xl font-black font-montserrat text-slate-950">#{currentUser.id}</p>
-              <p className="text-xs text-slate-500">{currentUser.pr} PR</p>
+              <p className="text-xs text-slate-500">{currentUser.pr} pts.</p>
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
             <div className="absolute -bottom-2 bg-gray-400 text-stadium text-xs font-black px-2 py-0.5 rounded-full">#2</div>
           </div>
           <p className="font-bold text-sm text-slate-900 truncate w-full text-center">{top3[1].username}</p>
-          <p className="text-rpp-yellow font-bold text-xs mb-2">{top3[1].pr} PR</p>
+          <p className="text-rpp-yellow font-bold text-xs mb-2">{top3[1].pr} pts.</p>
           <div className="ranking-step ranking-step-silver w-full h-20 md:h-24 bg-gradient-to-t from-card-dark to-gray-800 rounded-t-xl border-t-2 border-gray-400 flex items-start justify-center pt-4">
             <Medal className="text-gray-400" size={24} />
           </div>
@@ -80,7 +80,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
             <div className="absolute -bottom-2 bg-rpp-yellow text-stadium text-xs font-black px-2 py-0.5 rounded-full">#1</div>
           </div>
           <p className="font-bold text-base text-slate-900 truncate w-full text-center">{top3[0].username}</p>
-          <p className="text-rpp-yellow font-black text-sm mb-2">{top3[0].pr} PR</p>
+          <p className="text-rpp-yellow font-black text-sm mb-2">{top3[0].pr} pts.</p>
           <div className="ranking-step ranking-step-gold w-full h-28 md:h-32 bg-gradient-to-t from-card-dark to-yellow-900/50 rounded-t-xl border-t-2 border-rpp-yellow flex items-start justify-center pt-4">
             <Trophy className="text-rpp-yellow" size={32} />
           </div>
@@ -98,7 +98,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
             <div className="absolute -bottom-2 bg-amber-700 text-white text-xs font-black px-2 py-0.5 rounded-full">#3</div>
           </div>
           <p className="font-bold text-sm text-slate-900 truncate w-full text-center">{top3[2].username}</p>
-          <p className="text-rpp-yellow font-bold text-xs mb-2">{top3[2].pr} PR</p>
+          <p className="text-rpp-yellow font-bold text-xs mb-2">{top3[2].pr} pts.</p>
           <div className="ranking-step ranking-step-bronze w-full h-16 md:h-20 bg-gradient-to-t from-card-dark to-amber-900/30 rounded-t-xl border-t-2 border-amber-700 flex items-start justify-center pt-4">
             <Medal className="text-amber-700" size={24} />
           </div>
@@ -130,7 +130,7 @@ export default function RankingScreen({ onBack }: { onBack: () => void }) {
             <div className="text-right flex items-center">
               <div className="mr-4">
                 <p className="font-black font-montserrat text-slate-950">{user.pr}</p>
-                <p className="text-xs text-gray-400 uppercase">PR</p>
+                <p className="text-xs text-gray-400 uppercase">pts.</p>
               </div>
               <div className="w-6 flex justify-center">
                 {user.trend === 'up' && <TrendingUp size={16} className="text-neon-green" />}
