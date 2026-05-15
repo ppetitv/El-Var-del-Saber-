@@ -1670,7 +1670,14 @@ body::after {
   stroke-width: 2.6;
 }
 
-.auth-modal-card,
+.auth-modal-card {
+  background: #ffffff;
+}
+
+.auth-modal-card::before {
+  opacity: 0;
+}
+
 .confirmation-modal-card {
   background:
     linear-gradient(132deg, rgba(18, 200, 111, 0.11), rgba(13, 116, 200, 0.1) 48%, rgba(255, 255, 255, 0.96) 78%),
